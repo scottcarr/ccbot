@@ -1,0 +1,30 @@
+﻿<Window x:Class="Microsoft.Research.ReviewBot.ReviewBotConfigTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ReviewBotConfigTool" Height="565" Width="1108">
+  <Grid Margin="0,0,2,0">
+    <Menu HorizontalAlignment="Left" Height="19" VerticalAlignment="Top">
+      <MenuItem Header="File">
+        <MenuItem Header="Open" Click="Open_Click"/>
+        <MenuItem Header="Save" Click="Save_Click"/>
+      </MenuItem>
+      <MenuItem x:Name="ConfigMenu" IsEnabled="False" Header="Configuration">
+        <MenuItem Header="Change Solution" Click="Solution_Click"/>
+        <MenuItem Header="Change Project" Click="Project_Click"/>
+        <MenuItem Header="Change Git Root" Click="GitRoot_Click"/>
+        <MenuItem Header="Change Git" Click="Git_Click"/>
+        <MenuItem Header="Change MSBuild" Click="MSBuild_Click"/>
+        <MenuItem Header="Change RSP" Click="RSP_Click"/>
+      </MenuItem>
+    </Menu>
+    <RichTextBox Margin="0,24,0,0" VerticalAlignment="Stretch" TextChanged="TextChanged">
+      <FlowDocument >
+        <Paragraph>
+          <Run x:Name="MyTextBox" Text="Open a configuration using the menu" />
+        </Paragraph>
+      </FlowDocument>
+    </RichTextBox>
+    <TextBox x:Name="Messages" VerticalAlignment="Bottom" Height="31" Margin="0,10,0,0" TextWrapping="Wrap" Text="Not a valid configuration"/>
+
+  </Grid>
+</Window>

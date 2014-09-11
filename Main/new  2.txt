@@ -1,0 +1,51 @@
+System.Reflection.ReflectionTypeLoadException was unhandled
+  HResult=-2146232830
+  Message=Unable to load one or more of the requested types. Retrieve the LoaderExceptions property for more information.
+  Source=mscorlib
+  StackTrace:
+       at System.Reflection.RuntimeModule.GetTypes(RuntimeModule module)
+       at System.Reflection.RuntimeModule.GetTypes()
+       at System.Reflection.Assembly.GetTypes()
+       at System.ComponentModel.Composition.Hosting.AssemblyCatalog.get_InnerCatalog()
+       at System.ComponentModel.Composition.Hosting.AssemblyCatalog.GetExports(ImportDefinition definition)
+       at System.ComponentModel.Composition.Hosting.AggregateCatalog.GetExports(ImportDefinition definition)
+       at System.ComponentModel.Composition.Hosting.CatalogExportProvider.InternalGetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.CatalogExportProvider.InnerCatalogExportProvider.GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.TryGetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition, IEnumerable`1& exports)
+       at System.ComponentModel.Composition.Hosting.CatalogExportProvider.GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.TryGetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition, IEnumerable`1& exports)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExports(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.AggregateExportProvider.GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.TryGetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition, IEnumerable`1& exports)
+       at System.ComponentModel.Composition.Hosting.CompositionContainer.GetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.TryGetExportsCore(ImportDefinition definition, AtomicComposition atomicComposition, IEnumerable`1& exports)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExports(ImportDefinition definition, AtomicComposition atomicComposition)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportsCore(Type type, Type metadataViewType, String contractName, ImportCardinality cardinality)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportsCore[T,TMetadataView](String contractName)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExports[T,TMetadataView](String contractName)
+       at System.ComponentModel.Composition.Hosting.ExportProvider.GetExports[T,TMetadataView]()
+       at Microsoft.CodeAnalysis.Host.Mef.MefHostServices.<GetExports>b__6[TExtension,TMetadata](ExportKey _)
+       at System.Collections.Immutable.ImmutableInterlocked.GetOrAdd[TKey,TValue](ImmutableDictionary`2& location, TKey key, Func`2 valueFactory)
+       at Microsoft.CodeAnalysis.Host.Mef.MefHostServices.GetExports[TExtension,TMetadata]()
+       at Microsoft.CodeAnalysis.Host.Mef.MefHostServices.MefWorkspaceServices.<>c__DisplayClass0`1.<GetService>b__5(Type _)
+       at System.Collections.Immutable.ImmutableInterlocked.GetOrAdd[TKey,TValue](ImmutableDictionary`2& location, TKey key, Func`2 valueFactory)
+       at Microsoft.CodeAnalysis.Host.Mef.MefHostServices.MefWorkspaceServices.GetService[TWorkspaceService]()
+       at Microsoft.CodeAnalysis.Workspace..ctor(HostServices host, String workspaceKind)
+       at Microsoft.CodeAnalysis.MSBuild.MSBuildWorkspace..ctor(HostServices hostServices, ImmutableDictionary`2 properties)
+       at Microsoft.CodeAnalysis.MSBuild.MSBuildWorkspace.Create(IDictionary`2 properties, HostServices hostServices)
+       at Microsoft.CodeAnalysis.MSBuild.MSBuildWorkspace.Create(IDictionary`2 properties)
+       at Microsoft.CodeAnalysis.MSBuild.MSBuildWorkspace.Create()
+       at Microsoft.Research.ReviewBot.RoslynInterface.TryCreateCompilation(Options options, Task`1& cu, MSBuildWorkspace& workspace, Project& project) in d:\Tools\ReviewBot\Annotator\Roslyn Interface\CompilationUnit.cs:line 22
+       at Microsoft.Research.ReviewBot.Annotator.DoAnnotate(String[] args) in d:\Tools\ReviewBot\Annotator\Annotator.cs:line 56
+       at Microsoft.Research.ReviewBot.ReviewBotMain.BuildAnalyzeInstrumentInternalLoop(Configuration config, Int32 i) in d:\Tools\ReviewBot\Main\Main.cs:line 221
+       at Microsoft.Research.ReviewBot.ReviewBotMain.BuildAnalyzeInstrument(Configuration config) in d:\Tools\ReviewBot\Main\Main.cs:line 140
+       at Microsoft.Research.ReviewBot.ReviewBotMain.Main(String[] args) in d:\Tools\ReviewBot\Main\Main.cs:line 106
+       at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)
+       at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)
+       at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()
+       at System.Threading.ThreadHelper.ThreadStart_Context(Object state)
+       at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+       at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+       at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+       at System.Threading.ThreadHelper.ThreadStart()
+  InnerException: 
