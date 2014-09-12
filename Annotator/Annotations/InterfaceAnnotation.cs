@@ -180,7 +180,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
           compilation = InterfaceAnnotationHelpers.ImplementContractsClass(project, compilation, fileName, interfaceName, contractName);
           var syntaxTree = compilation.SyntaxTrees.First(x => x.FilePath.Equals(fileName, StringComparison.OrdinalIgnoreCase));
           var newSyntaxTree = Replacer.AddUsingsContracts(syntaxTree);
-          compilation = compilation.ReplaceSyntaxTree(syntaxTree, SyntaxFactory.SyntaxTree(newSyntaxTree.GetRoot(), fileName));
+          compilation = compilation.ReplaceSyntaxTree(syntaxTree, SyntaxFactory.SyntaxTree(newSyntaxTree.GetRoot(), null, fileName));
           compilation = InterfaceAnnotationHelpers.AddContractsClassAttributeToInterface(project, compilation, fileName, interfaceName, first.ParametersString);
         }
         foreach (var methodgroup in interfaceGroup.GroupBy(annotation => annotation.InterfaceMethod))
@@ -326,7 +326,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var attr_list = SyntaxFactory.AttributeList(attributes);
       var newnode = node.AddAttributeLists(attr_list) as SyntaxNode;
       newnode = node.SyntaxTree.GetRoot().ReplaceNode(node, newnode);
-      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, st.FilePath, null);
+      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, null, st.FilePath, null);
       return original.ReplaceSyntaxTree(st, newst);
     }
     private static Compilation ImplementContractsClass(Project project, Compilation original, string filename, string interfacename, string contractname)
@@ -417,7 +417,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
         var newdecl = namedecl.AddMembers(mem);
         newnode = parent.Parent.ReplaceNode(parent, newdecl); 
       }
-      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, st.FilePath, null);
+      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, null, st.FilePath, null);
       return original.ReplaceSyntaxTree(st, newst);
     }
     private static SyntaxNode GetContractsClassNode(Compilation compilation, string filename, string contractname)
