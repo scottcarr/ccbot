@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="CCCheckOutput" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="CCCheckOutput" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Message" nillable="true">
+          <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="Message_Text" msdata:Ordinal="0">
+              <xs:extension base="xs:string">
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Assembly">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Method" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Check" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Result" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+                          <xs:element name="Score" type="xs:string" minOccurs="0" msdata:Ordinal="1" />
+                          <xs:element name="Justification" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="Feature" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:simpleContent msdata:ColumnName="Feature_Text" msdata:Ordinal="0">
+                                      <xs:extension base="xs:string">
+                                      </xs:extension>
+                                    </xs:simpleContent>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="SourceLocation" type="xs:string" />
+                        <xs:attribute name="Message" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Suggestion" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="SuggestionKind" type="xs:string" />
+                        <xs:attribute name="SourceLocation" type="xs:string" />
+                        <xs:attribute name="Kind" type="xs:string" />
+                        <xs:attribute name="Suggested" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Name" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Statistics" nillable="true">
+          <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="Statistics_Text" msdata:Ordinal="0">
+              <xs:extension base="xs:string">
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="FinalStatistic" nillable="true">
+          <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="FinalStatistic_Text" msdata:Ordinal="1">
+              <xs:extension base="xs:string">
+                <xs:attribute name="Assembly" type="xs:string" />
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

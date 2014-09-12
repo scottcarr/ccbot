@@ -1,0 +1,23 @@
+﻿*** The standard .cs is under ReviewBot\SourceFiles
+   csc  /pdb:Program.pdb Program.cs /debug
+
+**** Run clousot with those options
+Dir: 
+  c:\cci\Microsoft.Research\Clousot\bin\Debug
+
+Command Line:
+  Clousot.exe c:\cci\Microsoft.Research\CCTools\ReviewBot\SourceFiles\Program.exe  -sortwarns=false -suggest=!! -premode combined -framework:v4.5.1 -warninglevel full   -nonnull -bounds: -arrays -wp=true -bounds:type=subpolyhedra,reduction=simplex,diseq=false  -arrays -adaptive  -missingPublicRequiresAreErrors -suggest assumes -suggest requires -infer requires -repairs -suggest necessaryensures -xml
+   
+*** To create an XML schema
+    xsd <filename.xml>
+
+*** To create a .cs file
+    xsd <filename.xsd> /c
+
+*** To update the project
+  sd edit ..\..\..\CCTools\ReviewBot\XMLSchema.cs
+  copy ex.cs ..\..\..\CCTools\ReviewBot\XMLSchema.cs
+
+*** Possible errors and fixes
+  Have a field of type f[][] ---> Make it a f[]
+
