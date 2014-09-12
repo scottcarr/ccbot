@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Project>C:\Users\carr27\Documents\GitHub\FluentValidation\src\FluentValidation\FluentValidation.csproj</Project>
-  <Solution>C:\Users\carr27\Documents\GitHub\FluentValidation\FluentValidation.sln</Solution>
-  <Git>C:\Program Files (x86)\Git\bin\git.exe</Git>
-  <GitRoot>C:\Users\carr27\Documents\GitHub\FluentValidation</GitRoot>
+  <Project>E:\Repro\fluentValidation\fluentvalidation\src\FluentValidation\FluentValidation.csproj</Project>
+  <Solution>E:\Repro\fluentValidation\fluentvalidation\FluentValidation.sln</Solution>
+  <Git>D:\Program Files (x86)\Git\cmd\git.exe</Git>
+  <GitRoot>E:\Repro\fluentValidation\fluentvalidation</GitRoot>
   <GitBaseBranch>master</GitBaseBranch>
-  <Cccheck>C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe</Cccheck>
-  <CccheckXml>C:\Users\carr27\Documents\ReviewBotFiles\FluentValidation.xml</CccheckXml>
+  <Cccheck>C:\cci\Microsoft.Research\Clousot\bin\Internal9\Clousot.exe</Cccheck>
+  <CccheckXml>\\msr\public\logozzo\ReviewBot\FluentValidation_Francesco.xml</CccheckXml>
   <CccheckOptions> -xml -remote=false -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full </CccheckOptions>
   <MSBuild>C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe</MSBuild>
-  <RSP>C:\Users\carr27\Documents\GitHub\FluentValidation\src\FluentValidation\obj\Debug\Decl\FluentValidationcccheck.rsp</RSP>
+  <RSP>E:\Repro\fluentValidation\fluentvalidation\src\FluentValidation\obj\Debug\Decl\FluentValidationcccheck.rsp</RSP>
   <CodeFlowProject>ReviewBotTesting</CodeFlowProject>
 </Configuration>
