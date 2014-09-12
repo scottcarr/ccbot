@@ -62,7 +62,7 @@ namespace Microsoft.Research.ReviewBot
         var st = compilation.SyntaxTrees.First(x => x.FilePath.Equals(annotation.FileName, StringComparison.OrdinalIgnoreCase));
         var fsr = new FieldSplitterRewriter(annotation, st, compilation);
         var newroot = fsr.Visit(st.GetRoot()).SyntaxTree.GetRoot();
-        compilation = compilation.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newroot, null, st.FilePath));
+        compilation = compilation.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newroot, st.FilePath));
       }
       //foreach (var annotationGroup in annotations.GroupBy(x => x.FileName)) 
       //{

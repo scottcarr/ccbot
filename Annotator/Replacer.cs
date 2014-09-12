@@ -360,7 +360,7 @@ namespace Microsoft.Research.ReviewBot
           if (newtree != st) // did something change?
           {
             newtree = AddUsingsContracts(newtree);
-            curr = curr.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newtree.GetRoot(), null, st.FilePath));
+            curr = curr.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newtree.GetRoot(), st.FilePath));
             Contract.Assume(curr != null);
           }
         }
