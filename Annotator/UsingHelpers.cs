@@ -25,146 +25,146 @@ using Microsoft.Research.ReviewBot.Utils;
 
 namespace Microsoft.Research.ReviewBot
 {
-    internal static class UsingHelpers
+  internal static class UsingHelpers
+  {
+    internal static Compilation CleanImports(Project project, Compilation compilation)
     {
-        internal static Compilation CleanImports(Project project, Compilation compilation)
-        {
-            #region CodeContracts
-            Contract.Requires(project != null);
-            Contract.Requires(compilation != null);
-            Contract.Ensures(Contract.Result<Compilation>() != null);
-            #endregion CodeContracts
+        #region CodeContracts
+        Contract.Requires(project != null);
+        Contract.Requires(compilation != null);
+        Contract.Ensures(Contract.Result<Compilation>() != null);
+        #endregion CodeContracts
 
-            var newCompilation = compilation;
-            foreach (var st in compilation.SyntaxTrees)
-            {
-                var doc = project.Documents.First(x => x.FilePath == st.FilePath);
-                Contract.Assert(doc != null);
-                doc = doc.WithSyntaxRoot(st.GetRoot()); // I am not updating the project as I go
-                doc = RemoveUnnecessaryUsings(doc, newCompilation);
-                var newst = SyntaxFactory.SyntaxTree(doc.GetSyntaxRootAsync().Result, doc.FilePath);
-                newCompilation = newCompilation.ReplaceSyntaxTree(st, newst);
-            }
-            return newCompilation;
+        var newCompilation = compilation;
+        foreach (var st in compilation.SyntaxTrees)
+        {
+            var doc = project.Documents.First(x => x.FilePath == st.FilePath);
+            Contract.Assert(doc != null);
+            doc = doc.WithSyntaxRoot(st.GetRoot()); // I am not updating the project as I go
+            doc = RemoveUnnecessaryUsings(doc, newCompilation);
+            var newst = SyntaxFactory.SyntaxTree(doc.GetSyntaxRootAsync().Result, doc.FilePath);
+            newCompilation = newCompilation.ReplaceSyntaxTree(st, newst);
         }
-        private static Document RemoveUnnecessaryUsings(Document doc, Compilation compilation)
+        return newCompilation;
+    }
+    private static Document RemoveUnnecessaryUsings(Document doc, Compilation compilation)
+    {
+      #region CodeContracts
+      Contract.Requires(doc != null);
+      Contract.Requires(compilation != null);
+      Contract.Ensures(Contract.Result<Document>() != null);
+      #endregion CodeContracts
+
+      var st = doc.GetSyntaxTreeAsync().Result;
+      var sm = doc.GetSemanticModelAsync().Result;
+      //var assembly = Assembly.LoadFrom(@"C:\cci\Microsoft.Research\Imported\Tools\Roslyn\v4.5.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
+      //var assembly = Assembly.LoadFrom(@"C:\cci\Microsoft.Research\CCTools\ReviewBot\bin\Debug\Microsoft.CodeAnalysis.CSharp.Features.dll");
+      //var assembly = Assembly.LoadFrom(@"..\..\..\packages\Microsoft.CodeAnalysis.Features.0.7.4040207-beta\lib\net45\Microsoft.CodeAnalysis.CSharp.Features.dll");
+      //var assembly = Assembly.LoadFrom(@"C:\Users\t-scottc\Desktop\Signed_20140201.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
+      //var assembly = Assembly.LoadFrom(@"C:\Users\t-scottc\workspace\roslyn\Binaries\Debug\Microsoft.CodeAnalysis.CSharp.Workspaces.dll");
+      Assembly assembly;
+
+      if (TryGetMicrosoftCodeAnalysisCSharpFeatures(out assembly))
+      {
+        var type = assembly.GetType("Microsoft.CodeAnalysis.CSharp.RemoveUnnecessaryImports.CSharpRemoveUnnecessaryImportsService");
+        var method = type.GetMethod("RemoveUnnecessaryImports");
+        var service = Activator.CreateInstance(type);
+        return method.Invoke(service, new object[] { doc, sm, st.GetRoot(), CancellationToken.None }) as Document;
+      }
+      else
+      {
+        //Output.WriteWarning("Can't run the refactoring to remove using");
+        var uv = new UsingVisitor(sm.Compilation);
+        var root = st.GetRoot();
+        uv.Visit(root);
+        var newnode = root.RemoveNodes(uv.duplicates, SyntaxRemoveOptions.KeepNoTrivia);
+        var newdoc = doc.WithSyntaxRoot(newnode);
+        return doc;
+      }
+    }
+    // Currently, I'm not alphabetizing the usings but this could be added
+    //private static Document OrganizeUsings(Document doc)
+    //{
+    //  var assembly = Assembly.LoadFrom("Microsoft.CodeAnalysis.CSharp.Features.dll");
+    //  var type = assembly.GetType("Microsoft.CodeAnalysis.CSharp.OrganizeImports.CSharpOrganizeImportsService");
+    //  var method = type.GetMethod("OrganizeImportsAsync");
+    //  var service = Activator.CreateInstance(type);
+    //  var result = method.Invoke(service, new object[] { doc, false, CancellationToken.None }) as Task<Document>;
+    //  return result.Result;
+    //}
+    public static bool TryGetMicrosoftCodeAnalysisCSharpFeatures(out Assembly assembly)
+    {
+        Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out assembly) != null);
+
+        // DONT REMOVE THE REFERENCES TO Microsoft.CodeAnalysis.Features.dll and Microsoft.CodeAnalysis.Features.CSharp.dll
+        // from ReviewBot.csproj or this code will break!!!
+
+        var assemblyPath = GetPath(Assembly.GetExecutingAssembly());
+        if (assemblyPath == null)
         {
-            #region CodeContracts
-            Contract.Requires(doc != null);
-            Contract.Requires(compilation != null);
-            Contract.Ensures(Contract.Result<Document>() != null);
-            #endregion CodeContracts
-
-            var st = doc.GetSyntaxTreeAsync().Result;
-            var sm = doc.GetSemanticModelAsync().Result;
-            //var assembly = Assembly.LoadFrom(@"C:\cci\Microsoft.Research\Imported\Tools\Roslyn\v4.5.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
-            //var assembly = Assembly.LoadFrom(@"C:\cci\Microsoft.Research\CCTools\ReviewBot\bin\Debug\Microsoft.CodeAnalysis.CSharp.Features.dll");
-            //var assembly = Assembly.LoadFrom(@"..\..\..\packages\Microsoft.CodeAnalysis.Features.0.7.4040207-beta\lib\net45\Microsoft.CodeAnalysis.CSharp.Features.dll");
-            //var assembly = Assembly.LoadFrom(@"C:\Users\t-scottc\Desktop\Signed_20140201.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
-            //var assembly = Assembly.LoadFrom(@"C:\Users\t-scottc\workspace\roslyn\Binaries\Debug\Microsoft.CodeAnalysis.CSharp.Workspaces.dll");
-            Assembly assembly;
-
-            if (TryGetMicrosoftCodeAnalysisCSharpFeatures(out assembly))
-            {
-                var type = assembly.GetType("Microsoft.CodeAnalysis.CSharp.RemoveUnnecessaryImports.CSharpRemoveUnnecessaryImportsService");
-                var method = type.GetMethod("RemoveUnnecessaryImports");
-                var service = Activator.CreateInstance(type);
-                return method.Invoke(service, new object[] { doc, sm, st.GetRoot(), CancellationToken.None }) as Document;
-            }
-            else
-            {
-                //Output.WriteWarning("Can't run the refactoring to remove using");
-                var uv = new UsingVisitor(sm.Compilation);
-                var root = st.GetRoot();
-                uv.Visit(root);
-                var newnode = root.RemoveNodes(uv.duplicates, SyntaxRemoveOptions.KeepNoTrivia);
-                var newdoc = doc.WithSyntaxRoot(newnode);
-                return doc;
-            }
-        }
-        // Currently, I'm not alphabetizing the usings but this could be added
-        //private static Document OrganizeUsings(Document doc)
-        //{
-        //  var assembly = Assembly.LoadFrom("Microsoft.CodeAnalysis.CSharp.Features.dll");
-        //  var type = assembly.GetType("Microsoft.CodeAnalysis.CSharp.OrganizeImports.CSharpOrganizeImportsService");
-        //  var method = type.GetMethod("OrganizeImportsAsync");
-        //  var service = Activator.CreateInstance(type);
-        //  var result = method.Invoke(service, new object[] { doc, false, CancellationToken.None }) as Task<Document>;
-        //  return result.Result;
-        //}
-        public static bool TryGetMicrosoftCodeAnalysisCSharpFeatures(out Assembly assembly)
-        {
-            Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out assembly) != null);
-
-            // DONT REMOVE THE REFERENCES TO Microsoft.CodeAnalysis.Features.dll and Microsoft.CodeAnalysis.Features.CSharp.dll
-            // from ReviewBot.csproj or this code will break!!!
-
-            var assemblyPath = GetPath(Assembly.GetExecutingAssembly());
-            if (assemblyPath == null)
-            {
-                assemblyPath = GetPath(Assembly.GetAssembly(typeof(UsingHelpers)));
-            }
-
-            if (assemblyPath != null)
-            {
-                assembly = Assembly.LoadFrom(assemblyPath);
-                return true;
-            }
-            else
-            {
-                assembly = null;
-                return false;
-            }
+            assemblyPath = GetPath(Assembly.GetAssembly(typeof(UsingHelpers)));
         }
 
-        static private string GetPath(Assembly assembly)
+        if (assemblyPath != null)
         {
-            var dir = Path.GetDirectoryName(assembly.Location);
-            var assemblyPath = Path.Combine(dir, @"Microsoft.CodeAnalysis.CSharp.Features.dll");
-
-            if (!File.Exists(assemblyPath))
-            {
-                Output.WriteWarning("Can't find Microsoft.CodeAnalysis.CSharp.Features.dll in {0}", dir);
-                return null;
-            }
-            else
-            {
-                return assemblyPath;
-            }
+            assembly = Assembly.LoadFrom(assemblyPath);
+            return true;
         }
-        class UsingVisitor : CSharpSyntaxRewriter
+        else
         {
-            SemanticModel sm;
-            Compilation cmp;
-            readonly List<SymbolInfo> directives;
-            public readonly List<UsingDirectiveSyntax> duplicates;
-            public UsingVisitor(Compilation compilation) : base()
-            {
-                cmp = compilation;
-                directives = new List<SymbolInfo>();
-                duplicates = new List<UsingDirectiveSyntax>();
-            }
-            public override SyntaxNode Visit(SyntaxNode node)
-            {
-                if (node != null)
-                {
-                    sm = cmp.GetSemanticModel(node.SyntaxTree);
-                }
-                return base.Visit(node);
-            }
-            public override SyntaxNode VisitUsingDirective(UsingDirectiveSyntax node)
-            {
-                var name = node.Name;
-                var symInfo = sm.GetSymbolInfo(name);
-                //Console.WriteLine(symInfo.Symbol.Name);
-                if (directives.Contains(symInfo))
-                {
-                    //Console.WriteLine("Duplicate using");
-                    duplicates.Add(node);
-                }
-                directives.Add(symInfo);
-                return base.VisitUsingDirective(node);
-            }
+            assembly = null;
+            return false;
         }
     }
+
+    static private string GetPath(Assembly assembly)
+    {
+      var dir = Path.GetDirectoryName(assembly.Location);
+      var assemblyPath = Path.Combine(dir, @"Microsoft.CodeAnalysis.CSharp.Features.dll");
+
+      if (!File.Exists(assemblyPath))
+      {
+        Output.WriteWarning("Can't find Microsoft.CodeAnalysis.CSharp.Features.dll in {0}", dir);
+        return null;
+      }
+      else
+      {
+        return assemblyPath;
+      }
+    }
+    class UsingVisitor : CSharpSyntaxRewriter
+    {
+      SemanticModel sm;
+      Compilation cmp;
+      readonly List<SymbolInfo> directives;
+      public readonly List<UsingDirectiveSyntax> duplicates;
+      public UsingVisitor(Compilation compilation) : base()
+      {
+        cmp = compilation;
+        directives = new List<SymbolInfo>();
+        duplicates = new List<UsingDirectiveSyntax>();
+      }
+      public override SyntaxNode Visit(SyntaxNode node)
+      {
+        if (node != null)
+        {
+          sm = cmp.GetSemanticModel(node.SyntaxTree);
+        }
+        return base.Visit(node);
+      }
+      public override SyntaxNode VisitUsingDirective(UsingDirectiveSyntax node)
+      {
+        var name = node.Name;
+        var symInfo = sm.GetSymbolInfo(name);
+        //Console.WriteLine(symInfo.Symbol.Name);
+        if (directives.Contains(symInfo))
+        {
+          //Console.WriteLine("Duplicate using");
+          duplicates.Add(node);
+        }
+        directives.Add(symInfo);
+        return base.VisitUsingDirective(node);
+      }
+    }
+  }
 }
