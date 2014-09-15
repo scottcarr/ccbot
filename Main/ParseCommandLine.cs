@@ -45,7 +45,7 @@ namespace Microsoft.Research.ReviewBot.Utils
         {
           action = Output.ToolAction.Run;
           configFile = args[0];
-          Contract.Assume(configFile != null);
+          Contract.Assert(configFile != null);
         }
         return true;
       }

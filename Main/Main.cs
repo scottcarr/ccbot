@@ -259,6 +259,8 @@ namespace Microsoft.Research.ReviewBot
 
     public static void WriteDefaultConfig(string path)
     {
+      Contract.Requires(!string.IsNullOrEmpty(path));
+
       new XmlSerializer(typeof(Configuration)).Serialize(File.OpenWrite(path), Configuration.GetDefaultConfiguration());
     }
   }

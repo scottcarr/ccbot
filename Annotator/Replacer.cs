@@ -297,7 +297,7 @@ namespace Microsoft.Research.ReviewBot
       else
       {
         RBLogger.Error("The original statement should have been an ensure, require, or assume");
-        Debug.Assert(false);
+        Contract.Assume(false);
       }
     }
     private static bool IsRequires(StatementSyntax node)
@@ -412,6 +412,10 @@ namespace Microsoft.Research.ReviewBot
           var endStructure = firstStructure.GetRelatedDirectives()[1]; // the 1st index is the start, the 2nd is the end
           var endRegions = firstContract.Parent.DescendantTrivia().Where(x => x.IsKind(SyntaxKind.EndRegionDirectiveTrivia));
           var endRegionsCasted = endRegions.Cast<SyntaxTrivia>();
+          if (!endRegionsCasted.Any())
+          {
+            return false;
+          }
           regionEnd = endRegionsCasted.First(x => ((EndRegionDirectiveTriviaSyntax)x.GetStructure()).GetRelatedDirectives()[1] == endStructure);
           return true;
         }

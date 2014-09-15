@@ -104,6 +104,7 @@ namespace Microsoft.Research.ReviewBot
       typeNode = null;
       foreach (var file in files)
       {
+        Contract.Assume(compilation.SyntaxTrees.Any());
         syntaxTree = compilation.SyntaxTrees.First(tree => tree.FilePath.Equals(file, StringComparison.OrdinalIgnoreCase));
         typeNode = FindClassNode(compilation, syntaxTree, typename);
         var method = FindObjectInvariantMethod(compilation.GetSemanticModel(syntaxTree), typeNode);
@@ -147,7 +148,7 @@ namespace Microsoft.Research.ReviewBot
         //return annotations.Select(x => x.WithMethodName(methodName).WithFileName(tree.FilePath));
         return annotations.Select(x => new ResolvedObjectInvariant(x, tree.FilePath, methodName));
       }
-      Contract.Assert(false); // if we didnt find the object invariant method by now, we're doomed
+      Contract.Assume(false); // if we didnt find the object invariant method by now, we're doomed
       return null;
     }
     //private static ClassDeclarationSyntax FindClassNode(Compilation compilation, SyntaxTree syntaxTree, String documentationCommentId)
@@ -314,10 +315,10 @@ namespace Microsoft.Research.ReviewBot
       Contract.Requires(new_invariants != null);
 
       var parentclass = old_invariant_method.Parent as ClassDeclarationSyntax;
-      Contract.Assert(parentclass != null);
+      Contract.Assume(parentclass != null);
       // var new_body = old_invariant_method.Body.AddStatements(new_invariants.Statements); // this doesnt pass the type checker !?
       var new_body = old_invariant_method.Body;
-      Contract.Assert(new_body != null);
+      Contract.Assume(new_body != null);
       foreach (var inv in new_invariants.Statements) 
       {
         new_body = new_body.AddStatements(inv);

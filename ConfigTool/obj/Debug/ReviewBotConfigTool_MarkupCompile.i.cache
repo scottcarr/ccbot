@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\
+E:\GitHub\reviewbot\ConfigTool\obj\Debug\
 ReviewBotConfigTool
 none
 false
-DEBUG;TRACE
-C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\App.xaml
+CONTRACTS_FULL;CODE_ANALYSIS;DEBUG;TRACE
+E:\GitHub\reviewbot\ConfigTool\App.xaml
 11151548125
 
-91974056706
-22119702740
+9870209768
+14-1360172121
 MainWindow.xaml;
 
 False

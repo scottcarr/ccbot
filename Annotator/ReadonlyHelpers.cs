@@ -59,10 +59,12 @@ namespace Microsoft.Research.ReviewBot
       // this is probably terribly ineffiecient, but once you modify the syntaxTree in anyway you have to get a new semantic model
       foreach(var annotation in annotations)
       {
+        Contract.Assume(compilation.SyntaxTrees.Any());
         var st = compilation.SyntaxTrees.First(x => x.FilePath.Equals(annotation.FileName, StringComparison.OrdinalIgnoreCase));
         var fsr = new FieldSplitterRewriter(annotation, st, compilation);
         var newroot = fsr.Visit(st.GetRoot()).SyntaxTree.GetRoot();
         compilation = compilation.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newroot, st.FilePath));
+        Contract.Assume(compilation != null);
       }
       //foreach (var annotationGroup in annotations.GroupBy(x => x.FileName)) 
       //{

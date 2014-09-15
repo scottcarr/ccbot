@@ -73,6 +73,7 @@ namespace Microsoft.Research.ReviewBot
       {
         foreach (var kvp in newentry) 
         {
+          Contract.Assume(kvp.Key != null);
           Contract.Assume(kvp.Value != null);
           InsertItem(existing, kvp.Key, kvp.Value);
         }

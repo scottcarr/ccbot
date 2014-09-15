@@ -24,7 +24,7 @@ namespace Microsoft.Research.ReviewBot.Utils
 
     public static IEnumerable<CCCheckOutputAssemblyMethodCheck> GetChecks(string xmlfile)
     {
-      Contract.Requires(xmlfile != null);
+      Contract.Requires(!string.IsNullOrEmpty(xmlfile));
       Contract.Ensures(Contract.Result<IEnumerable<CCCheckOutputAssemblyMethodCheck>>() != null);
 
       CCCheckOutput xmldata;

@@ -57,6 +57,7 @@ namespace Microsoft.Research.ReviewBot
         var newstFormatted = Formatter.Format(newst.GetRoot(), msbw).SyntaxTree;
         newstFormatted = SyntaxFactory.SyntaxTree(newstFormatted.GetRoot(), oldst.FilePath);
         formattedCompilation = formattedCompilation.ReplaceSyntaxTree(newst, newstFormatted);
+        Contract.Assume(formattedCompilation != null);
         newst = newstFormatted; 
         Contract.Assume(newst != null);
         Contract.Assert(oldst != null);

@@ -44,6 +44,7 @@ namespace Microsoft.Research.ReviewBot
             doc = RemoveUnnecessaryUsings(doc, newCompilation);
             var newst = SyntaxFactory.SyntaxTree(doc.GetSyntaxRootAsync().Result, doc.FilePath);
             newCompilation = newCompilation.ReplaceSyntaxTree(st, newst);
+            Contract.Assume(newCompilation != null);
         }
         return newCompilation;
     }
@@ -135,8 +136,9 @@ namespace Microsoft.Research.ReviewBot
     class UsingVisitor : CSharpSyntaxRewriter
     {
       SemanticModel sm;
-      Compilation cmp;
+      readonly Compilation cmp;
       readonly List<SymbolInfo> directives;
+      
       public readonly List<UsingDirectiveSyntax> duplicates;
       public UsingVisitor(Compilation compilation) : base()
       {

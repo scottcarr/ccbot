@@ -119,6 +119,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
       if (InterfaceName.Contains('<'))
       {
         var lastAngle = InterfaceName.LastIndexOf('<');
+        if (lastAngle == -1) return false;
         var beforeAngle = InterfaceName.Remove(lastAngle);
         var afterAngle = InterfaceName.Replace(beforeAngle, "");
         if (string.IsNullOrEmpty(afterAngle))
@@ -177,6 +178,9 @@ namespace Microsoft.Research.ReviewBot.Annotations
           var interfaceMethod = first.InterfaceMethod;
           contractName = GetCreatedContractClassName(interfaceName, interfaceMethod);
           compilation = InterfaceAnnotationHelpers.MakeContractsClassFor(project, compilation, interfaceName, fileName, first.ParametersString);
+
+          Contract.Assume(project.Documents.Any());
+
           compilation = InterfaceAnnotationHelpers.ImplementContractsClass(project, compilation, fileName, interfaceName, contractName);
           var syntaxTree = compilation.SyntaxTrees.First(x => x.FilePath.Equals(fileName, StringComparison.OrdinalIgnoreCase));
           var newSyntaxTree = Replacer.AddUsingsContracts(syntaxTree);
@@ -351,6 +355,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var sm = newcomp.GetSemanticModel(st);
       //Console.WriteLine(doc.GetTextAsync().Result);
       var classes = st.GetRoot().DescendantNodesAndSelf().Where(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration));
+      Contract.Assume(classes.Any());
       var node = classes.First(x => sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));
       //var node = st.GetRoot().DescendantNodesAndSelf().First(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration)
       //                                                        && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));

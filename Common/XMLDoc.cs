@@ -30,7 +30,7 @@ namespace Microsoft.Research.ReviewBot
       Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out data) != null);
       #endregion CodeContracts
 
-      Contract.Assert(File.Exists(filename));
+      Contract.Assume(File.Exists(filename));
       data = null;
       try
       {

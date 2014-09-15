@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Research.ReviewBot
 {
@@ -41,6 +42,7 @@ namespace Microsoft.Research.ReviewBot
     /// <param name="options">the parsed arguements, valid if return is ture</param>
     /// <param name="why">an error message if parsing fails and the return is false</param>
     /// <returns>true if parsing succeeded, false otherwise</returns>
+     [SuppressMessage("Microsoft.Contracts", "TestAlwaysEvaluatingToAConstant")]
     internal static bool TryParseOptions(string[] args, out Options options, out string why)
     {
       #region CodeContracts

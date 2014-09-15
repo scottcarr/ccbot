@@ -51,6 +51,8 @@ namespace Microsoft.Research.ReviewBot.Utils
 
     public static int CountSuggestions(string rootdir)
     {
+      Contract.Requires(rootdir != null);
+
       var files = Directory.EnumerateFiles(rootdir, "*.cs", SearchOption.AllDirectories);
       var lines = files.SelectMany(file => File.ReadLines(file));
       return lines.Where(line => line.Contains(Constants.String.Signature.Trim())).Count();
