@@ -4,3 +4,10 @@
 **/obj/Debug/**
 **/packages/**
 *~
+**/ConfigTool/obj/Debug/**
+**/ConfigTool/obj/Debug/*
+ReviewBot.sln.ide/*
+ReviewBot.sln.ide/**
+**/*.suo
+**/storage.ide
+ReviewBot.v14.suo
