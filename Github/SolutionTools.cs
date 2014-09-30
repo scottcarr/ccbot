@@ -30,9 +30,12 @@ namespace Github
           //Console.WriteLine(e);
         }
       }
-      var maxPrjs = slns.Max(s => s.Projects.Count());
-      var winner = slns.First(s => s.Projects.Count() == maxPrjs);
-      return winner;
+      if (slns.Any())
+      {
+        var maxPrjs = slns.Max(s => s.Projects.Count());
+        var winner = slns.First(s => s.Projects.Count() == maxPrjs);
+        return winner;
+      } else { return null; }
     }
   }
 }

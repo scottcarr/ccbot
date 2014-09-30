@@ -14,11 +14,12 @@ namespace Github
   class Program
   {
     //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
-    static readonly string gitCmd = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe"); 
+    static readonly string gitCmd = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe");
+    static readonly List<Tuple<string,string>> Successes = new List<Tuple<string,string>>();
     static void Main(string[] args)
     {
       const int nPages = 1;
-      const int reposPerPage = 1; // max = 100
+      const int reposPerPage = 10; // max = 100
       var repos = new List<Tuple<string, string>>(); // for now I am just keeping the name and clone url (both strings)
       for (int i = 0; i < nPages; i++)
       {
@@ -42,9 +43,16 @@ namespace Github
         var name = pair.Item1;
         var url = pair.Item2;
         RepoInfo info;
+        if (name.Equals("SignalR")) { continue; } // couldn't get this one to buld
+        if (name.Equals("ServiceStack")) { continue; } // couldn't get this one to buld
+        if (name.Equals("mono")) { continue; } // couldn't get this one to buld
+        if (name.Equals("MonoGame")) { continue; } // couldn't get this one to buld
         if (knownRepos.TryGetRepoInfo(name, out info))
         {
-          info.Build(Path.Combine(Directory.GetCurrentDirectory(), name));
+          if (info.Build(Path.Combine(Directory.GetCurrentDirectory(), name)))
+          {
+            Successes.Add(new Tuple<string, string>(name, "custom script"));
+          }
         }
         else
         {
@@ -54,9 +62,23 @@ namespace Github
             Console.WriteLine(sln);
           }
           var chosenSln = SolutionTools.HeuristicallyDetermineBestSolution(slns);
-          Console.WriteLine("Chosen solution: ", chosenSln.FilePath);
+          if (chosenSln != null)
+          {
+            Console.WriteLine("Chosen solution: ", chosenSln.FilePath);
+            if (chosenSln != null)
+            {
+              Console.WriteLine("Trying to MSBuild {0}", chosenSln.FilePath);
+              if (Msbuild(chosenSln.FilePath))
+              {
+                Successes.Add(new Tuple<string, string>(name, chosenSln.FilePath));
+              }
+            }
+          }
         }
       }
+      Console.WriteLine("Successes: ");
+      Successes.ForEach(Console.WriteLine);
+      Console.WriteLine("press a key to exit");
       Console.ReadKey();
     }
     static void CloneRepo(string url)
@@ -67,6 +89,17 @@ namespace Github
       p.StartInfo.UseShellExecute = true;
       p.Start();
       p.WaitForExit();
+    }
+    static bool Msbuild(string slnPath)
+    {
+      var p = new Process();
+      p.StartInfo.FileName = "msbuild";
+      p.StartInfo.Arguments = slnPath;
+      p.StartInfo.WorkingDirectory = Directory.GetParent(slnPath).ToString();
+      p.Start();
+      p.WaitForExit();
+      return p.ExitCode == 0;
+
     }
   }
 } 

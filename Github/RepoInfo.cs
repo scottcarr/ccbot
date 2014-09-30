@@ -18,7 +18,7 @@ namespace Github
       var msbw = MSBuildWorkspace.Create();
       return msbw.OpenSolutionAsync(repoDirectory + "/" + MainSolution).Result;
     }
-    public abstract void Build(string repoDirectory);
+    public abstract bool Build(string repoDirectory);
     public RepoInfo(string name, string cloneurl, string mainSolution)
     {
       Name = name;
