@@ -7,12 +7,14 @@ using Newtonsoft.Json;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using System.Environment;
 
 namespace Github
 {
   class Program
   {
-    static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
+    //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
+    static readonly string gitCmd = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe"); 
     static void Main(string[] args)
     {
       const int nPages = 1;
@@ -34,7 +36,7 @@ namespace Github
         }
       }
       repos.ForEach(Console.WriteLine);
-      var knownRepos = new KnowRepos();
+      var knownRepos = new KnownRepos();
       foreach (var pair in repos)
       {
         var name = pair.Item1;
