@@ -49,6 +49,7 @@ namespace Github
         */
 	// you may also need to install: Windows 8 SDK, Silverlight 4 SDK, Windows Phone SDK
 	// why can't it find the Microsoft.Web.Administration assembly?
+	// it seemed to help to add /p:VisualStudioVersion=14.0 at the end of build.cmd
         Environment.SetEnvironmentVariable("EnableNuGetPackageRestore", "true");
         var buildCmd = Path.Combine(repoDirectory, "build.cmd");
         Process p = new Process();
