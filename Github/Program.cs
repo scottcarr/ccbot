@@ -61,17 +61,28 @@ namespace Github
             var depGraph = sln.GetProjectDependencyGraph();
             var projs = depGraph.GetTopologicallySortedProjects();
             var assemblies = new List<Stream>();
+            var results = new List<bool>();
             foreach(var projId in projs)
             {
               var proj = sln.GetProject(projId);
               var stream = new MemoryStream();
-              proj.GetCompilationAsync().Result.Emit(stream);
+              var result = proj.GetCompilationAsync().Result.Emit(stream);
+              proj.
+              results.Add(result.Success);
+              if (!result.Success)
+              {
+                stats.Diagnostics = result.Diagnostics.Select(x => x.ToString()).ToList();
+              }
               assemblies.Add(stream);
             }
-            stats.canRoslynOpen = true;
+            stats.canRoslynOpen = results.All(x => x);
           }
-          catch
+          catch (Exception e)
           {
+            var l = new List<string>();
+            l.Add(e.Message);
+            l.Add(e.StackTrace);
+            stats.Diagnostics.AddRange(l);
             stats.canRoslynOpen = false;
           }
           localResults.SolutionCanBuildPairs.Add(stats);
@@ -80,6 +91,29 @@ namespace Github
       }
       var text = JsonConvert.SerializeObject(sr, Formatting.Indented);
       File.WriteAllText(@"..\..\scanresults.json", text);
+      /*
+      var msbw = MSBuildWorkspace.Create();
+      var sln = msbw.OpenSolutionAsync(@"C:\Users\carr27\Documents\Visual Studio 14\Projects\TestCase1\TestCase1.sln").Result;
+      var depGraph = sln.GetProjectDependencyGraph();
+      var projs = depGraph.GetTopologicallySortedProjects();
+      var assemblies = new List<Stream>();
+      foreach (var projId in projs)
+      {
+        var proj = sln.GetProject(projId);
+        var stream = new MemoryStream();
+        var er = proj.GetCompilationAsync().Result.Emit(stream);
+        if (!er.Success)
+        {
+          foreach(var d in er.Diagnostics)
+          {
+            Console.WriteLine(d);
+          }
+        }
+        assemblies.Add(stream);
+      }
+      */
+
+
 
       //var knownRepos = new KnownRepos();
       //foreach (var pair in repos)

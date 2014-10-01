@@ -19,5 +19,7 @@ namespace Github
   {
     public string FilePath;
     public bool canRoslynOpen;
+    public List<string> Diagnostics = new List<string>();
+    public bool isUserChoice = false;
   }
 }
