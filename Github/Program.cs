@@ -8,6 +8,9 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using System.Environment;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
+
 
 namespace Github
 {
@@ -19,7 +22,7 @@ namespace Github
     static void Main(string[] args)
     {
       const int nPages = 1;
-      const int reposPerPage = 10; // max = 100
+      const int reposPerPage = 100; // max = 100
       var repos = new List<Tuple<string, string>>(); // for now I am just keeping the name and clone url (both strings)
       for (int i = 0; i < nPages; i++)
       {
@@ -37,47 +40,88 @@ namespace Github
         }
       }
       repos.ForEach(Console.WriteLine);
-      var knownRepos = new KnownRepos();
+      var sr = new ScanResult();
       foreach (var pair in repos)
       {
         var name = pair.Item1;
         var url = pair.Item2;
-        RepoInfo info;
-        if (name.Equals("SignalR")) { continue; } // couldn't get this one to buld
-        if (name.Equals("ServiceStack")) { continue; } // couldn't get this one to buld
-        if (name.Equals("mono")) { continue; } // couldn't get this one to buld
-        if (name.Equals("MonoGame")) { continue; } // couldn't get this one to buld
-        if (knownRepos.TryGetRepoInfo(name, out info))
+
+        var slnPaths = SolutionTools.ScanForSolutions(name);
+        var localResults = new RepoResult();
+        localResults.RepoName = name;
+        foreach (var slnPath in slnPaths)
         {
-          if (info.Build(Path.Combine(Directory.GetCurrentDirectory(), name)))
+          var msbw = MSBuildWorkspace.Create();
+          var stats = new SolutionStats();
+          stats.FilePath = slnPath;
+          try
           {
-            Successes.Add(new Tuple<string, string>(name, "custom script"));
-          }
-        }
-        else
-        {
-          var slns = SolutionTools.ScanForSolutions(name);
-          foreach (var sln in slns)
-          {
-            Console.WriteLine(sln);
-          }
-          var chosenSln = SolutionTools.HeuristicallyDetermineBestSolution(slns);
-          if (chosenSln != null)
-          {
-            Console.WriteLine("Chosen solution: ", chosenSln.FilePath);
-            if (chosenSln != null)
+            var sln = msbw.OpenSolutionAsync(slnPath).Result;
+            if (!sln.Projects.Any()) { throw new FileNotFoundException("no projects"); }
+            var depGraph = sln.GetProjectDependencyGraph();
+            var projs = depGraph.GetTopologicallySortedProjects();
+            var assemblies = new List<Stream>();
+            foreach(var projId in projs)
             {
-              Console.WriteLine("Trying to MSBuild {0}", chosenSln.FilePath);
-              if (Msbuild(chosenSln.FilePath))
-              {
-                Successes.Add(new Tuple<string, string>(name, chosenSln.FilePath));
-              }
+              var proj = sln.GetProject(projId);
+              var stream = new MemoryStream();
+              proj.GetCompilationAsync().Result.Emit(stream);
+              assemblies.Add(stream);
             }
+            stats.canRoslynOpen = true;
           }
+          catch
+          {
+            stats.canRoslynOpen = false;
+          }
+          localResults.SolutionCanBuildPairs.Add(stats);
         }
+        sr.results.Add(localResults);
       }
-      Console.WriteLine("Successes: ");
-      Successes.ForEach(Console.WriteLine);
+      var text = JsonConvert.SerializeObject(sr, Formatting.Indented);
+      File.WriteAllText(@"..\..\scanresults.json", text);
+
+      //var knownRepos = new KnownRepos();
+      //foreach (var pair in repos)
+      //{
+      //  var name = pair.Item1;
+      //  var url = pair.Item2;
+      //  RepoInfo info;
+      //  if (name.Equals("SignalR")) { continue; } // couldn't get this one to buld
+      //  if (name.Equals("ServiceStack")) { continue; } // couldn't get this one to buld
+      //  if (name.Equals("mono")) { continue; } // couldn't get this one to buld
+      //  if (name.Equals("MonoGame")) { continue; } // couldn't get this one to buld
+      //  if (knownRepos.TryGetRepoInfo(name, out info))
+      //  {
+      //    if (info.Build(Path.Combine(Directory.GetCurrentDirectory(), name)))
+      //    {
+      //      Successes.Add(new Tuple<string, string>(name, "custom script"));
+      //    }
+      //  }
+      //  else
+      //  {
+      //    var slns = SolutionTools.ScanForSolutions(name);
+      //    foreach (var sln in slns)
+      //    {
+      //      Console.WriteLine(sln);
+      //    }
+      //    var chosenSln = SolutionTools.HeuristicallyDetermineBestSolution(slns);
+      //    if (chosenSln != null)
+      //    {
+      //      Console.WriteLine("Chosen solution: ", chosenSln.FilePath);
+      //      if (chosenSln != null)
+      //      {
+      //        Console.WriteLine("Trying to MSBuild {0}", chosenSln.FilePath);
+      //        if (Msbuild(chosenSln.FilePath))
+      //        {
+      //          Successes.Add(new Tuple<string, string>(name, chosenSln.FilePath));
+      //        }
+      //      }
+      //    }
+      //  }
+      //}
+      //Console.WriteLine("Successes: ");
+      //Successes.ForEach(Console.WriteLine);
       Console.WriteLine("press a key to exit");
       Console.ReadKey();
     }

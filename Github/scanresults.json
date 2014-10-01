@@ -1,0 +1,99 @@
+{
+  "results": [
+    {
+      "RepoName": "SignalR",
+      "SolutionCanBuildPairs": [
+        {
+          "FilePath": "SignalR\\Microsoft.AspNet.SignalR.Mono.Mobile.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "SignalR\\Microsoft.AspNet.SignalR.Mono.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "SignalR\\Microsoft.AspNet.SignalR.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "SignalR\\xamarin\\SignalRPackage\\component\\samples\\Microsoft.AspNet.SignalR.Xamarin.Sample.sln",
+          "canRoslynOpen": false
+        }
+      ]
+    },
+    {
+      "RepoName": "SparkleShare",
+      "SolutionCanBuildPairs": [
+        {
+          "FilePath": "SparkleShare\\SparkleLib\\SparkleLib.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "SparkleShare\\SparkleShare\\Mac\\SparkleShare.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "SparkleShare\\SparkleShare\\Windows\\SparkleShare.sln",
+          "canRoslynOpen": true
+        }
+      ]
+    },
+    {
+      "RepoName": "ServiceStack",
+      "SolutionCanBuildPairs": [
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.Android.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.AndroidIndie.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.Logging.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.Pcl.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.Signed.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.SL4.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.SL5.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.WindowsPhone.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.WinRT.sln",
+          "canRoslynOpen": true
+        },
+        {
+          "FilePath": "ServiceStack\\src\\ServiceStack.MonoTouch\\ServiceStack.MonoTouch.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\tests\\PclTest.Ios.sln",
+          "canRoslynOpen": false
+        },
+        {
+          "FilePath": "ServiceStack\\tests\\ServiceStack.IntegrationTests\\ServiceStack.IntegrationTests.sln",
+          "canRoslynOpen": false
+        }
+      ]
+    }
+  ]
+}
