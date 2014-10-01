@@ -251,7 +251,7 @@ namespace Microsoft.Research.ReviewBot.Github
           //  Console.WriteLine("couldn't run clousot");
           //  return;
           //}
-          return;
+          //return;
 
         }
       }
