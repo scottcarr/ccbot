@@ -1,0 +1,82 @@
+[
+  {
+    "name": "SparkleShare",
+    "selectedSolutionPath": "SparkleShare\\SparkleLib\\SparkleLib.sln",
+    "cloneUrl": "https://github.com/hbons/SparkleShare.git"
+  },
+  {
+    "name": "Nancy",
+    "selectedSolutionPath": "Nancy\\src\\Nancy.sln",
+    "cloneUrl": "https://github.com/NancyFx/Nancy.git"
+  },
+  {
+    "name": "Opserver",
+    "selectedSolutionPath": "Opserver\\Opserver.sln",
+    "cloneUrl": "https://github.com/opserver/Opserver.git"
+  },
+  {
+    "name": "dapper-dot-net",
+    "selectedSolutionPath": "dapper-dot-net\\Dapper.sln",
+    "cloneUrl": "https://github.com/StackExchange/dapper-dot-net.git"
+  },
+  {
+    "name": "ninject",
+    "selectedSolutionPath": "ninject\\Ninject.sln",
+    "cloneUrl": "https://github.com/ninject/ninject.git"
+  },
+  {
+    "name": "Simple.Data",
+    "selectedSolutionPath": "Simple.Data\\Simple.Data.sln",
+    "cloneUrl": "https://github.com/markrendle/Simple.Data.git"
+  },
+  {
+    "name": "fluentmigrator",
+    "selectedSolutionPath": "fluentmigrator\\FluentMigrator.sln",
+    "cloneUrl": "https://github.com/schambers/fluentmigrator.git"
+  },
+  {
+    "name": "ServiceStack.Redis",
+    "selectedSolutionPath": "ServiceStack.Redis\\src\\ServiceStack.Redis.sln",
+    "cloneUrl": "https://github.com/ServiceStack/ServiceStack.Redis.git"
+  },
+  {
+    "name": "GitSharp",
+    "selectedSolutionPath": "GitSharp\\GitSharp.sln",
+    "cloneUrl": "https://github.com/henon/GitSharp.git"
+  },
+  {
+    "name": "ServiceStack.Text",
+    "selectedSolutionPath": "ServiceStack.Text\\src\\ServiceStack.Text.sln",
+    "cloneUrl": "https://github.com/ServiceStack/ServiceStack.Text.git"
+  },
+  {
+    "name": "SubSonic-3.0",
+    "selectedSolutionPath": "SubSonic-3.0\\SubSonic.Linq.sln",
+    "cloneUrl": "https://github.com/subsonic/SubSonic-3.0.git"
+  },
+  {
+    "name": "SquishIt",
+    "selectedSolutionPath": "SquishIt\\SquishIt.sln",
+    "cloneUrl": "https://github.com/jetheredge/SquishIt.git"
+  },
+  {
+    "name": "ServiceStack.OrmLite",
+    "selectedSolutionPath": "ServiceStack.OrmLite\\src\\ServiceStack.OrmLite.sln",
+    "cloneUrl": "https://github.com/ServiceStack/ServiceStack.OrmLite.git"
+  },
+  {
+    "name": "LOIC",
+    "selectedSolutionPath": "LOIC\\LOIC.sln",
+    "cloneUrl": "https://github.com/NewEraCracker/LOIC.git"
+  },
+  {
+    "name": "blink1",
+    "selectedSolutionPath": "blink1\\windows\\Blink1Control\\Blink1Control.sln",
+    "cloneUrl": "https://github.com/todbot/blink1.git"
+  },
+  {
+    "name": "mathnet-numerics",
+    "selectedSolutionPath": "mathnet-numerics\\MathNet.Numerics.sln",
+    "cloneUrl": "https://github.com/mathnet/mathnet-numerics.git"
+  }
+]

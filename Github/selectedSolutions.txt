@@ -1,0 +1,16 @@
+SparkleShare\SparkleLib\SparkleLib.sln
+Nancy\src\Nancy.sln
+Opserver\Opserver.sln
+dapper-dot-net\Dapper.sln
+ninject\Ninject.sln
+Simple.Data\Simple.Data.sln
+fluentmigrator\FluentMigrator.sln
+ServiceStack.Redis\src\ServiceStack.Redis.sln
+GitSharp\GitSharp.sln
+ServiceStack.Text\src\ServiceStack.Text.sln
+SubSonic-3.0\SubSonic.Linq.sln
+SquishIt\SquishIt.sln
+ServiceStack.OrmLite\src\ServiceStack.OrmLite.sln
+LOIC\LOIC.sln
+blink1\windows\Blink1Control\Blink1Control.sln
+mathnet-numerics\MathNet.Numerics.sln

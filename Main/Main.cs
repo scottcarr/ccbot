@@ -129,7 +129,7 @@ namespace Microsoft.Research.ReviewBot
       return 0;
     }
 
-    private static void BuildAnalyzeInstrument(Configuration config)
+    public static void BuildAnalyzeInstrument(Configuration config)
     {
 
       // this was for a workaround for a Roslyn bug

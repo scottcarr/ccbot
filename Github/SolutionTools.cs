@@ -7,7 +7,7 @@ using System.IO.Directory;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis;
 
-namespace Github
+namespace Microsoft.Research.ReviewBot.Github
 {
   public static class SolutionTools
   {
