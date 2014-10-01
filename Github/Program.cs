@@ -212,7 +212,7 @@ namespace Microsoft.Research.ReviewBot.Github
         try
         {
 
-          File.Copy(@"..\..\Common.CodeContracts.props", Path.GetDirectoryName(repo.selectedSolutionPath) + @"\Common.CodeContracts.props");
+          File.Copy(@"..\..\Common.CodeContracts.props", Path.Combine(Path.GetDirectoryName(repo.selectedSolutionPath), "Common.CodeContracts.props"));
         }
         catch (IOException)
         { }
