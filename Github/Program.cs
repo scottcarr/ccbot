@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Xml;
 using Microsoft.Research.ReviewBot;
+using System.Reflection;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
@@ -217,7 +218,33 @@ namespace Microsoft.Research.ReviewBot.Github
         { }
 
         // rewrite every project
-        var msbw = MSBuildWorkspace.Create();
+        MSBuildWorkspace msbw = null;
+        try
+        {
+          msbw = MSBuildWorkspace.Create();
+
+        }
+        catch (ReflectionTypeLoadException ex)
+        {
+          StringBuilder sb = new StringBuilder();
+          foreach (Exception exSub in ex.LoaderExceptions)
+          {
+            sb.AppendLine(exSub.Message);
+            FileNotFoundException exFileNotFound = exSub as FileNotFoundException;
+            if (exFileNotFound != null)
+            {
+              if (!string.IsNullOrEmpty(exFileNotFound.FusionLog))
+              {
+                sb.AppendLine("Fusion Log:");
+                sb.AppendLine(exFileNotFound.FusionLog);
+              }
+            }
+            sb.AppendLine();
+          }
+          string errorMessage = sb.ToString();
+          //Display or log the error based on your application.
+          Console.WriteLine(errorMessage);
+        }
         var sln = msbw.OpenSolutionAsync(repo.selectedSolutionPath).Result;
         foreach (var proj in sln.Projects)
         {

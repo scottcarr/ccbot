@@ -41,16 +41,40 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp.Features">
       <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.CSharp.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Features">
       <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.Features.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Features">
       <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.VisualBasic.Features.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces">
+      <HintPath>..\roslyn-libs\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\roslyn-libs\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata">
+      <HintPath>..\roslyn-libs\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
@@ -77,13 +101,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
