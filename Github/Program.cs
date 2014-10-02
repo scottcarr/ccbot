@@ -13,7 +13,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Xml;
 using Microsoft.Research.ReviewBot;
-using Microsoft.Research.ReviewBot.Utils;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
@@ -242,7 +241,7 @@ namespace Microsoft.Research.ReviewBot.Github
           conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
           conf.RSP = Path.Combine(Directory.GetCurrentDirectory(), rsps.First(x => x.Contains(proj.Name + "cccheck.rsp")));
           conf.GitBaseBranch = "master";
-          conf.CccheckXml = Path.Combine(Directory.GetCurrentDirectory(), proj.Name + "_clousot.xml");
+          conf.CccheckXml = Path.Combine(Directory.GetCurrentDirectory(), repo.name + "_" + proj.Name + "_clousot.xml");
 
           ReviewBotMain.BuildAnalyzeInstrument(conf);
 
