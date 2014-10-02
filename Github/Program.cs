@@ -24,6 +24,8 @@ namespace Microsoft.Research.ReviewBot.Github
     static readonly string selectedReposPath = @"..\..\selectedRepos.txt";
     static readonly string selectedSolutionsPath = @"..\..\selectedSolutions.txt";
     static readonly string scanResultsPath = @"..\..\scanresults.json";
+    //static readonly string msbuildPath = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
+    static readonly string msbuildPath = "msbuild.exe";
     static void Main(string[] args)
     {
       /*
@@ -69,8 +71,8 @@ namespace Microsoft.Research.ReviewBot.Github
     static bool Msbuild(string slnPath)
     {
       var p = new Process();
-      p.StartInfo.FileName = "msbuild";
-      p.StartInfo.Arguments = slnPath;
+      p.StartInfo.FileName = msbuildPath;
+      p.StartInfo.Arguments = slnPath + " /toolsversion:12.0"; // I needed the tools version.  maybe you dont
       //p.StartInfo.WorkingDirectory = Directory.GetParent(slnPath).ToString();
       p.StartInfo.UseShellExecute = false;
       p.Start();
@@ -261,11 +263,13 @@ namespace Microsoft.Research.ReviewBot.Github
           var defaultConfig = Configuration.GetDefaultConfiguration();
           conf.GitRoot = Path.Combine(Directory.GetCurrentDirectory(), repo.name);
           conf.Git = gitCmd;
-          conf.MSBuild = "msbuild"; // it should just be in your path
+          conf.MSBuild = msbuildPath;
           conf.Solution = repo.selectedSolutionPath;
           conf.Cccheck = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "Microsoft", "Contracts", "bin", "cccheck.exe");
           conf.Project = proj.FilePath;
           conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
+
+          // if the next line dies, it couldnt find the rsp.  do you have cccheck installed?
           conf.RSP = Path.Combine(Directory.GetCurrentDirectory(), rsps.First(x => x.Contains(proj.Name + "cccheck.rsp")));
           conf.GitBaseBranch = "master";
           conf.CccheckXml = Path.Combine(Directory.GetCurrentDirectory(), repo.name + "_" + proj.Name + "_clousot.xml");

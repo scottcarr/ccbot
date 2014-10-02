@@ -58,7 +58,7 @@ namespace Microsoft.Research.ReviewBot.Utils
       var p = new Process();
       p.StartInfo.UseShellExecute = false;
       p.StartInfo.FileName = MSBuildPath;
-      p.StartInfo.Arguments = solutionPath;
+      p.StartInfo.Arguments = solutionPath + " /toolsversion:12.0"; // i needed the version, maybe we need another field?
       p.StartInfo.RedirectStandardOutput = true;
 
       p.Start();
