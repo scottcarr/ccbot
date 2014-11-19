@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Net;
 using System.IO;
-using System.IO.Directory;
 using System.Diagnostics;
-using System.Environment;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Xml;
@@ -20,7 +18,7 @@ namespace Microsoft.Research.ReviewBot.Github
   class Program
   {
     //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
-    static readonly string gitCmd = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe");
+    static readonly string gitCmd = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe");
     static readonly string selectedReposPath = @"..\..\selectedRepos.txt";
     static readonly string selectedSolutionsPath = @"..\..\selectedSolutions.txt";
     static readonly string scanResultsPath = @"..\..\scanresults.json";
@@ -254,7 +252,7 @@ namespace Microsoft.Research.ReviewBot.Github
         }
         Msbuild(repo.selectedSolutionPath);
 
-        var rsps = GetFiles(Path.GetDirectoryName(repo.selectedSolutionPath), "*.rsp", SearchOption.AllDirectories);
+        var rsps = Directory.GetFiles(Path.GetDirectoryName(repo.selectedSolutionPath), "*.rsp", SearchOption.AllDirectories);
 
         // run reviewbot
         foreach(var proj in sln.Projects)
@@ -265,7 +263,7 @@ namespace Microsoft.Research.ReviewBot.Github
           conf.Git = gitCmd;
           conf.MSBuild = msbuildPath;
           conf.Solution = repo.selectedSolutionPath;
-          conf.Cccheck = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "Microsoft", "Contracts", "bin", "cccheck.exe");
+          conf.Cccheck = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "Microsoft", "Contracts", "bin", "cccheck.exe");
           conf.Project = proj.FilePath;
           conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO.Directory;
+using System.IO;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis;
 
@@ -13,7 +13,7 @@ namespace Microsoft.Research.ReviewBot.Github
   {
     public static string[] ScanForSolutions(string repoPath)
     {
-      return GetFiles(repoPath, "*.sln", System.IO.SearchOption.AllDirectories);
+      return Directory.GetFiles(repoPath, "*.sln", System.IO.SearchOption.AllDirectories);
     }
     public static Solution 	HeuristicallyDetermineBestSolution(string[] solutionPaths)
     {
