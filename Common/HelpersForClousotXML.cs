@@ -40,11 +40,14 @@ namespace Microsoft.Research.ReviewBot.Utils
       {
         foreach (var methodgroup in assembly.Method.GroupBy(x => x.Name))
         {
-          var method = methodgroup.Last();
-          if (method.Check != null)
-          {
-            checks = checks.Union(method.Check, new CommentEqualitiyComparer()).ToList();
-          }
+            if (methodgroup.Count() > 0)
+            {
+                var method = methodgroup.Last();
+                if (method.Check != null)
+                {
+                    checks = checks.Union(method.Check, new CommentEqualitiyComparer()).ToList();
+                }
+            }
         }
       }
       return checks;
