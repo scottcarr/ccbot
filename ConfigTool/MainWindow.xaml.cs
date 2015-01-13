@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using System.Diagnostics.Contracts;
 
 namespace Microsoft.Research.ReviewBot.ReviewBotConfigTool
 {
@@ -73,6 +74,7 @@ namespace Microsoft.Research.ReviewBot.ReviewBotConfigTool
     #endregion File menu click event handlers
     private bool TryGetConfigurationFromString(string text, out Configuration config)
     {
+      Contract.Ensures(Contract.ValueAtReturn(out config) != null);
       var ms = new MemoryStream();
       var sw = new StreamWriter(ms);
       sw.Write(text);
@@ -108,6 +110,7 @@ namespace Microsoft.Research.ReviewBot.ReviewBotConfigTool
     }
     private bool IsValidConfig(Configuration config)
     {
+      Contract.Ensures(Contract.ValueAtReturn(out config) != null);
       Messages.Text = "";
       if (String.IsNullOrEmpty(config.Cccheck) || !File.Exists(config.Cccheck) || !config.Cccheck.EndsWith(".exe")) 
       {
@@ -233,6 +236,7 @@ namespace Microsoft.Research.ReviewBot.ReviewBotConfigTool
     #endregion Configuration change click event handlers
     private bool TryGetCurrentConfig(out Configuration config)
     {
+      Contract.Ensures(Contract.ValueAtReturn(out config) != null);
       var text = MyTextBox.Text;
       return TryGetConfigurationFromString(text, out config);
     }
