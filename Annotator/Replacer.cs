@@ -39,7 +39,7 @@ namespace Microsoft.Research.ReviewBot
         Compilation = compilation;
         foreach (var oldnode in oldsubdict.Keys)
         {
-          switch (oldnode.CSharpKind())
+          switch (oldnode.Kind())
           {
             case SyntaxKind.MethodDeclaration:
             case SyntaxKind.ConstructorDeclaration:
@@ -56,7 +56,7 @@ namespace Microsoft.Research.ReviewBot
             case SyntaxKind.FieldDeclaration:
               continue; // we don't need to do anything to read only fields at this point
             default:
-              RBLogger.Error("Unhandled SyntaxNode kind {0}", oldnode.CSharpKind());
+              RBLogger.Error("Unhandled SyntaxNode kind {0}", oldnode.Kind());
               // Debug.Assert(false); // unhandled annotation type
               continue;
           }
@@ -92,7 +92,7 @@ namespace Microsoft.Research.ReviewBot
       }
       else
       {
-        RBLogger.Error("Unhandled syntax node kind {0}", oldmethod.CSharpKind());
+        RBLogger.Error("Unhandled syntax node kind {0}", oldmethod.Kind());
       }
       var newstmtlist = SyntaxFactory.Block();
       var newObjectInvariants = anns.Where(x => x.Kind == ClousotSuggestion.Kind.ObjectInvariant).Select(x => x.statement_syntax as StatementSyntax);
@@ -320,7 +320,7 @@ namespace Microsoft.Research.ReviewBot
     {
 
       IEnumerable<ISymbol> symbols = GetContractMemberSymbols(Compilation, contract_type);
-      if (node.CSharpKind() == SyntaxKind.ExpressionStatement)
+      if (node.Kind() == SyntaxKind.ExpressionStatement)
       {
         var invoc = node.ChildNodes().First() as InvocationExpressionSyntax;
         if (invoc != null)
@@ -360,7 +360,7 @@ namespace Microsoft.Research.ReviewBot
           if (newtree != st) // did something change?
           {
             newtree = AddUsingsContracts(newtree);
-            curr = curr.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newtree.GetRoot(), st.FilePath));
+            curr = curr.ReplaceSyntaxTree(st, SyntaxFactory.SyntaxTree(newtree.GetRoot(), null, st.FilePath));
             Contract.Assume(curr != null);
           }
         }
@@ -517,7 +517,7 @@ namespace Microsoft.Research.ReviewBot
         // if any of its chilrden have been modified
         if (dict_old_to_new.Keys.Contains(old1))  // this check is redundant?
         {
-          switch (old2.CSharpKind())
+          switch (old2.Kind())
           {
             case SyntaxKind.GetAccessorDeclaration:
             case SyntaxKind.SetAccessorDeclaration:
@@ -528,7 +528,7 @@ namespace Microsoft.Research.ReviewBot
               //Console.WriteLine("Replacing {0} with {1}", old2, dict_old_to_new[old2]);
               return dict_old_to_new[old2];
             default:
-              RBLogger.Error("Unhandled syntax node kind {0}", old2.CSharpKind());
+              RBLogger.Error("Unhandled syntax node kind {0}", old2.Kind());
               break;
           }
         }

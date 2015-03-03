@@ -184,7 +184,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
           compilation = InterfaceAnnotationHelpers.ImplementContractsClass(project, compilation, fileName, interfaceName, contractName);
           var syntaxTree = compilation.SyntaxTrees.First(x => x.FilePath.Equals(fileName, StringComparison.OrdinalIgnoreCase));
           var newSyntaxTree = Replacer.AddUsingsContracts(syntaxTree);
-          compilation = compilation.ReplaceSyntaxTree(syntaxTree, SyntaxFactory.SyntaxTree(newSyntaxTree.GetRoot(), fileName));
+          compilation = compilation.ReplaceSyntaxTree(syntaxTree, SyntaxFactory.SyntaxTree(newSyntaxTree.GetRoot(), null, fileName));
           compilation = InterfaceAnnotationHelpers.AddContractsClassAttributeToInterface(project, compilation, fileName, interfaceName, first.ParametersString);
         }
         foreach (var methodgroup in interfaceGroup.GroupBy(annotation => annotation.InterfaceMethod))
@@ -311,7 +311,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var st = original.SyntaxTrees.Where(x => x.FilePath.Equals(filename, StringComparison.OrdinalIgnoreCase)).First();
       var doc = project.GetDocument(st);
       var sm = original.GetSemanticModel(st);
-      var node = st.GetRoot().DescendantNodes().Where(x => x.CSharpKind() == SyntaxKind.InterfaceDeclaration
+      var node = st.GetRoot().DescendantNodes().Where(x => x.Kind() == SyntaxKind.InterfaceDeclaration
         && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(interfacename)).First() as InterfaceDeclarationSyntax;
       Contract.Assert(node != null);
       var parameters = "";
@@ -330,7 +330,7 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var attr_list = SyntaxFactory.AttributeList(attributes);
       var newnode = node.AddAttributeLists(attr_list) as SyntaxNode;
       newnode = node.SyntaxTree.GetRoot().ReplaceNode(node, newnode);
-      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, st.FilePath, null);
+      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, null, st.FilePath, null);
       return original.ReplaceSyntaxTree(st, newst);
     }
     private static Compilation ImplementContractsClass(Project project, Compilation original, string filename, string interfacename, string contractname)
@@ -354,12 +354,12 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var newcomp = original.ReplaceSyntaxTree(orig_st, st);
       var sm = newcomp.GetSemanticModel(st);
       //Console.WriteLine(doc.GetTextAsync().Result);
-      var classes = st.GetRoot().DescendantNodesAndSelf().Where(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration));
+      var classes = st.GetRoot().DescendantNodesAndSelf().Where(x => x.Kind().Equals(SyntaxKind.ClassDeclaration));
       Contract.Assume(classes.Any());
       var node = classes.First(x => sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));
       //var node = st.GetRoot().DescendantNodesAndSelf().First(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration)
       //                                                        && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));
-      var baselist = node.DescendantNodes().First(x => x.CSharpKind().Equals(SyntaxKind.BaseList));
+      var baselist = node.DescendantNodes().First(x => x.Kind().Equals(SyntaxKind.BaseList));
       var inode = baselist.DescendantTokens().First(x => x.Text.Equals(interfaceShortName));
       //var assembly = Assembly.LoadFrom(@"C:\cci\Microsoft.Research\Imported\Tools\Roslyn\v4.5.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
       //var assembly = Assembly.LoadFrom(@"C:\Users\t-scottc\Desktop\Signed_20140201.1\Microsoft.CodeAnalysis.CSharp.Features.dll");
@@ -404,35 +404,38 @@ namespace Microsoft.Research.ReviewBot.Annotations
       var st = original.SyntaxTrees.Where(x => x.FilePath.Equals(filename, StringComparison.OrdinalIgnoreCase)).First();
       var doc = project.GetDocument(st);
       var sm = original.GetSemanticModel(st);
-      var node = st.GetRoot().DescendantNodes().Where(x => x.CSharpKind() == SyntaxKind.InterfaceDeclaration
+      var node = st.GetRoot().DescendantNodes().Where(x => x.Kind() == SyntaxKind.InterfaceDeclaration
         && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(interfacename)).First() as InterfaceDeclarationSyntax;
       var parent = node.Parent;
       var newclass = MakeContractsClassForNode(interfacename, parameters);
       var mem = newclass as MemberDeclarationSyntax;
       SyntaxNode newnode = null;
-      if (parent.CSharpKind() == SyntaxKind.ClassDeclaration) 
+      if (parent.Kind() == SyntaxKind.ClassDeclaration) 
       {
         var classdecl = parent as ClassDeclarationSyntax;
         var newdecl = classdecl.AddMembers(mem);
         newnode = parent.Parent.ReplaceNode(parent, newdecl); 
       }
-      if (parent.CSharpKind() == SyntaxKind.NamespaceDeclaration)
+      //if (parent.CSharpKind() == SyntaxKind.NamespaceDeclaration)
+      if (parent.Kind() == SyntaxKind.NamespaceDeclaration)
       {
         var namedecl = parent as NamespaceDeclarationSyntax;
         var newdecl = namedecl.AddMembers(mem);
         newnode = parent.Parent.ReplaceNode(parent, newdecl); 
       }
-      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, st.FilePath, null);
+      var newst = CSharpSyntaxTree.Create(newnode.SyntaxTree.GetRoot() as CSharpSyntaxNode, null, st.FilePath, null);
       return original.ReplaceSyntaxTree(st, newst);
     }
     private static SyntaxNode GetContractsClassNode(Compilation compilation, string filename, string contractname)
     {
       var st = compilation.SyntaxTrees.First(x => x.FilePath.Equals(filename, StringComparison.OrdinalIgnoreCase));
       var sm = compilation.GetSemanticModel(st);
-      return st.GetRoot().DescendantNodesAndSelf().First(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration)
+      return st.GetRoot().DescendantNodesAndSelf().First(x => x.Kind().Equals(SyntaxKind.ClassDeclaration)
                                                               && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));
-    }
-    private static SyntaxNode MakeContractsClassForNode(string interfacename, string parameters)
+            //return st.GetRoot().DescendantNodesAndSelf().First(x => x.CSharpKind().Equals(SyntaxKind.ClassDeclaration)
+            //                                                        && sm.GetDeclaredSymbol(x).GetDocumentationCommentId().Equals(contractname));
+        }
+        private static SyntaxNode MakeContractsClassForNode(string interfacename, string parameters)
     {
       string intRawName = InterfaceAnnotationHelpers.GetUnqualifiedName(interfacename);
       string intName = InterfaceAnnotationHelpers.GetUnqualifiedName(interfacename);

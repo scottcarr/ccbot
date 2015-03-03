@@ -42,7 +42,7 @@ namespace Microsoft.Research.ReviewBot
             Contract.Assert(doc != null);
             doc = doc.WithSyntaxRoot(st.GetRoot()); // I am not updating the project as I go
             doc = RemoveUnnecessaryUsings(doc, newCompilation);
-            var newst = SyntaxFactory.SyntaxTree(doc.GetSyntaxRootAsync().Result, doc.FilePath);
+            var newst = SyntaxFactory.SyntaxTree(doc.GetSyntaxRootAsync().Result, null, doc.FilePath);
             newCompilation = newCompilation.ReplaceSyntaxTree(st, newst);
             Contract.Assume(newCompilation != null);
         }

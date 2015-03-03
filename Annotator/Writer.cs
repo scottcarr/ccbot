@@ -55,7 +55,7 @@ namespace Microsoft.Research.ReviewBot
         //options = options.WithChangedOption(FormattingOptions.UseTabs, LanguageNames.CSharp, true);
         //var newstFormatted = Formatter.Format(newst.GetRoot(), msbw, options).SyntaxTree;
         var newstFormatted = Formatter.Format(newst.GetRoot(), msbw).SyntaxTree;
-        newstFormatted = SyntaxFactory.SyntaxTree(newstFormatted.GetRoot(), oldst.FilePath);
+        newstFormatted = SyntaxFactory.SyntaxTree(newstFormatted.GetRoot(), null, oldst.FilePath);
         formattedCompilation = formattedCompilation.ReplaceSyntaxTree(newst, newstFormatted);
         Contract.Assume(formattedCompilation != null);
         newst = newstFormatted; 

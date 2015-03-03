@@ -282,7 +282,7 @@ namespace Microsoft.Research.ReviewBot
               foreach (var stmt in body.Statements)
               {
                 if (DoesStatementIntersectWithDiagnostic(stmt, d)
-                     && stmt.CSharpKind() == SyntaxKind.ExpressionStatement)
+                     && stmt.Kind() == SyntaxKind.ExpressionStatement)
                 {
                   TryMarkSuggestion(original, stmt);
                 }

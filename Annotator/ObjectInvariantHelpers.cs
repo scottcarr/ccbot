@@ -86,7 +86,7 @@ namespace Microsoft.Research.ReviewBot
           var method = AddObjectInvariantMethod(typeNode);
           var newTypeNode = method.Parent;
           var newSyntaxTreeRoot = syntaxTree.GetRoot().ReplaceNode(typeNode, newTypeNode);
-          var newSyntaxTree = SyntaxFactory.SyntaxTree(newSyntaxTreeRoot, syntaxTree.FilePath);
+          var newSyntaxTree = SyntaxFactory.SyntaxTree(newSyntaxTreeRoot, null, syntaxTree.FilePath);
           compilation = compilation.ReplaceSyntaxTree(syntaxTree, newSyntaxTree);
           // the next call is necessary when we change the compilation inside the loop
           //syntaxTree = compilation.SyntaxTrees.First(x => x.FilePath.Equals(syntaxTree.FilePath, StringComparison.OrdinalIgnoreCase));
