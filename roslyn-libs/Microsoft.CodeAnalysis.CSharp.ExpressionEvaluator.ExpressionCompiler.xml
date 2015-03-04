@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.ExpressionCompiler</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.#ctor(Microsoft.CodeAnalysis.CSharp.CSharpCompilation,Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder,Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableSortedSet{System.Int32},Microsoft.CodeAnalysis.ExpressionEvaluator.MethodDebugInfo,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
+            <summary>
+            Create a context to compile expressions within a method scope.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.CompileGetLocals(System.String,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.ExpressionEvaluator.LocalAndMethod},System.Boolean,Microsoft.CodeAnalysis.CodeGen.CompilationTestData,Microsoft.CodeAnalysis.DiagnosticBag)">
+            <summary>
+            Generate a class containing methods that represent
+            the set of arguments and locals at the current scope.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetLocalsForBinding(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.DisplayClassVariable})">
+            <summary>
+            Generate the set of locals to use for binding. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetDisplayClassVariables(Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableSortedSet{System.Int32},System.Collections.Immutable.ImmutableArray{System.String}@,System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.DisplayClassVariable}@,System.Collections.Immutable.ImmutableHashSet{System.String}@)">
+            <summary>
+            Return a mapping of captured variables (parameters, locals, and
+            "this") to locals. The mapping is needed to expose the original
+            local identifiers (those from source) in the binder.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetDisplayClassInstances(System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.CSharp.Symbols.NamedTypeSymbol},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.DisplayClassInstanceAndFields},System.Int32)">
+            <summary>
+            Return the set of display class instances that can be reached
+            from the given local. A particular display class may be reachable
+            from multiple locals. In those cases, the instance from the
+            shortest path (fewest intermediate fields) is returned.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetSubstitutedSourceMethod(Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Boolean)">
+            <summary>
+            Identifies the method in which binding should occur.
+            </summary>
+            <param name="candidateSubstitutedSourceMethod">
+            The symbol of the method that is currently on top of the callstack, with
+            EE type parameters substituted in place of the original type parameters.
+            </param>
+            <param name="hasDisplayClassThis">
+            True if "this" is available via a display class in the current context.
+            </param>
+            <returns>
+            If <paramref name="candidateSubstitutedSourceMethod"/> is compiler-generated,
+            then we will attempt to determine which user-defined method caused it to be
+            generated.  For example, if <paramref name="candidateSubstitutedSourceMethod"/>
+            is a state machine MoveNext method, then we will try to find the iterator or
+            async method for which it was generated.  If we are able to find the original
+            method, then we will substitute in the EE type parameters.  Otherwise, we will
+            return <paramref name="candidateSubstitutedSourceMethod"/>.
+            </returns>
+            <remarks>
+            In the event that the original method is overloaded, we may not be able to determine
+            which overload actually corresponds to the state machine.  In particular, we do not
+            have information about the signature of the original method (i.e. number of parameters,
+            parameter types and ref-kinds, return type).  However, we conjecture that this
+            level of uncertainty is acceptable, since parameters are managed by a separate binder
+            in the synthesized binder chain and we have enough information to check the other method
+            properties that are used during binding (e.g. static-ness, generic arity, type parameter
+            constraints).
+            </remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CSharpInstructionDecoder.Instance">
+            <summary>
+            Singleton instance of <see cref="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CSharpInstructionDecoder"/> (created using default constructor).
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EvaluationContext.CreateTypeContext(Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CSharpMetadataContext,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataBlock},System.Guid,System.Int32)">
+            <summary>
+            Create a context for evaluating expressions at a type scope.
+            </summary>
+            <param name="previous">Previous context, if any, for possible re-use.</param>
+            <param name="metadataBlocks">Module metadata</param>
+            <param name="moduleVersionId">Module containing type</param>
+            <param name="typeToken">Type metadata token</param>
+            <returns>Evaluation context</returns>
+            <remarks>
+            No locals since locals are associated with methods, not types.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EvaluationContext.CreateMethodContext(Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CSharpMetadataContext,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataBlock},System.Object,System.Guid,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a context for evaluating expressions within a method scope.
+            </summary>
+            <param name="previous">Previous context, if any, for possible re-use.</param>
+            <param name="metadataBlocks">Module metadata</param>
+            <param name="symReader"><see cref="T:Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader"/> for PDB associated with <paramref name="moduleVersionId"/></param>
+            <param name="moduleVersionId">Module containing method</param>
+            <param name="methodToken">Method metadata token</param>
+            <param name="methodVersion">Method version.</param>
+            <param name="ilOffset">IL offset of instruction pointer in method</param>
+            <param name="localSignatureToken">Method local signature token</param>
+            <returns>Evaluation context</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EvaluationContext.GetLocals(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.LocalInfo{Microsoft.CodeAnalysis.CSharp.Symbols.TypeSymbol}},System.Collections.Immutable.ImmutableDictionary{System.Int32,System.Collections.Immutable.ImmutableArray{System.Boolean}},Microsoft.CodeAnalysis.CSharp.Symbols.SourceAssemblySymbol)">
+            <summary>
+            Returns symbols for the locals emitted in the original method,
+            based on the local signatures from the IL and the names and
+            slots from the PDB. The actual locals are needed to ensure the
+            local slots in the generated method match the original.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EvaluationContext.GetMissingAssemblyIdentitiesHelper(Microsoft.CodeAnalysis.CSharp.ErrorCode,System.Collections.Generic.IReadOnlyList{System.Object})">
+            <remarks>
+            Internal for testing.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.DisplayClassVariable">
+            <summary>
+            A field in a display class that represents a captured
+            variable: either a local, a parameter, or "this".
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EEDisplayClassFieldLocalSymbol">
+            <summary>
+            A display class field representing a local, exposed
+            as a local on the original method.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EEConstructorSymbol">
+            <summary>
+            Synthesized expression evaluation method.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EEMethodSymbol">
+            <summary>
+            Synthesized expression evaluation method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EEMethodSymbol._generateMethodBody">
+            <summary>
+            Invoked at most once to generate the method body.
+            (If the compilation has no errors, it will be invoked
+            exactly once, otherwise it may be skipped.)
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.PlaceholderLocalSymbol.RewriteLocal(Microsoft.CodeAnalysis.CSharp.CSharpCompilation,Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.EENamedTypeSymbol,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode,Microsoft.CodeAnalysis.DiagnosticBag)">
+            <summary>
+            Rewrite the local reference as a call to a synthesized method.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.PlaceholderMethodSymbol">
+            <summary>
+            Represents an intrinsic debugger method with byref return type.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SimpleTypeParameterSymbol">
+            <summary>
+            A simple type parameter with no constraints.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SynthesizedContextMethodSymbol">
+            <summary>
+            A synthesized instance method used for binding
+            expressions outside of a method - specifically, binding
+            DebuggerDisplayAttribute expressions.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SyntaxHelpers.ParseExpression(System.String,Microsoft.CodeAnalysis.DiagnosticBag,System.Boolean,System.Collections.ObjectModel.ReadOnlyCollection{System.String}@)">
+            <summary>
+            Parse expression. Returns null if there are any errors.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SyntaxHelpers.ParseStatement(System.String,Microsoft.CodeAnalysis.DiagnosticBag)">
+            <summary>
+            Parse statement. Returns null if there are any errors.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SyntaxHelpers.ParseFormatSpecifiers(Microsoft.CodeAnalysis.ArrayBuilder{System.String},System.String,System.Int32,Microsoft.CodeAnalysis.DiagnosticBag)">
+            <summary>
+            Return set of identifier tokens, with leading and
+            trailing spaces and comma separators removed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.SyntaxHelpers.TryParseDottedName(System.String,Microsoft.CodeAnalysis.CSharp.Syntax.NameSyntax@)">
+            <remarks>
+            We don't want to use the real lexer because we want to treat keywords as identifiers.
+            Since the inputs are so simple, we'll just do the lexing ourselves.
+            </remarks>
+        </member>
+    </members>
+</doc>

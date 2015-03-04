@@ -1,0 +1,981 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeAnalysis.CaseInsensitiveComparison">
+            <summary>
+            Case-insensitive operations (mostly comparison) on unicode strings.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CaseInsensitiveComparison.OneToOneUnicodeComparer">
+            <summary>
+            This class seeks to perform one-to-one lowercase Unicode case mappings, which should be culture invariant.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.OneToOneUnicodeComparer.ToLower(System.Char)">
+            <summary>
+            ToLower implements the one-to-one Unicode lowercase mapping
+            as descriped in ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt.
+            The VB spec states that these mappings are used for case-insensitive
+            comparison
+            </summary>
+            <param name="c"></param>
+            <returns>If <paramref name="c"/> is upper case, then this returns its lower case equivalent. Otherwise, <paramref name="c"/> is returned unmodified.</returns>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CaseInsensitiveComparison.s_comparer">
+            <summary>
+            Returns a StringComparer that compares strings according the VB identifier comparison rules.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer">
+            <summary>
+            Returns a StringComparer that compares strings according the VB identifier comparison rules.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.Equals(System.String,System.String)">
+            <summary>
+            Determines if two VB identifiers are equal according to the VB identifier comparison rules.
+            </summary>
+            <param name="left">First identifier to compare</param>
+            <param name="right">Second identifier to compare</param>
+            <returns>true if the identifiers should be considered the same.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.EndsWith(System.String,System.String)">
+            <summary>
+            Determines if the string 'value' end with string 'possibleEnd'.
+            </summary>
+            <param name="value"></param>
+            <param name="possibleEnd"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.Compare(System.String,System.String)">
+            <summary>
+            Compares two VB identifiers according to the VB identifier comparison rules.
+            </summary>
+            <param name="left">First identifier to compare</param>
+            <param name="right">Second identifier to compare</param>
+            <returns>-1 if <paramref name="left"/> &lt; <paramref name="right"/>, 1 if <paramref name="left"/> &gt; <paramref name="right"/>, 0 if they are equal.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.GetHashCode(System.String)">
+            <summary>
+            Gets a case-insensitive hash code for VB identifiers.
+            </summary>
+            <param name="value">identifier to get the hash code for</param>
+            <returns>The hash code for the given identifier</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.ToLower(System.String)">
+            <summary>
+            Convert a string to lower case in culture invariant way
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CaseInsensitiveComparison.ToLower(System.Text.StringBuilder)">
+            <summary>
+            In-place convert string in StringBuilder to lower case in culture invariant way
+            </summary>
+            <param name="builder"></param>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Collections.PooledStringBuilder">
+            <summary>
+            The usage is:
+                   var inst = PooledStringBuilder.GetInstance();
+                   var sb = inst.builder;
+                   ... Do Stuff...
+                   ... sb.ToString() ...
+                   inst.Free();
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.FailFast.Assert(System.Boolean,System.String)">
+            <summary>
+            Checks for the given <paramref name="condition"/>; if the <paramref name="condition"/> is <c>true</c>, 
+            immediately terminates the process without running any pending <c>finally</c> blocks or finalizers
+            and causes a crash dump to be collected (if the system is configured to do so). 
+            Otherwise, the process continues normally.
+            </summary>
+            <param name="condition">The conditional expression to evaluate.</param>
+            <param name="message">An optional message to be recorded in the dump in case of failure. Can be <c>null</c>.</param>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.Handler">
+            <summary>
+            Set by the host to a fail fast trigger, 
+            if the host desires to crash the process on a fatal exception.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.NonFatalHandler">
+            <summary>
+            Set by the host to a fail fast trigger, 
+            if the host desires to NOT crash the process on a non fatal exception.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ErrorReporting.FatalError.ReportUnlessCanceled(System.Exception)">
+            <summary>
+            Use in an exception filter to report a fatal error. 
+            Unless the exception is <see cref="T:System.OperationCanceledException"/> 
+            it calls <see cref="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.Handler"/>. The exception is passed through (the method returns false).
+            </summary>
+            <returns>False to avoid catching the exception.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ErrorReporting.FatalError.ReportWithoutCrashUnlessCanceled(System.Exception)">
+            <summary>
+            Use in an exception filter to report a non fatal error. 
+            Unless the exception is <see cref="T:System.OperationCanceledException"/> 
+            it calls <see cref="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.NonFatalHandler"/>. The exception isn't passed through (the method returns true).
+            </summary>
+            <returns>True to catch the exception.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ErrorReporting.FatalError.ReportUnlessNotImplemented(System.Exception)">
+            <summary>
+            Use in an exception filter to report a fatal error. 
+            Unless the exception is <see cref="T:System.NotImplementedException"/> 
+            it calls <see cref="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.Handler"/>. The exception is passed through (the method returns false).
+            </summary>
+            <returns>False to avoid catching the exception.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ErrorReporting.FatalError.Report(System.Exception)">
+            <summary>
+            Use in an exception filter to report a fatal error.
+            Calls <see cref="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.Handler"/> and passes the exception through (the method returns false).
+            </summary>
+            <returns>False to avoid catching the exception.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ErrorReporting.FatalError.ReportWithoutCrash(System.Exception)">
+            <summary>
+            Use in an exception filter to report a non fatal error.
+            Calls <see cref="P:Microsoft.CodeAnalysis.ErrorReporting.FatalError.NonFatalHandler"/> and doesn't pass the exception through (the method returns true).
+            </summary>
+            <returns>True to catch the exception.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ObjectDisplayExtensions.IncludesOption(Microsoft.CodeAnalysis.ObjectDisplayOptions,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
+            <summary>
+            Determines if a flag is set on the <see cref="T:Microsoft.CodeAnalysis.ObjectDisplayOptions"/> enum.
+            </summary>
+            <param name="options">The value to check.</param>
+            <param name="flag">An enum field that specifies the flag.</param>
+            <returns>Whether the <paramref name="flag"/> is set on the <paramref name="options"/>.</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ObjectDisplayOptions">
+            <summary>
+            Specifies the options for how generics are displayed in the description of a symbol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ObjectDisplayOptions.None">
+            <summary>
+            Format object using default options.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ObjectDisplayOptions.IncludeCodePoints">
+            <summary>
+            In C#, include the numeric code point before character literals.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ObjectDisplayOptions.IncludeTypeSuffix">
+            <summary>
+            Whether or not to include type suffix for applicable integral literals.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ObjectDisplayOptions.UseHexadecimalNumbers">
+            <summary>
+            Whether or not to display integral literals in hexadecimal.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ObjectDisplayOptions.UseQuotes">
+            <summary>
+            Whether or not to quote character and string literals. In Visual Basic, this also enables pretty-listing of non-printable characters using ChrW function and vb* constants.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.SymbolDisplayPartKind">
+            <summary>
+            Specifies the kinds of a piece of classified text (SymbolDisplayPart).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.AliasName">
+            <summary>The name of an alias.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.AssemblyName">
+            <summary>The name of an assembly.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.ClassName">
+            <summary>The name of a class.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.DelegateName">
+            <summary>The name of a delegate.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.EnumName">
+            <summary>The name of an enum.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.ErrorTypeName">
+            <summary>The name of an error type.</summary>
+            <seealso cref="T:Microsoft.CodeAnalysis.IErrorTypeSymbol"/>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.EventName">
+            <summary>The name of an event.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.FieldName">
+            <summary>The name of a field.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.InterfaceName">
+            <summary>The name of an interface.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Keyword">
+            <summary>A language keyword.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.LabelName">
+            <summary>The name of a label.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.LineBreak">
+            <summary>A line-break (i.e. whitespace).</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.NumericLiteral">
+            <summary>A numeric literal.</summary>
+            <remarks>Typically for the default values of parameters and the constant values of fields.</remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.StringLiteral">
+            <summary>A string literal.</summary>
+            <remarks>Typically for the default values of parameters and the constant values of fields.</remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.LocalName">
+            <summary>The name of a local.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.MethodName">
+            <summary>The name of a method.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.ModuleName">
+            <summary>The name of a module.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.NamespaceName">
+            <summary>The name of a namespace.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Operator">
+            <summary>The symbol of an operator (e.g. "+").</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.ParameterName">
+            <summary>The name of a parameter.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.PropertyName">
+            <summary>The name of a property.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Punctuation">
+            <summary>A punctuation character (e.g. "(", ".", ",") other than an <see cref="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Operator"/>.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Space">
+            <summary>A single space character.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.StructName">
+            <summary>The name of a struct (structure in Visual Basic).</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.AnonymousTypeIndicator">
+            <summary>A keyword-like part for anonymous types (not actually a keyword).</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.Text">
+            <summary>An unclassified part.</summary>
+            <remarks>Never returned - only set in user-constructed parts.</remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.TypeParameterName">
+            <summary>The name of a type parameter.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.SymbolDisplayPartKind.RangeVariableName">
+            <summary>The name of a query range variable..</summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.WellKnownMemberNames">
+            <summary>
+            Specifies the member names known to the compiler (such as <c>.ctor</c> or <c>op_Explicit</c>).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.EnumBackingFieldName">
+            <summary>
+            Name of the enum backing field.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.InstanceConstructorName">
+            <summary>
+            The name assigned to an instance constructor.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.StaticConstructorName">
+            <summary>
+            The name assigned to the static constructor.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.Indexer">
+            <summary>
+            The symbol name assigned to all indexers, other than explicit interface implementations.
+            </summary>
+            <remarks>
+            Will not correspond to the name that appears in metadata.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DestructorName">
+            <summary>
+            The name assigned to the destructor.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DelegateInvokeName">
+            <summary>
+            The name assigned to the delegate <c>Invoke</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DelegateBeginInvokeName">
+            <summary>
+            The name assigned to the delegate <c>BeginInvoke</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DelegateEndInvokeName">
+            <summary>
+            The name assigned to the delegate <c>EndInvoke</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.EntryPointMethodName">
+            <summary>
+            The name of an entry point method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DefaultScriptClassName">
+            <summary>
+            The default fully qualified name of a <c>Script</c> class.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ObjectToString">
+            <summary>
+            The name assigned to <c>Object.ToString</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ObjectEquals">
+            <summary>
+            The name assigned to <c>Object.Equals</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ObjectGetHashCode">
+            <summary>
+            The name assigned to <c>Object.GetHashCode</c> method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ImplicitConversionName">
+            <summary>
+            The name assigned to an implicit (widening) conversion.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ExplicitConversionName">
+            <summary>
+            The name assigned to an explicit (narrowing) conversion.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.AdditionOperatorName">
+            <summary>
+            The name assigned to the Addition operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.BitwiseAndOperatorName">
+            <summary>
+            The name assigned to the BitwiseAnd operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.BitwiseOrOperatorName">
+            <summary>
+            The name assigned to the BitwiseOr operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DecrementOperatorName">
+            <summary>
+            The name assigned to the Decrement operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.DivisionOperatorName">
+            <summary>
+            The name assigned to the Division operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.EqualityOperatorName">
+            <summary>
+            The name assigned to the Equality operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ExclusiveOrOperatorName">
+            <summary>
+            The name assigned to the ExclusiveOr operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.FalseOperatorName">
+            <summary>
+            The name assigned to the False operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.GreaterThanOperatorName">
+            <summary>
+            The name assigned to the GreaterThan operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.GreaterThanOrEqualOperatorName">
+            <summary>
+            The name assigned to the GreaterThanOrEqual operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.IncrementOperatorName">
+            <summary>
+            The name assigned to the Increment operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.InequalityOperatorName">
+            <summary>
+            The name assigned to the Inequality operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LeftShiftOperatorName">
+            <summary>
+            The name assigned to the LeftShift operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.UnsignedLeftShiftOperatorName">
+            <summary>
+            The name assigned to the UnsignedLeftShift operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LessThanOperatorName">
+            <summary>
+            The name assigned to the LessThan operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LessThanOrEqualOperatorName">
+            <summary>
+            The name assigned to the LessThanOrEqual operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LogicalNotOperatorName">
+            <summary>
+            The name assigned to the LogicalNot operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LogicalOrOperatorName">
+            <summary>
+            The name assigned to the LogicalOr operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LogicalAndOperatorName">
+            <summary>
+            The name assigned to the LogicalAnd operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ModulusOperatorName">
+            <summary>
+            The name assigned to the Modulus operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.MultiplyOperatorName">
+            <summary>
+            The name assigned to the Multiply operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.OnesComplementOperatorName">
+            <summary>
+            The name assigned to the OnesComplement operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.RightShiftOperatorName">
+            <summary>
+            The name assigned to the RightShift operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.UnsignedRightShiftOperatorName">
+            <summary>
+            The name assigned to the UnsignedRightShift operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.SubtractionOperatorName">
+            <summary>
+            The name assigned to the Subtraction operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.TrueOperatorName">
+            <summary>
+            The name assigned to the True operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.UnaryNegationOperatorName">
+            <summary>
+            The name assigned to the UnaryNegation operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.UnaryPlusOperatorName">
+            <summary>
+            The name assigned to the UnaryPlus operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ConcatenateOperatorName">
+            <summary>
+            The name assigned to the Concatenate operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ExponentOperatorName">
+            <summary>
+            The name assigned to the Exponent operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.IntegerDivisionOperatorName">
+            <summary>
+            The name assigned to the IntegerDivision operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.LikeOperatorName">
+            <summary>
+            The name assigned to the <c>Like</c> operator.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.GetEnumeratorMethodName">
+            <summary>
+            The required name for the <c>GetEnumerator</c> method used in a ForEach statement.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.MoveNextMethodName">
+            <summary>
+            The required name for the <c>MoveNext</c> method used in a ForEach statement.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.CurrentPropertyName">
+            <summary>
+            The required name for the <c>Current</c> property used in a ForEach statement.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.ValuePropertyName">
+            <summary>
+            The required name for the <see cref="P:System.Nullable`1.Value"/> property used in
+            a ForEach statement when the collection is a nullable struct.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.CollectionInitializerAddMethodName">
+            <summary>
+            The name for the <c>Add</c> method to be invoked for each element in a collection initializer expression
+            (see C# Specification, §7.6.10.3 Collection initializers).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.GetAwaiter">
+            <summary>
+            The required name for the <c>GetAwaiter</c> method used to obtain an awaiter for a task
+            (see C# Specification, §7.7.7.1 Awaitable expressions).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.IsCompleted">
+            <summary>
+            The required name for the <c>IsCompleted</c> property used to determine if a task is already complete
+            (see C# Specification, §7.7.7.1 Awaitable expressions).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.GetResult">
+            <summary>
+            The required name for the <c>GetResult</c> method used to obtain the outcome of a task once it is complete
+            (see C# Specification, §7.7.7.1 Awaitable expressions).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.OnCompleted">
+            <summary>
+            The name of the <see cref="M:System.Runtime.CompilerServices.INotifyCompletion.OnCompleted"/> method used to register a resumption delegate
+            (see C# Specification, §7.7.7.1 Awaitable expressions).
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.XmlCharType">
+            
+            The XmlCharType class is used for quick character type recognition
+            which is optimized for the first 127 ascii characters.
+            
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.XmlCharType.InRange(System.Char,System.Char,System.Char)">
+            <summary>
+            start &gt;= value &lt;= end
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.DebuggerTypeProxyExpansion">
+            <summary>
+            Debugger type proxy expansion.
+            </summary>
+            <remarks>
+            May include <see cref="T:System.Collections.IEnumerable"/> and
+            <see cref="T:System.Collections.Generic.IEnumerable`1"/> as special cases.
+            (The proxy is not declared by an attribute, but is known to debugger.)
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion">
+            <summary>
+            The immediate children of a DkmEvaluationResult (e.g. the
+            elements within an array). Ideally, the children are generated
+            on demand, and not cached in the Expansion.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion.GetRows(Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem},Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Get the rows within the given range. 'index' is advanced
+            to the end of the range, or if 'visitAll' is true, 'index' is
+            advanced to the end of the expansion.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion">
+            <summary>
+            Type member expansion.
+            </summary>
+            <remarks>
+            Includes accesses to static members with instance receivers and
+            accesses to instance members with dynamic receivers.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.NonPublicMembersExpansion">
+            <summary>
+            An explicit user request to bypass "Just My Code" and display
+            the inaccessible members of an instance of an imported type.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.StaticMembersExpansion">
+            <summary>
+            A transition from an instance of a type to the type itself (for inspecting static members).
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter">
+            <summary>
+            Computes string representations of <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue"/> instances.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.GetTypeName(Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)">
+            <returns>The qualified name (i.e. including containing types and namespaces) of a named,
+            pointer, or array type.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendQualifiedTypeName(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)">
+            <summary>
+            Append the qualified name (i.e. including containing types and namespaces) of a named,
+            pointer, or array type to <paramref name="builder"/>.
+            </summary>
+            <remarks>
+            Keyword strings are appended for primitive types (e.g. "int" for "System.Int32").
+            Question mark syntax is used for <see cref="T:System.Nullable`1"/>.
+            No special handling is required for anonymous types - they are expected to be
+            emitted with <see cref="P:System.Diagnostics.DebuggerDisplayAttribute.Type"/> set to "&lt;Anonymous Type&gt;.
+            This is fortunate, since we don't have a good way to recognize them in metadata.
+            Does not call itself (directly).
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendQualifiedTypeNameInternal(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)">
+            <summary>
+            Append the qualified name (i.e. including containing types and namespaces) of a named type
+            (i.e. not a pointer or array type) to <paramref name="builder"/>.
+            </summary>
+            <remarks>
+            Keyword strings are appended for primitive types (e.g. "int" for "System.Int32").
+            </remarks>
+            <remarks>
+            Does not call itself or <see cref="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendQualifiedTypeName(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)"/> (directly).
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendNamespacePrefix(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)">
+            <summary>
+            Helper for appending the qualified name of the containing namespace of a type.
+            NOTE: Unless the qualified name is empty, there will always be a trailing dot.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendUnqualifiedTypeName(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean,Microsoft.VisualStudio.Debugger.Metadata.Type[],System.Int32,System.Int32)">
+            <summary>
+            Append the name of the type and its type arguments.  Do not append the type's containing type or namespace.
+            </summary>
+            <param name="builder">Builder to which the name will be appended.</param>
+            <param name="type">Type, the name of which will be appended.</param>
+            <param name="escapeKeywordIdentifiers">True if identifiers that are also keywords should be prefixed with '@'.</param>
+            <param name="typeArguments">
+            The type arguments of the type passed to <see cref="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.AppendQualifiedTypeNameInternal(System.Text.StringBuilder,Microsoft.VisualStudio.Debugger.Metadata.Type,System.Boolean)"/>, which might be nested
+            within <paramref name="type"/>.  In the Reflection/LMR object model, all type arguments are passed to the
+            most nested type.  To get back to the C# model, we have to propagate them out to containing types.
+            </param>
+            <param name="typeArgumentOffset">
+            The first position in <paramref name="typeArguments"/> that is a type argument to <paramref name="type"/>,
+            from a C# perspective.
+            </param>
+            <param name="arity">
+            The number of type parameters of <paramref name="type"/>, from a C# perspective.
+            </param>
+            <remarks>
+            We're passing the full array plus bounds, rather than a tailored array, to avoid creating a lot of short-lived
+            temporary arrays.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.GetValueStringForCharacter(Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
+            <summary>
+            Gets the string representation of a character literal without including the numeric code point.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.GetEnumDisplayString(Microsoft.VisualStudio.Debugger.Metadata.Type,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.CodeAnalysis.ObjectDisplayOptions,System.Boolean,Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext)">
+            <remarks>
+            The corresponding native code is in EEUserStringBuilder::ErrTryAppendConstantEnum.
+            The corresponding roslyn code is in 
+            <see cref="M:Microsoft.CodeAnalysis.SymbolDisplay.AbstractSymbolDisplayVisitor`1.AddEnumConstantValue(Microsoft.CodeAnalysis.INamedTypeSymbol, System.Object, System.Boolean)"/>.
+            NOTE: no curlies for enum values.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.ConvertEnumUnderlyingTypeToUInt64(System.Object,System.TypeCode)">
+            <summary>
+            Convert a boxed primitive (generally of the backing type of an enum) into a ulong.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.EnumContextDataItem">
+            <summary>
+            This type exists to protect <see cref="T:Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem"/> from
+            spurious <see cref="M:Microsoft.VisualStudio.Debugger.DkmDataItem.OnClose"/> calls.  We need to attach the same information
+            to <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.DkmEvaluationResult"/> and 
+            <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.DkmEvaluationResultEnumContext"/>
+            but they have different lifetimes.  Enum contexts (which are effectively child lists)
+            are closed before the corresponding evaluation results.  We don't want to actually clean
+            up until the evaluation result is closed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.EnumContextDataItem.#ctor(Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem)">
+            <remarks>
+            Only <see cref="T:Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem"/> is expected to instantiate this type.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem">
+            <summary>
+            A pair of DkmClrValue and Expansion, used to store
+            state on a DkmEvaluationResult.  Also computes the
+            full name of the DkmClrValue.
+            </summary>
+            <remarks>
+            The DkmClrValue is included here rather than directly
+            on the Expansion so that the DkmClrValue is not kept
+            alive by the Expansion.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.None">
+            <summary>
+            A declaration with this name has not been encountered.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.FromDeclaredTypeOrBase">
+            <summary>
+            This member is defined on the declared type or one of its base classes.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.FromSubTypeOfDeclaredType">
+            <summary>
+            This member is defined on a type that inherits from the declared type (is more derived).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.HideNonPublic">
+            <summary>
+            This member should be hidden (under "Non-Public members" node), because Just My Code is on and
+            no symbols have been loaded for the declaring type's module.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.IncludeTypeInMemberName">
+            <summary>
+            More than one non-virtual member with this name exists in the type hierarchy.
+            The ResultProvider should include the declaring type of this member in the member name to disambiguate.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.DeclarationInfo.RequiresExplicitCast">
+            <summary>
+            The full name for this member access expression will require a cast to the declaring type.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberAndDeclarationInfo._inheritanceLevel">
+            <summary>
+            Exists to correctly order fields with the same name from different types in the inheritance hierarchy.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.RawStringDataItem">
+            <summary>
+            Data item to associate a computed raw string with a DkmClrValue.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.IsPublic(Microsoft.VisualStudio.Debugger.Metadata.MemberInfo)">
+            <summary>
+            Returns true if the member is public or protected.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.GetNullableTypeArgument(Microsoft.VisualStudio.Debugger.Metadata.Type)">
+            <summary>
+            Returns type argument if the type is
+            Nullable&lt;T&gt;, otherwise null.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.TryGetEvalAttribute``1(Microsoft.VisualStudio.Debugger.Clr.DkmClrType,Microsoft.VisualStudio.Debugger.Clr.DkmClrType@,``0@)">
+            <summary>
+            Get the first attribute from <see cref="M:Microsoft.VisualStudio.Debugger.Clr.DkmClrType.GetEvalAttributes"/> (including inherited attributes)
+            that is of type T, as well as the type that it targeted.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.GetDebuggerBrowsableAttributeState(Microsoft.VisualStudio.Debugger.Clr.DkmClrType)">
+            <summary>
+            Returns the set of DebuggerBrowsableAttribute state for the
+            members of the type, indexed by member name, or null if there
+            are no DebuggerBrowsableAttributes on members of the type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.TryGetDebuggerDisplayInfo(Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.CodeAnalysis.ExpressionEvaluator.DebuggerDisplayInfo@)">
+            <summary>
+            Extracts information from the first <see cref="T:System.Diagnostics.DebuggerDisplayAttribute"/> on the runtime type of <paramref name="value"/>, if there is one.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.GetDebuggerCustomUIVisualizerInfo(Microsoft.VisualStudio.Debugger.Clr.DkmClrType)">
+            <summary>
+            Returns the array of <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.DkmCustomUIVisualizerInfo"/> objects of the type from its <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrDebuggerVisualizerAttribute"/> attributes,
+            or null if the type has no [DebuggerVisualizer] attributes associated with it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.TypeHelpers.Substitute(Microsoft.VisualStudio.Debugger.Metadata.Type,Microsoft.VisualStudio.Debugger.Metadata.Type,Microsoft.VisualStudio.Debugger.Metadata.Type[])">
+            <summary>
+            Substitute references to type parameters from 'typeDef'
+            with type arguments from 'typeArgs' in type 'type'.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ErrorName">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ExceptionThrown">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; threw an exception of type &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.InvalidPointerDereference">
+            <summary>
+              Looks up a localized string similar to Cannot dereference &apos;{0}&apos;. The pointer is not valid..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.NonPublicMembers">
+            <summary>
+              Looks up a localized string similar to Non-Public members.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.RawView">
+            <summary>
+              Looks up a localized string similar to Raw View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsView">
+            <summary>
+              Looks up a localized string similar to Results View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNoSystemCore">
+            <summary>
+              Looks up a localized string similar to Results View requires System.Core.dll to be referenced.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNotEnumerable">
+            <summary>
+              Looks up a localized string similar to Only Enumerable types can have Results View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewValueWarning">
+            <summary>
+              Looks up a localized string similar to Expanding the Results View will enumerate the IEnumerable.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.TypeVariablesName">
+            <summary>
+              Looks up a localized string similar to Type variables.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider">
+            <summary>
+            Computes expansion of <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue"/> instances.
+            </summary>
+            <remarks>
+            This class provides implementation for the default ResultProvider component.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider.GetTypeName(Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.VisualStudio.Debugger.Clr.DkmClrType,Microsoft.CodeAnalysis.ExpressionEvaluator.ExpansionKind)">
+            <returns>
+            The qualified name (i.e. including containing types and namespaces) of a named, pointer,
+            or array type followed by the qualified name of the actual runtime type, if provided.
+            </returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.IErrorTypeSymbol">
+            <summary>
+            Required by <see cref="T:Microsoft.CodeAnalysis.SymbolDisplayPartKind"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Environment">
+            <summary>
+            Required by <see cref="T:Microsoft.CodeAnalysis.FailFast"/>
+            </summary>
+        </member>
+        <member name="T:Roslyn.Utilities.ObjectPool`1">
+            <summary>
+            Generic implementation of object pooling pattern with predefined pool size limit. The main
+            purpose is that limited number of frequently used objects can be kept in the pool for
+            further recycling.
+            
+            Notes: 
+            1) it is not the goal to keep all returned objects. Pool is not meant for storage. If there
+               is no space in the pool, extra returned objects will be dropped.
+            
+            2) it is implied that if object was obtained from a pool, the caller will return it back in
+               a relatively short time. Keeping checked out objects for long durations is ok, but 
+               reduces usefulness of pooling. Just new up your own.
+            
+            Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice. 
+            Rationale: 
+               If there is no intent for reusing the object, do not use pool - just use "new". 
+            </summary>
+        </member>
+        <member name="T:Roslyn.Utilities.ObjectPool`1.Factory">
+            <remarks>
+            Not using System.Func{T} because this file is linked into the (debugger) Formatter,
+            which does not have that type (since it compiles against .NET 2.0).
+            </remarks>
+        </member>
+        <member name="M:Roslyn.Utilities.ObjectPool`1.Allocate">
+            <summary>
+            Produces an instance.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search.
+            </remarks>
+        </member>
+        <member name="M:Roslyn.Utilities.ObjectPool`1.Free(`0)">
+            <summary>
+            Returns objects to the pool.
+            </summary>
+            <remarks>
+            Search strategy is a simple linear probing which is chosen for it cache-friendliness.
+            Note that Free will try to store recycled objects close to the start thus statistically 
+            reducing how far we will typically search in Allocate.
+            </remarks>
+        </member>
+        <member name="M:Roslyn.Utilities.ObjectPool`1.ForgetTrackedObject(`0,`0)">
+            <summary>
+            Removes an object from leak tracking.  
+            
+            This is called when an object is returned to the pool.  It may also be explicitly 
+            called if an object allocated from the pool is intentionally not being returned
+            to the pool.  This can be of use with pooled arrays if the consumer wants to 
+            return a larger array to the pool than was originally allocated.
+            </summary>
+        </member>
+        <member name="T:Roslyn.Utilities.Hash">
+            <summary>
+            Required by <see cref="T:Microsoft.CodeAnalysis.CaseInsensitiveComparison"/>
+            </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.INotifyCompletion">
+            <summary>
+            This satisfies a cref on <see cref="T:Microsoft.CodeAnalysis.WellKnownMemberNames"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

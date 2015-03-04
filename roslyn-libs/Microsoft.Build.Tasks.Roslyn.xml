@@ -1,0 +1,701 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Build.Tasks.Roslyn</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.SyntaxFacts">
+            <summary>
+            Defines a set of methods to determine how Unicode characters are treated by the C# compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsHexDigit(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a hexadecimal digit.
+            </summary>
+            <param name="c">The Unicode character.</param>
+            <returns>true if the character is a hexadecimal digit 0-9, A-F, a-f.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsDecDigit(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a decimal digit.
+            </summary>
+            <param name="c">The Unicode character.</param>
+            <returns>true if the Unicode character is a decimal digit.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.HexValue(System.Char)">
+            <summary>
+            Returns the value of a hexadecimal Unicode character.
+            </summary>
+            <param name="c">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.DecValue(System.Char)">
+            <summary>
+            Returns the value of a decimal Unicode character.
+            </summary>
+            <param name="c">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsWhitespace(System.Char)">
+            <summary>
+            Returns true if the Unicode character represents a whitespace.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsNewLine(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a newline character.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierStartCharacter(System.Char)">
+            <summary>
+            Returns true if the Unicode character can be the starting character of a C# identifier.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierPartCharacter(System.Char)">
+            <summary>
+            Returns true if the Unicode character can be a part of a C# identifier.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsValidIdentifier(System.String)">
+            <summary>
+            Check that the name is a valid identifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.ContainsDroppedIdentifierCharacters(System.String)">
+            <summary>
+            Spec section 2.4.2 says that identifiers are compared without regard
+            to leading "@" characters or unicode formatting characters.  As in dev10,
+            this is actually accomplished by dropping such characters during parsing.
+            Unfortunately, metadata names can still contain these characters and will
+            not be referenceable from source if they do (lookup will fail since the
+            characters will have been dropped from the search string).
+            See DevDiv #14432 for more.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a formatting character (Unicode class Cf).
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Globalization.UnicodeCategory)">
+            <summary>
+            Returns true if the Unicode character is a formatting character (Unicode class Cf).
+            </summary>
+            <param name="cat">The Unicode character.</param>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.CanonicalError">
+             <summary>
+             Functions for dealing with the specially formatted errors returned by
+             build tools.
+             </summary>
+             <remarks>
+             Various tools produce and consume CanonicalErrors in various formats.
+            
+             DEVENV Format When Clicking on Items in the Output Window
+             (taken from env\msenv\core\findutil.cpp ParseLocation function)
+            
+                  v:\dir\file.ext (loc) : msg
+                  \\server\share\dir\file.ext(loc):msg
+                  url
+            
+                  loc:
+                  (line)
+                  (line-line)
+                  (line,col)
+                  (line,col-col)
+                  (line,col,len)
+                  (line,col,line,col)
+            
+             DevDiv Build Process
+             (taken from tools\devdiv2.def)
+            
+                  To echo warnings and errors to the build console, the
+                  "description block" must be recognized by build. To do this,
+                  add a $(ECHO_COMPILING_COMMAND) or $(ECHO_PROCESSING_COMMAND)
+                  to the first line of the description block, e.g.
+            
+                      $(ECHO_COMPILING_CMD) Resgen_$&lt;
+            
+                  Errors must have the format:
+            
+                      &lt;text&gt; : error [num]: &lt;msg&gt;
+            
+                  Warnings must have the format:
+            
+                      &lt;text&gt; : warning [num]: &lt;msg&gt;
+             </remarks>
+             <owner>JomoF</owner>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts">
+            <summary>
+            Represents the parts of a decomposed canonical message.
+            </summary>
+            <owner>JomoF</owner>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.Category">
+            <summary>
+            Defines the error category\severity level.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.numberNotSpecified">
+            <summary>
+            Value used for unspecified line and column numbers, which are 1-relative.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts"/> class.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.origin">
+            <summary>
+            Name of the file or tool (not localized)
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.line">
+            <summary>
+            The line number.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.column">
+            <summary>
+            The column number.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.endLine">
+            <summary>
+            The ending line number.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.endColumn">
+            <summary>
+            The ending column number.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.category">
+            <summary>
+            The category/severity level
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.subcategory">
+            <summary>
+            The sub category (localized)
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.code">
+            <summary>
+            The error code (not localized)
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parts.text">
+            <summary>
+            The error message text (localized)
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.ConvertToIntWithDefault(System.String)">
+            <summary>
+            A small custom int conversion method that treats invalid entries as missing (0). This is done to work around tools
+            that don't fully conform to the canonical message format - we still want to salvage what we can from the message.
+            </summary>
+            <param name="value"></param>
+            <returns>'value' converted to int or 0 if it can't be parsed or is negative</returns>
+            <owner>LukaszG</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CanonicalError.Parse(System.String)">
+            <summary>
+            Decompose an error or warning message into constituent parts. If the message isn't in the canonical form, return null.
+            </summary>
+            <remarks>This method is thread-safe, because the Regex class is thread-safe (per MSDN).</remarks>
+            <owner>JomoF</owner>
+            <param name="message"></param>
+            <returns>Decomposed canonical message, or null.</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension">
+            <summary>
+            CommandLineBuilder derived class for specialized logic specific to MSBuild tasks
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendWhenTrue(System.String,Microsoft.CodeAnalysis.BuildTasks.PropertyDictionary,System.String)">
+            <summary>
+            Set a boolean switch iff its value exists and its value is 'true'.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendPlusOrMinusSwitch(System.String,Microsoft.CodeAnalysis.BuildTasks.PropertyDictionary,System.String)">
+            <summary>
+            Set a boolean switch only if its value exists.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendByChoiceSwitch(System.String,Microsoft.CodeAnalysis.BuildTasks.PropertyDictionary,System.String,System.String,System.String)">
+            <summary>
+            Set a switch if its value exists by choosing from the input choices
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendSwitchWithInteger(System.String,Microsoft.CodeAnalysis.BuildTasks.PropertyDictionary,System.String)">
+            <summary>
+            Set an integer switch only if its value exists.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendSwitchAliased(System.String,System.String,System.String)">
+            <summary>
+            Adds an aliased switch, used for ResGen:
+                 /reference:Foo=System.Xml.dll
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendNestedSwitch(System.String,System.String,System.String)">
+            <summary>
+            Adds a nested switch, used by SGen.exe.  For example:
+                /compiler:"/keyfile:\"c:\some folder\myfile.snk\""
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.GetQuotedText(System.String)">
+            <summary>
+            Returns a quoted string appropriate for appending to a command line.
+            </summary>
+            <remarks>
+            Escapes any double quotes in the string.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendSwitchIfNotNull(System.String,Microsoft.Build.Framework.ITaskItem[],System.String[])">
+            <summary>
+            Appends a command-line switch that takes a compound string parameter. The parameter is built up from the item-spec and
+            the specified attributes. The switch is appended as many times as there are parameters given.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendSwitchWithSplitting(System.String,System.String,System.String,System.Char[])">
+            <summary>
+            Append a switch if 'parameter' is not null.
+            Split on the characters provided.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.IsParameterEmpty(System.String,System.Char[])">
+            <summary>
+            Returns true if the parameter is empty in spirits, 
+            even if it contains the seperators and white space only
+            Split on the characters provided.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension.AppendSwitchIfNotNull(System.String,Microsoft.Build.Framework.ITaskItem[],System.String[],System.Boolean[])">
+             <summary>
+             Designed to handle the /link and /embed swithes:
+            
+                  /embed[resource]:&lt;filename>[,&lt;name>[,Private]]
+                  /link[resource]:&lt;filename>[,&lt;name>[,Private]]
+             
+             Where the last flag--Private--is either present or not present
+             depending on whether the ITaskItem has a Private="True" attribue.
+             </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.Csc">
+            <summary>
+            This class defines the "Csc" XMake task, which enables building assemblies from C#
+            source files by invoking the C# compiler. This is the new Roslyn XMake task,
+            meaning that the code is compiled by using the Roslyn compiler server, rather
+            than csc.exe. The two should be functionally identical, but the compiler server
+            should be significantly faster with larger projects and have a smaller memory
+            footprint.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.Csc.PreferredUILang">
+            <summary>
+            Name of the language passed to "/preferreduilang" compiler option.
+            </summary>
+            <remarks>
+            If set to null, "/preferreduilang" option is omitted, and csc.exe uses its default setting.
+            Otherwise, the value is passed to "/preferreduilang" as is.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.Csc.ToolName">
+            <summary>
+            Return the name of the tool to execute.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.GenerateFullPathToTool">
+            <summary>
+            Return the path to the tool to execute.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.AddResponseFileCommands(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Fills the provided CommandLineBuilderExtension with those switches and other information that can go into a response file.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.AddReferencesToCommandLine(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+             <summary>
+             The C# compiler (starting with Whidbey) supports assembly aliasing for references.
+             See spec at http://devdiv/spectool/Documents/Whidbey/VCSharp/Design%20Time/M3%20DCRs/DCR%20Assembly%20aliases.doc.
+             This method handles the necessary work of looking at the "Aliases" attribute on
+             the incoming "References" items, and making sure to generate the correct
+             command-line on csc.exe.  The syntax for aliasing a reference is:
+                 csc.exe /reference:Foo=System.Xml.dll
+            
+             The "Aliases" attribute on the "References" items is actually a comma-separated
+             list of aliases, and if any of the aliases specified is the string "global",
+             then we add that reference to the command-line without an alias.
+             </summary>
+             <param name="commandLine"></param>
+             <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.GetDefineConstantsSwitch(System.String)">
+            <summary>
+            Old VS projects had some pretty messed-up looking values for the
+            "DefineConstants" property.  It worked fine in the IDE, because it
+            effectively munged up the string so that it ended up being valid for
+            the compiler.  We do the equivalent munging here now.
+            
+            Basically, we take the incoming string, and split it on comma/semicolon/space.
+            Then we look at the resulting list of strings, and remove any that are
+            illegal identifiers, and pass the remaining ones through to the compiler.
+            
+            Note that CSharp does support assigning a value to the constants ... in
+            other words, a constant is either defined or not defined ... it can't have
+            an actual value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.ErrorString">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Csc_AssemblyAliasContainsIllegalCharacters">
+            <summary>
+              Looks up a localized string similar to MSB3053: The assembly alias &quot;{1}&quot; on reference &quot;{0}&quot; contains illegal characters..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Csc_InvalidParameter">
+            <summary>
+              Looks up a localized string similar to MSB3051: The parameter to the compiler is invalid.  {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Csc_InvalidParameterWarning">
+            <summary>
+              Looks up a localized string similar to MSB3052: The parameter to the compiler is invalid, &apos;{0}{1}&apos; will be ignored..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.General_CannotConvertStringToBool">
+            <summary>
+              Looks up a localized string similar to The string &quot;{0}&quot; cannot be converted to a boolean (true/false) value..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.General_InvalidAttributeMetadata">
+            <summary>
+              Looks up a localized string similar to Item &quot;{0}&quot; has attribute &quot;{1}&quot; with value &quot;{2}&quot; that could not be converted to &quot;{3}&quot;..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Vbc_ParameterHasInvalidValue">
+            <summary>
+              Looks up a localized string similar to &quot;{1}&quot; is an invalid value for the &quot;{0}&quot; parameter..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ErrorString.Vbc_RenamePDB">
+            <summary>
+              Looks up a localized string similar to MSB3402: There was an error creating the pdb file &quot;{0}&quot;. {1}.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler">
+            <summary>
+            This class defines all of the common stuff that is shared between the Vbc and Csc tasks.
+            This class is not instantiatable as a Task just by itself.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.StandardOutputEncoding">
+            <summary>
+            Overridable property specifying the encoding of the captured task standard output stream
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.GenerateResponseFileCommands">
+            <summary>
+            Returns the command line switch used by the tool executable to specify the response file
+            Will only be called if the task returned a non empty string from GetResponseFileCommands
+            Called after ValidateParameters, SkipTaskExecution and GetResponseFileCommands
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.AddCommandLineCommands(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Fills the provided CommandLineBuilderExtension with those switches and other information that can't go into a response file and
+            must go directly onto the command line.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.AddResponseFileCommands(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Fills the provided CommandLineBuilderExtension with those switches and other information that can go into a response file.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.AddAnalyzersToCommandLine(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Adds a "/analyzer:" switch to the command line for each provided analyzer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.AddAdditionalFilesToCommandLine(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Adds a "/analyzer:" switch to the command line for each provided analyzer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.ConfigureDebugProperties">
+            <summary>
+            Configure the debug switches which will be placed on the compiler commandline.
+            The matrix of debug type and symbol inputs and the desired results is as follows:
+            
+            Debug Symbols              DebugType   Desired Resilts
+                     True               Full        /debug+ /debug:full
+                     True               PdbOnly     /debug+ /debug:PdbOnly
+                     True               None        /debug-
+                     True               Blank       /debug+
+                     False              Full        /debug- /debug:full
+                     False              PdbOnly     /debug- /debug:PdbOnly
+                     False              None        /debug-
+                     False              Blank       /debug-
+                     Blank              Full                /debug:full
+                     Blank              PdbOnly             /debug:PdbOnly
+                     Blank              None        /debug-
+            Debug:   Blank              Blank       /debug+ //Microsof.common.targets will set this
+            Release: Blank              Blank       "Nothing for either switch"
+            
+            The logic is as follows:
+            If debugtype is none  set debugtype to empty and debugSymbols to false
+            If debugType is blank  use the debugsymbols "as is"
+            If debug type is set, use its value and the debugsymbols value "as is"
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.ValidateParameters">
+            <summary>
+            Validate parameters, log errors and warnings and return true if
+            Execute should proceed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.ListHasNoDuplicateItems(Microsoft.Build.Framework.ITaskItem[],System.String)">
+            <summary>
+            Returns true if the provided item list contains duplicate items, false otherwise.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.ListHasNoDuplicateItems(Microsoft.Build.Framework.ITaskItem[],System.String,System.String)">
+            <summary>
+            Returns true if the provided item list contains duplicate items, false otherwise.
+            </summary>
+            <param name="itemList"></param>
+            <param name="disambiguatingMetadataName">Optional name of metadata that may legitimately disambiguate items. May be null.</param>
+            <param name="parameterName"></param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.HandleTaskExecutionErrors">
+            <summary>
+            Allows tool to handle the return code.
+            This method will only be called with non-zero exitCode.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.NormalizePaths(Microsoft.Build.Framework.ITaskItem[])">
+            <summary>
+            Takes a list of files and returns the normalized locations of these files
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.UsedCommandLineTool">
+            <summary>
+            Whether the command line compiler was invoked, instead
+            of the host object compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.CheckHostObjectSupport(System.String,System.Boolean)">
+            <summary>
+            Checks the bool result from calling one of the methods on the host compiler object to
+            set one of the parameters.  If it returned false, that means the host object doesn't
+            support a particular parameter or variation on a parameter.  So we log a comment,
+            and set our state so we know not to call the host object to do the actual compilation.
+            </summary>
+            <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.CheckAllReferencesExistOnDisk">
+            <summary>
+            Checks to see whether all of the passed-in references exist on disk before we launch the compiler.
+            </summary>
+            <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.GetWin32ManifestSwitch(System.Boolean,System.String)">
+             <summary>
+             The IDE and command line compilers unfortunately differ in how win32 
+             manifests are specified.  In particular, the command line compiler offers a 
+             "/nowin32manifest" switch, while the IDE compiler does not offer analagous 
+             functionality. If this switch is omitted from the command line and no win32 
+             manifest is specified, the compiler will include a default win32 manifest 
+             named "default.win32manifest" found in the same directory as the compiler 
+             executable. Again, the IDE compiler does not offer analagous support.
+             
+             We'd like to imitate the command line compiler's behavior in the IDE, but 
+             it isn't aware of the default file, so we must compute the path to it if 
+             noDefaultWin32Manifest is false and no win32Manifest was provided by the
+             project.
+            
+             This method will only be called during the initialization of the host object,
+             which is only used during IDE builds.
+             </summary>
+             <param name="noDefaultWin32Manifest"></param>
+             <param name="win32Manifest"></param>
+             <returns>the path to the win32 manifest to provide to the host object</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.Utilities">
+            <summary>
+            General utilities.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Utilities.TryConvertItemMetadataToBool(Microsoft.Build.Framework.ITaskItem,System.String)">
+            <summary>
+            Convert a task item metadata to bool. Throw an exception if the string is badly formed and can't
+            be converted.
+            
+            If the metadata is not found, then set metadataFound to false and then return false.
+            </summary>
+            <param name="item">The item that contains the metadata.</param>
+            <param name="itemMetadataName">The name of the metadata.</param>
+            <returns>The resulting boolean value.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Utilities.ConvertStringToBool(System.String)">
+            <summary>
+            Converts a string to a bool.  We consider "true/false", "on/off", and 
+            "yes/no" to be valid boolean representations in the XML.
+            </summary>
+            <param name="parameterValue">The string to convert.</param>
+            <returns>Boolean true or false, corresponding to the string.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Utilities.CanConvertStringToBool(System.String)">
+            <summary>
+            Returns true if the string can be successfully converted to a bool,
+            such as "on" or "yes"
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Utilities.ValidBooleanTrue(System.String)">
+            <summary>
+            Returns true if the string represents a valid MSBuild boolean true value,
+            such as "on", "!false", "yes"
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Utilities.ValidBooleanFalse(System.String)">
+            <summary>
+            Returns true if the string represents a valid MSBuild boolean false value,
+            such as "!on" "off" "no" "!true"
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.Vbc">
+            <summary>
+            This class defines the "Vbc" XMake task, which enables building assemblies from VB
+            source files by invoking the VB compiler. This is the new Roslyn XMake task,
+            meaning that the code is compiled by using the Roslyn compiler server, rather
+            than vbc.exe. The two should be functionally identical, but the compiler server
+            should be significantly faster with larger projects and have a smaller memory
+            footprint.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.Vbc._vbErrorLines">
+            <summary>
+            This stores the origional lines and error priority together in the order in which they were recieved.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.Vbc.PreferredUILang">
+            <summary>
+            Name of the language passed to "/preferreduilang" compiler option.
+            </summary>
+            <remarks>
+            If set to null, "/preferreduilang" option is omitted, and vbc.exe uses its default setting.
+            Otherwise, the value is passed to "/preferreduilang" as is.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.Vbc.ToolName">
+            <summary>
+             Return the name of the tool to execute.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.Execute">
+            <summary>
+            Override Execute so that we can moved the PDB file if we need to,
+            after the compiler is done.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.MovePdbFileIfNecessary(System.String)">
+            <summary>
+            Move the PDB file if the PDB file that was generated by the compiler
+            is not at the specified path, or if it is newer than the one there.
+            VBC does not have a switch to specify the PDB path, so we are essentially implementing that for it here.
+            We need make this possible to avoid colliding with the PDB generated by WinMDExp.
+            
+            If at some future point VBC.exe offers a /pdbfile switch, this function can be removed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.GenerateFullPathToTool">
+            <summary>
+            Generate the path to the tool
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.GetBaseAddressInHex">
+            <summary>
+            vbc.exe only takes the BaseAddress in hexadecimal format.  But we allow the caller
+            of the task to pass in the BaseAddress in either decimal or hexadecimal format.
+            Examples of supported hex formats include "0x10000000" or "&amp;H10000000".
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.AddResponseFileCommands(Microsoft.CodeAnalysis.BuildTasks.CommandLineBuilderExtension)">
+            <summary>
+            Looks at all the parameters that have been set, and builds up the string
+            containing all the command-line switches.
+            </summary>
+            <param name="commandLine"></param>
+            <owner>RGoel, JomoF</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.ValidateParameters">
+            <summary>
+            Validate parameters, log errors and warnings and return true if
+            Execute should proceed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            This method intercepts the lines to be logged coming from STDOUT from VBC.
+            Once we see a standard vb warning or error, then we capture it and grab the next 3
+            lines so we can transform the string form the form of FileName.vb(line) to FileName.vb(line,column)
+            which will allow us to report the line and column to the IDE, and thus filter the error
+            in the duplicate case for multi-targeting, or just squiggle the appropriate token 
+            instead of the entire line.
+            </summary>
+            <param name="singleLine">A single line from the STDOUT of the vbc compiler</param>
+            <param name="messageImportance">High,Low,Normal</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.ParseVBErrorOrWarning(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Given a string, parses it to find out whether it's an error or warning and, if so,
+            make sure it's validated properly.  
+            </summary>
+            <comments>
+            INTERNAL FOR UNITTESTING ONLY
+            </comments>
+            <param name="singleLine">The line to parse</param>
+            <param name="messageImportance">The MessageImportance to use when reporting the error.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.GetDefineConstantsSwitch(System.String)">
+            <summary>
+            Many VisualStudio VB projects have values for the DefineConstants property that
+            contain quotes and spaces.  Normally we don't allow parameters passed into the
+            task to contain quotes, because if we weren't careful, we might accidently
+            allow a parameter injection attach.  But for "DefineConstants", we have to allow
+            it.
+            So this method prepares the string to be passed in on the /define: command-line
+            switch.  It does that by quoting the entire string, and escaping the embedded
+            quotes.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.Vbc.VBError">
+            <summary>
+            private class that just holds together name, value pair for the vbErrorLines Queue
+            </summary>
+        </member>
+    </members>
+</doc>

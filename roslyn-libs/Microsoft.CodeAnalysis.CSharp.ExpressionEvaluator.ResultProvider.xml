@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.ResultProvider</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.SyntaxFacts">
+            <summary>
+            Defines a set of methods to determine how Unicode characters are treated by the C# compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsHexDigit(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a hexadecimal digit.
+            </summary>
+            <param name="c">The Unicode character.</param>
+            <returns>true if the character is a hexadecimal digit 0-9, A-F, a-f.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsDecDigit(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a decimal digit.
+            </summary>
+            <param name="c">The Unicode character.</param>
+            <returns>true if the Unicode character is a decimal digit.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.HexValue(System.Char)">
+            <summary>
+            Returns the value of a hexadecimal Unicode character.
+            </summary>
+            <param name="c">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.DecValue(System.Char)">
+            <summary>
+            Returns the value of a decimal Unicode character.
+            </summary>
+            <param name="c">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsWhitespace(System.Char)">
+            <summary>
+            Returns true if the Unicode character represents a whitespace.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsNewLine(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a newline character.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierStartCharacter(System.Char)">
+            <summary>
+            Returns true if the Unicode character can be the starting character of a C# identifier.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierPartCharacter(System.Char)">
+            <summary>
+            Returns true if the Unicode character can be a part of a C# identifier.
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsValidIdentifier(System.String)">
+            <summary>
+            Check that the name is a valid identifier.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.ContainsDroppedIdentifierCharacters(System.String)">
+            <summary>
+            Spec section 2.4.2 says that identifiers are compared without regard
+            to leading "@" characters or unicode formatting characters.  As in dev10,
+            this is actually accomplished by dropping such characters during parsing.
+            Unfortunately, metadata names can still contain these characters and will
+            not be referenceable from source if they do (lookup will fail since the
+            characters will have been dropped from the search string).
+            See DevDiv #14432 for more.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Char)">
+            <summary>
+            Returns true if the Unicode character is a formatting character (Unicode class Cf).
+            </summary>
+            <param name="ch">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Globalization.UnicodeCategory)">
+            <summary>
+            Returns true if the Unicode character is a formatting character (Unicode class Cf).
+            </summary>
+            <param name="cat">The Unicode character.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsPreprocessorContextualKeyword(Microsoft.CodeAnalysis.CSharp.SyntaxKind)">
+            <summary>
+            Some preprocessor keywords are only keywords when they appear after a
+            hash sign (#).  For these keywords, the lexer will produce tokens with
+            Kind = SyntaxKind.IdentifierToken and ContextualKind set to the keyword
+            SyntaxKind.
+            </summary>
+            <remarks>
+            This wrinkle is specifically not publicly exposed.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsGlobalMemberDeclaration(Microsoft.CodeAnalysis.CSharp.SyntaxKind)">
+            <summary>
+            Member declarations that can appear in global code (other than type declarations).
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ObjectDisplay">
+            <summary>
+            Displays a value in the C# style.
+            </summary>
+            <remarks>
+            Separate from <see cref="T:Microsoft.CodeAnalysis.CSharp.SymbolDisplay"/> because we want to link this functionality into
+            the Formatter project and we don't want it to be public there.
+            </remarks>
+            <seealso cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.ObjectDisplay"/>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ObjectDisplay.FormatPrimitive(System.Object,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
+            <summary>
+            Returns a string representation of an object of primitive type.
+            </summary>
+            <param name="obj">A value to display as a string.</param>
+            <param name="options">Options used to customize formatting of an object value.</param>
+            <returns>A string representation of an object of primitive type (or null if the type is not supported).</returns>
+            <remarks>
+            Handles <see cref="T:System.Boolean"/>, <see cref="T:System.String"/>, <see cref="T:System.Char"/>, <see cref="T:System.SByte"/>
+            <see cref="T:System.Byte"/>, <see cref="T:System.Int16"/>, <see cref="T:System.UInt16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.UInt32"/>,
+            <see cref="T:System.Int64"/>, <see cref="T:System.UInt64"/>, <see cref="T:System.Double"/>, <see cref="T:System.Single"/>, <see cref="T:System.Decimal"/>,
+            and <c>null</c>.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ObjectDisplay.FormatLiteral(System.String,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
+            <summary>
+            Returns a C# string literal with the given value.
+            </summary>
+            <param name="value">The value that the resulting string literal should have.</param>
+            <param name="options">Options used to customize formatting of an object value.</param>
+            <returns>A string literal with the given value.</returns>
+            <remarks>
+            Escapes non-printable characters.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ObjectDisplay.FormatLiteral(System.Char,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
+            <summary>
+            Returns a C# character literal with the given value.
+            </summary>
+            <param name="c">The value that the resulting character literal should have.</param>
+            <param name="options">Options used to customize formatting of an object value.</param>
+            <returns>A character literal with the given value.</returns>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CSharpFormatter.Instance">
+            <summary>
+            Singleton instance of CSharpFormatter (created using default constructor).
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.Resources.StaticMembers">
+            <summary>
+              Looks up a localized string similar to Static members.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.GreenNode.ListKind">
+            <summary>
+            Required by <see cref="T:Microsoft.CodeAnalysis.CSharp.SyntaxKind"/>.
+            </summary>
+        </member>
+    </members>
+</doc>
