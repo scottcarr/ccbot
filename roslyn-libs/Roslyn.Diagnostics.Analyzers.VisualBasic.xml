@@ -1,0 +1,38 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Roslyn.Diagnostics.Analyzers.VisualBasic
+</name>
+</assembly>
+<members>
+<member name="T:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayCodeFixProvider">
+ <summary>Provides a code fix for the EmptyArrayDiagnosticAnalyzer.</summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayCodeFixProvider.GetArrayElementType(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>Gets the TypeSyntax from a syntax node representing an empty array construction's element type.</summary>
+ <param name="nodeToFix">The syntax node.</param>
+ <returns>The TypeSyntax if it could be extracted; otherwise, null.</returns>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayCodeFixProvider.InvokeStaticGenericParameterlessMethod(Microsoft.CodeAnalysis.INamedTypeSymbol,System.String,Microsoft.CodeAnalysis.VisualBasic.Syntax.TypeSyntax)">
+ <summary>Create an invocation expression for typeSymbol.methodName&lt;genericParameter&gt;()".</summary>
+ <param name="typeSymbol">The type on which to invoke the static method.</param>
+ <param name="methodName">The name of the static, parameterless, generic method.</param>
+ <param name="genericParameter">the type to use for the method's generic parameter.</param>
+ <returns>The resulting invocation expression.</returns>
+</member>
+<member name="T:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer">
+ <summary>Provides a C# analyzer that finds empty array allocations that can be replaced with a call to Array.Empty.</summary>
+</member>
+<member name="F:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer.expressionKinds">
+ <summary>
+ The kinds of array creation syntax kinds to be analyzed.  We care about ArrayCreationExpression (e.g. "New Byte(1) { }" or "New Byte() { 1, 2 }")
+ and CollectionInitializer (e.g. "Dim arr as Byte() = { }")
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer.RegisterSyntaxNodeAction(Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalysisContext)">
+ <summary>Called once at session start to register actions in the analysis context.</summary>
+ <param name="context">The analysis context.</param>
+</member>
+</members>
+</doc>

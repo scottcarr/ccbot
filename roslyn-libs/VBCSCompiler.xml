@@ -1,0 +1,405 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VBCSCompiler</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest">
+            <summary>
+            Represents a request from the client. A request is as follows.
+            
+             Field Name         Type                Size (bytes)
+            ----------------------------------------------------
+             Length             Integer             4
+             Language           RequestLanguage     4
+             Argument Count     UInteger            4
+             Arguments          Argument[]          Variable
+            
+            See <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument"/> for the format of an
+            Argument.
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Read a Request from the given stream.
+            
+            The total request size must be less than 1MB.
+            </summary>
+            <returns>null if the Request was too large, the Request otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.WriteAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Write a Request to the stream.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument">
+            <summary>
+            A command line argument to the compilation. 
+            An argument is formatted as follows:
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             ID                 UInteger        4
+             Index              UInteger        4
+             Value              String          Variable
+            
+            Strings are encoded via a length prefix as a signed
+            32-bit integer, followed by an array of characters.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildResponse">
+             <summary>
+             Base class for all possible responses to a request.
+             The ResponseType enum should list all possible response types
+             and ReadResponse creates the appropriate response subclass based
+             on the response type sent by the client.
+             The format of a response is:
+            
+             Field Name       Field Type          Size (bytes)
+             -------------------------------------------------
+             responseLength   int (positive)      4  
+             responseType     enum ResponseType   4
+             responseBody     Response subclass   variable
+             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildResponse.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            May throw exceptions if there are pipe problems.
+            </summary>
+            <param name="stream"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompletedBuildResponse">
+            <summary>
+            Represents a Response from the server. A response is as follows.
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             Length             UInteger        4
+             ReturnCode         Integer         4
+             Output             String          Variable
+             ErrorOutput        String          Variable
+            
+            Strings are encoded via a character count prefix as a 
+            32-bit integer, followed by an array of characters.
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.MismatchedVersionBuildResponse.AddResponseBody(System.IO.BinaryWriter)">
+            <summary>
+            MismatchedVersion has no body.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants">
+            <summary>
+            Constants about the protocol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ProtocolVersion">
+            <summary>
+            The version number for this protocol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.PipeName">
+            <summary>
+            The name of the named pipe. A process id is appended to the end.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadLengthPrefixedString(System.IO.BinaryReader)">
+            <summary>
+            Read a string from the Reader where the string is encoded
+            as a length prefix (signed 32-bit integer) followed by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.WriteLengthPrefixedString(System.IO.BinaryWriter,System.String)">
+            <summary>
+            Write a string to the Writer where the string is encoded
+            as a length prefix (signed 32-bit integer) follows by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadAllAsync(System.IO.Stream,System.Byte[],System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            This task does not complete until we are completely done reading.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler">
+            <summary>
+            This class handles incoming requests from the client, and invokes the compiler to actually
+            do the compilation. We also handle the caching of assembly bytes and assembly objects here.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler.HandleRequest(Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.CancellationToken)">
+            <summary>
+            An incoming request as occurred. This is called on a new thread to handle
+            the request.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler.CSharpCompile(Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.CancellationToken)">
+            <summary>
+            A request to compile C# files. Unpack the arguments and current directory and invoke
+            the compiler, then create a response with the result of compilation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler.CSharpCompile(System.String,System.String,System.String,System.String,System.String[],System.IO.TextWriter,System.Threading.CancellationToken,System.Boolean@)">
+            <summary>
+            Invoke the C# compiler with the given arguments and current directory, and send output and error
+            to the given TextWriters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler.BasicCompile(Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.CancellationToken)">
+            <summary>
+            A request to compile VB files. Unpack the arguments and current directory and invoke
+            the compiler, then create a response with the result of compilation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerRequestHandler.BasicCompile(System.String,System.String,System.String,System.String,System.String[],System.IO.TextWriter,System.Threading.CancellationToken,System.Boolean@)">
+            <summary>
+            Invoke the VB compiler with the given arguments and current directory, and send output and error
+            to the given TextWriters.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger">
+            <summary>
+            Class for logging information about what happens in the server and client parts of the 
+            Roslyn command line compiler and build tasks. Useful for debugging what is going on.
+            </summary>
+            <remarks>
+            To use the logging, set the environment variable RoslynCommandLineLogFile to the name
+            of a file to log to. This file is logged to by both client and server components.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.#cctor">
+            <summary>
+            Static class initializer that initializes logging.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Initialize(System.String)">
+            <summary>
+            Set the logging prefix that describes our role.
+            Typically a 3-letter abbreviation. If logging happens before this, it's logged with "---".
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.LogException(System.Exception,System.String)">
+            <summary>
+            Log an exception. Also logs information about inner exceptions.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String,System.Object[])">
+            <summary>
+            Log a line of text to the logging file, with string.Format arguments.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String)">
+            <summary>
+            Log a line of text to the logging file.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.GetLoggingPrefix">
+            <summary>
+            Get the string that prefixes all log entries. Shows the process, thread, and time.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IDiagnosticListener.UpdateKeepAlive(System.TimeSpan)">
+            <summary>
+            Called when the server updates the keep alive value.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IDiagnosticListener.ConnectionProcessed(System.Int32)">
+            <summary>
+            Called when one or more connections have completed processing.  The number of connections
+            processed is provided in <paramref name="count"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.IClientConnection">
+            <summary>
+            Abstraction over the connection to the client process.   This hides underlying connection
+            to facilitate better testing. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CompilerServer.IClientConnection.LoggingIdentifier">
+            <summary>
+            A value which can be used to identify this connection for logging purposes only.  It has 
+            no guarantee of uniqnuess.  
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IClientConnection.ReadBuildRequest(System.Threading.CancellationToken)">
+            <summary>
+            Read the <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest"/> object from the client connection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IClientConnection.WriteBuildResponse(Microsoft.CodeAnalysis.CompilerServer.BuildResponse,System.Threading.CancellationToken)">
+            <summary>
+            Write the <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest"/> object to the client connection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IClientConnection.CreateMonitorDisconnectTask(System.Threading.CancellationToken)">
+            <summary>
+            Create a <see cref="T:System.Threading.Tasks.Task"/> object which will complete if the client connection is broken
+            by the client.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.IClientConnection.Close">
+            <summary>
+            Close the underlying client connection.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.MetadataAndSymbolCache.GetUniqueFileKey(System.String)">
+            <summary>
+            A unique file key encapsulates a file path, and change date
+            that can be used as the key to a dictionary.
+            If a file hasn't changed name or timestamp, we assume
+            it is unchanged.
+            
+            Returns null if the file doesn't exist or otherwise can't be accessed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.NamedPipeClientConnection.CreateMonitorDisconnectTaskCore(System.Threading.CancellationToken)">
+             <summary>
+             The IsConnected property on named pipes does not detect when the client has disconnected
+             if we don't attempt any new I/O after the client disconnects. We start an async I/O here
+             which serves to check the pipe for disconnection. 
+            
+             This will return true if the pipe was disconnected.
+             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.NamedPipeClientConnection.ClientAndOurIdentitiesMatch">
+            <summary>
+            Does the client of "pipeStream" have the same identity and elevation as we do?
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.NamedPipeClientConnection.GetIdentity(System.Boolean)">
+            <summary>
+            Return the current user name and whether the current user is in the administator role.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher">
+            <summary>
+            This class handles the named pipe creation, listening, thread creation,
+            and so forth. When a request comes in, it is dispatched on a new thread
+            to the <see cref="T:Microsoft.CodeAnalysis.CompilerServer.IRequestHandler"/> interface. The request handler does the actual
+            compilation. This class itself has no dependencies on the compiler.
+            </summary>
+            <remarks>
+            One instance of this is created per process.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CompletionReason.CompilationNotStarted">
+            <summary>
+            There was an error creating the <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest"/> object and a compilation was never 
+            created.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CompletionReason.Completed">
+            <summary>
+            The compilation completed and results were provided to the client.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CompletionReason.ClientDisconnect">
+            <summary>
+            The compilation process was initiated and the client disconnected before 
+            the results could be provided to them.  
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.Connection">
+            <summary>
+            Represents a single connection from a client process. Handles the named pipe
+            from when the client connects to it, until the request is finished or abandoned.
+            A new task is created to actually service the connection and do the operation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.Connection.CheckForNewKeepAlive(Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.Tasks.TaskCompletionSource{System.Nullable{System.TimeSpan}})">
+            <summary>
+            Check the request arguments for a new keep alive time. If one is present,
+            set the server timer to the new time.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.s_defaultServerKeepAlive">
+            <summary>
+            Default time the server will stay alive after the last request disconnects.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.s_GCTimeout">
+            <summary>
+            Time to delay after the last connection before initiating a garbage collection
+            in the server. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.Main(System.String[])">
+            <summary>
+            Main entry point for the process. Initialize the server dispatcher
+            and wait for connections.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.#ctor(Microsoft.CodeAnalysis.CompilerServer.IRequestHandler,Microsoft.CodeAnalysis.CompilerServer.IDiagnosticListener)">
+            <summary>
+            Create a new server that listens on the given base pipe name.
+            When a request comes in, it is dispatched on a separate thread
+            via the IRequestHandler interface passed in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.ListenAndDispatchConnections(System.String,System.Nullable{System.TimeSpan},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            This function will accept and process new connections until an event causes
+            the server to enter a passive shut down mode.  For example if analyzers change
+            or the keep alive timeout is hit.  At which point this function will cease 
+            accepting new connections and wait for existing connections to complete before
+            returning.
+            </summary>
+            <remarks>
+            The server as run for customer builds should always enable watching analyzer 
+            files.  This option only exist to disable the feature when running in our unit
+            test framework.  The code hooks <see cref="E:System.AppDomain.AssemblyResolve"/> in a way
+            that prevents xUnit from running correctly and hence must be disabled. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.WaitForAnyCompletion(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.ConnectionData},System.Threading.Tasks.Task[],System.Threading.CancellationToken)">
+            <summary>
+            The server farms out work to Task values and this method needs to wait until at least one of them
+            has completed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CheckConnectionTask(System.Collections.Generic.List{Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.ConnectionData},System.Nullable{System.TimeSpan}@,System.Boolean@)">
+            <summary>
+            Checks the completed connection objects.
+            </summary>
+            <returns>True if everything completed normally and false if there were any client disconnections.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CreateListenTask(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Creates a Task that waits for a client connection to occur and returns the connected 
+            <see cref="T:System.IO.Pipes.NamedPipeServerStream"/> object.  Throws on any connection error.
+            </summary>
+            <param name="pipeName">Name of the pipe on which the instance will listen for requests.</param>
+            <param name="cancellationToken">Used to cancel the connection sequence.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.CreateHandleConnectionTask(System.Threading.Tasks.Task{System.IO.Pipes.NamedPipeServerStream},System.Threading.Tasks.TaskCompletionSource{System.Nullable{System.TimeSpan}},System.Threading.CancellationToken)">
+            <summary>
+            Creates a Task representing the processing of the new connection.  Returns null 
+            if the server is unable to create a new Task object for the connection.  
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.ConstructPipe(System.String)">
+            <summary>
+            Create an instance of the pipe. This might be the first instance, or a subsequent instance.
+            There always needs to be an instance of the pipe created to listen for a new client connection.
+            </summary>
+            <returns>The pipe instance or throws an exception.</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher.MemoryHelper">
+            <summary>
+            Uses p/invoke to gain access to information about how much memory this process is using
+            and how much is still available.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.IRequestHandler">
+            <summary>
+            The interface used by <see cref="T:Microsoft.CodeAnalysis.CompilerServer.ServerDispatcher"/> to dispatch requests.
+            </summary>
+        </member>
+    </members>
+</doc>

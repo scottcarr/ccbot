@@ -1,0 +1,296 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Roslyn.Diagnostics.Analyzers</name>
+    </assembly>
+    <members>
+        <member name="T:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.CancellationTokenMustBeLastDescription">
+            <summary>
+              Looks up a localized string similar to CancellationToken parameters must come last.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.CancellationTokenMustBeLastMessage">
+            <summary>
+              Looks up a localized string similar to Method &apos;{0}&apos; should take CancellationToken as the last parameter.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ConsumePreserveSigDescription">
+            <summary>
+              Looks up a localized string similar to PreserveSigAttribute indicates that a method will return an HRESULT, rather than throwing an exception.  Therefore, it is important to consume the HRESULT returned by the method, so that errors can be detected.  Generally, this is done by calling Marshal.ThrowExceptionForHR..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ConsumePreserveSigMessage">
+            <summary>
+              Looks up a localized string similar to Consume the hresult returned by method &apos;{0}&apos; and call Marshal.ThrowExceptionForHR..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ConsumePreserveSigTitle">
+            <summary>
+              Looks up a localized string similar to Always consume the value returned by methods marked with PreserveSigAttribute.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DeclarePublicApiDescription">
+            <summary>
+              Looks up a localized string similar to All public types and members should be declared in PublicAPI.txt. This draws attention to API changes in the code reviews and source control history, and helps prevent breaking changes..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DeclarePublicApiMessage">
+            <summary>
+              Looks up a localized string similar to Symbol &apos;{0}&apos; is not part of the declared API..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DeclarePublicApiTitle">
+            <summary>
+              Looks up a localized string similar to Add public types and members to the declared API.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DiagnosticDescriptorAccessDescription">
+            <summary>
+              Looks up a localized string similar to Accessing the Descriptor property of Diagnostic in compiler layer leads to unnecessary string allocations for fields of the descriptor that are not utilized in command line compilation. Hence, you should avoid accessing the Descriptor of the compiler diagnostics here. Instead you should directly access these properties off the Diagnostic type..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DiagnosticDescriptorAccessMessage">
+            <summary>
+              Looks up a localized string similar to Do not invoke property &apos;{0}&apos; on type &apos;{1}&apos;, instead directly access the required member{2} on &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DiagnosticDescriptorAccessTitle">
+            <summary>
+              Looks up a localized string similar to Do not invoke Diagnostic.Descriptor.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DirectlyAwaitingTaskDescription">
+            <summary>
+              Looks up a localized string similar to Do not directly await a Task.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DirectlyAwaitingTaskMessage">
+            <summary>
+              Looks up a localized string similar to Do not directly await a Task without calling ConfigureAwait.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotCallToImmutableArrayMessage">
+            <summary>
+              Looks up a localized string similar to Do not call ToImmutableArray on an ImmutableArray&lt;T&gt; value..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotCreateTasksWithoutTaskSchedulerDescription">
+            <summary>
+              Looks up a localized string similar to Do not create tasks unless you are using one of the overloads that takes a TaskScheduler. The default is to schedule on TaskScheduler.Current, which would lead to deadlocks. Either use TaskScheduler.Default to schedule on the thread pool, or explicitly pass TaskScheduler.Current to make your intentions clear..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotCreateTasksWithoutTaskSchedulerMessage">
+            <summary>
+              Looks up a localized string similar to Do not call {0} without passing a TaskScheduler.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotCreateTasksWithoutTaskSchedulerTitle">
+            <summary>
+              Looks up a localized string similar to Do not create tasks without passing a TaskScheduler.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotUseLinqOnIndexableCollectionDescription">
+            <summary>
+              Looks up a localized string similar to This collection is directly indexable.  Going through LINQ here causes unnecessary allocations and CPU work..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DoNotUseLinqOnIndexableCollectionMessage">
+            <summary>
+              Looks up a localized string similar to Do not use Enumerable methods on indexable collections.  Instead use the collection directly..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DontUseCodeActionCreateDescription">
+            <summary>
+              Looks up a localized string similar to Do not use generic CodeAction.Create to create CodeAction.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.DontUseCodeActionCreateMessage">
+            <summary>
+              Looks up a localized string similar to Consider creating unique code action type per different fix. it will help us to see how each code action is used. otherwise, we will only see bunch of generic code actions being used..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ImplementIEquatableDescription">
+            <summary>
+              Looks up a localized string similar to Implement IEquatable&lt;T&gt; when overriding Object.Equals.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.ImplementIEquatableMessage">
+            <summary>
+              Looks up a localized string similar to Type {0} should implement IEquatable&lt;T&gt; because it overrides Equals.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.MissingSharedAttributeDescription">
+            <summary>
+              Looks up a localized string similar to Parts exported with MEFv2 must be marked as Shared..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.MissingSharedAttributeMessage">
+            <summary>
+              Looks up a localized string similar to Part exported with MEFv2 must be marked with the Shared attribute..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.MixedVersionsOfMefAttributesDescription">
+            <summary>
+              Looks up a localized string similar to Do not mix attributes from different versions of MEF.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.MixedVersionsOfMefAttributesMessage">
+            <summary>
+              Looks up a localized string similar to Attribute &apos;{0}&apos; comes from a different version of MEF than the export attribute on &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.OverrideObjectEqualsDescription">
+            <summary>
+              Looks up a localized string similar to Override Object.Equals(object) when implementing IEquatable&lt;T&gt; .
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.OverrideObjectEqualsMessage">
+            <summary>
+              Looks up a localized string similar to Type {0} should override Equals because it implements IEquatable&lt;T&gt;.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.RemoveDeletedApiDescription">
+            <summary>
+              Looks up a localized string similar to When removing a public type or member the corresponding entry in PublicAPI.txt should also be removed. This draws attention to API changes in the code reviews and source control history, and helps prevent breaking changes..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.RemoveDeletedApiMessage">
+            <summary>
+              Looks up a localized string similar to Symbol &apos;{0}&apos; is part of the declared API, but is either not public or could not be found.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.RemoveDeletedApiTitle">
+            <summary>
+              Looks up a localized string similar to Remove deleted types and members from the declared API.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.SymbolDeclaredEventRuleDescription">
+            <summary>
+              Looks up a localized string similar to Compilation event queue is required to generate symbol declared events for all declared source symbols. Hence, every source symbol type or one of it&apos;s base types must generate a symbol declared event..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.SymbolDeclaredEventRuleMessage">
+            <summary>
+              Looks up a localized string similar to Symbol &apos;{0}&apos; seems to be a source symbol, but neither the symbol nor any of it&apos;s base types invoke method &apos;{1}.{2}&apos; to register a symbol declared event..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.SymbolDeclaredEventRuleTitle">
+            <summary>
+              Looks up a localized string similar to SymbolDeclaredEvent must be generated for source symbols.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UnusedDeclarationsCodeFixTitle">
+            <summary>
+              Looks up a localized string similar to Remove unused code.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UnusedDeclarationsMessage">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; is not used in solution..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UnusedDeclarationsTitle">
+            <summary>
+              Looks up a localized string similar to unused code.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseArrayEmptyDescription">
+            <summary>
+              Looks up a localized string similar to Avoid zero-length array allocations..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseArrayEmptyMessage">
+            <summary>
+              Looks up a localized string similar to Avoid unnecessary zero-length array allocations.  Use Array.Empty&lt;T&gt;() instead..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseEmptyEnumerableDescription">
+            <summary>
+              Looks up a localized string similar to Use SpecializedCollections.EmptyEnumerable&lt;T&gt;().
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseEmptyEnumerableMessage">
+            <summary>
+              Looks up a localized string similar to Use SpecializedCollections.EmptyEnumerable&lt;T&gt;().
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseProperCrefTagsDescription">
+            <summary>
+              Looks up a localized string similar to Use of cref tags with prefixes should be avoided, since it prevents the compiler from verifying references and the IDE from updating references during refactorings. It is permissible to suppress this error at a single documentation site if the cref must use a prefix because the type being mentioned is not findable by the compiler. For example, if a cref is mentioning a special attribute in the full framework but you’re in a file that compiles against the portable framework, or if you want to reference a typ [rest of string was truncated]&quot;;.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseProperCrefTagsMessage">
+            <summary>
+              Looks up a localized string similar to cref tag has prefix &apos;{0}&apos;, which should be removed unless the type or member cannot be accessed..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseProperCrefTagsTitle">
+            <summary>
+              Looks up a localized string similar to Avoid using cref tags with a prefix.
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseSingletonEnumerableDescription">
+            <summary>
+              Looks up a localized string similar to Use SpecializedCollections.SingletonEnumerable&lt;T&gt;().
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseSingletonEnumerableMessage">
+            <summary>
+              Looks up a localized string similar to Use SpecializedCollections.SingletonEnumerable&lt;T&gt;().
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseSiteDiagnosticsCheckerDescription">
+            <summary>
+              Looks up a localized string similar to Invoke the correct property to ensure correct use site diagnostics..
+            </summary>
+        </member>
+        <member name="P:Roslyn.Diagnostics.Analyzers.RoslynDiagnosticsResources.UseSiteDiagnosticsCheckerMessage">
+            <summary>
+              Looks up a localized string similar to Do not directly invoke the property &apos;{0}&apos;, instead use &apos;{0}NoUseSiteDiagnostics&apos;..
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer">
+            <summary>Base type for an analyzer that looks for empty array allocations and recommends their replacement.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.PerformanceCategory">
+            <summary>Diagnostic category "Performance".</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.ArrayTypeName">
+            <summary>The name of the array type.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.ArrayEmptyMethodName">
+            <summary>The name of the Empty method on System.Array.</summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.UseArrayEmptyDescriptor">
+            <summary>The diagnostic descriptor used when Array.Empty should be used instead of a new array allocation.</summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.SupportedDiagnostics">
+            <summary>Gets the set of supported diagnostic descriptors from this analyzer.</summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.RegisterSyntaxNodeAction(Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalysisContext)">
+            <summary>Registers a syntax node action for the current compilation context.</summary>
+            <param name="context">The compilation context.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Performance.EmptyArrayDiagnosticAnalyzer.Report(Microsoft.CodeAnalysis.Diagnostics.SyntaxNodeAnalysisContext,Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>Reports a diagnostic warning for an array creation that should be replaced.</summary>
+            <param name="context">The context.</param>
+            <param name="arrayCreationExpression">The array creation expression to be replaced.</param>
+        </member>
+    </members>
+</doc>

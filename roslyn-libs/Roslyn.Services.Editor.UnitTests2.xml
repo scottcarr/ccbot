@@ -1,0 +1,79 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Roslyn.Services.Editor.UnitTests2
+</name>
+</assembly>
+<members>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Peek.PeekTests.PeekResultCollection.GetRemainingIdentifierLineTextOnDisk(System.Int32)">
+ <summary>
+ Returns the text of the identifier line, starting at the identifier and ending at end of the line.
+ </summary>
+ <param name="index"></param>
+ <returns></returns>
+</member>
+<member name="T:Microsoft.CodeAnalysis.Editor.UnitTests.Rename.RenameEngineResult">
+ <summary>
+ A class that holds the result of a rename engine call, and asserts
+ various things about it. This is used in the tests for the rename engine
+ to make asserting that certain spans were converted to what they should be.
+ </summary>
+</member>
+<member name="F:Microsoft.CodeAnalysis.Editor.UnitTests.Rename.RenameEngineResult._unassertedRelatedLocations">
+ <summary>
+ The list of related locations that haven't been asserted about yet. Items are
+ removed from here when they are asserted on, so the set should be empty once we're
+ done.
+ </summary>
+</member>
+<member name="F:Microsoft.CodeAnalysis.Editor.UnitTests.Rename.RenameEngineResult._unassertedTextChanges">
+ <summary>
+ The list of text replacements that haven't been asserted about yet. Items are removed
+ from here when they are asserted, so the set should be empty once we're done.
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:Microsoft.CodeAnalysis.Editor.UnitTests.Rename.RenameEngineTests">
+ <summary>
+ This test class contains tests which verifies that the rename engine performs correct
+ refactorings that do not break user code. These tests call through the
+ Renamer.RenameSymbol entrypoint, and thus do not test any behavior with interactive
+ rename. The position given with the $$ mark in the tests is just the symbol that is renamed;
+ there is no fancy logic applied to it.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces.SymbolDescriptionServiceTests.TestGenericClass">
+ <summary>
+ Design Change from Dev10. Notice that we now show the type information for T
+ C# / VB Quick Info consistency
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces.SymbolDescriptionServiceTests.TestNothingLiteral">
+ Design change from Dev10
+</member>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces.SymbolDescriptionServiceTests.TestPEMethod">
+ <summary>
+ This is a design change from Dev10. Notice that modifiers "public shared sub" are absent.
+ VB / C# Quick Info Consistency
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces.SymbolDescriptionServiceTests.TestFormalParameter">
+ <summary>
+ This is a design change from Dev10. Showing what we already know is kinda useless.
+ This is what C# does. We are modifying VB to follow this model.
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.Editor.UnitTests.Workspaces.SymbolDescriptionServiceTests.TestOutArguments">
+ TO DO: Add test for Ref Arg
+</member>
+<member name="T:Microsoft.CodeAnalysis.Editor.Implementation.Diagnostics.UnitTests.DiagnosticProviderTests">
+ <summary>
+ Tests for Error List. Since it is language agnostic there are no C# or VB Specific tests
+ </summary>
+</member>
+</members>
+</doc>

@@ -1,0 +1,845 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.VisualStudio.InteractiveWindow</name>
+    </assembly>
+    <members>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.InteractiveWindowCommandExtensions.GetInteractiveCommands(Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow)">
+            <summary>
+            Gets the IInteractiveWindowCommands instance for the current interactive window if one is defined.
+            
+            Returns null if the interactive commands have not been created for this window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand">
+            <summary>
+            Represents a command which can be run from a REPL window.
+            
+            This interface is a MEF contract and can be implemented and exported to add commands to the REPL window.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.Execute(Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow,System.String)">
+            <summary>
+            Asynchronously executes the command with specified arguments and calls back the given completion when finished.
+            </summary>
+            <param name="window">The interactive window.</param>
+            <param name="arguments">Command arguments.</param>
+            <returns>The task that completes the execution.</returns>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.Description">
+            <summary>
+            Gets a brief (ideally single-line) description of the REPL command which is displayed when the user asks for help.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.CommandLine">
+            <summary>
+            A single line parameters listing, or null if the command doesn't take any parameters. For example, "[on|off]".
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.DetailedDescription">
+            <summary>
+            Gets detailed description of the command usage.
+            </summary>
+            <remarks>
+            Returns a sequence of lines.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.ParametersDescription">
+            <summary>
+            Parameter name and description for parameters of the command.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.Names">
+            <summary>
+            The name of the command. May not contain any whitespace characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand.ClassifyArguments(Microsoft.VisualStudio.Text.ITextSnapshot,Microsoft.VisualStudio.Text.Span,Microsoft.VisualStudio.Text.Span)">
+            <summary>
+            Provides classification for command arguments.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.Commands.InteractiveWindowCommand">
+            <summary>
+            Represents a command which can be run from a REPL window.
+            
+            This interface is a MEF contract and can be implemented and exported to add commands to the REPL window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands">
+            <summary>
+            Provides handling of meta-commands in the interactive window.  Instances can be
+            created using the <see cref="T:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommandsFactory"/> service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.InCommand">
+            <summary>
+            Checks to see if the current input is in command mode (it is prefixed with the
+            command prefix).
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.CommandPrefix">
+            <summary>
+            Gets the prefix which is used for interactive window commands.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.TryExecuteCommand">
+            <summary>
+            Attempts to execute the command and returns the execution result.
+            
+            Returns null if the current command is unrecognized.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.GetCommands">
+            <summary>
+            Gets the registered list of commands that this IInteractiveWindowCommands was created with.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.Item(System.String)">
+            <summary>
+            Gets an individual command by name.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.DisplayCommandHelp(Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand)">
+            <summary>
+            Displays help into the interactive window for the specified command.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.DisplayCommandUsage(Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand,System.IO.TextWriter,System.Boolean)">
+            <summary>
+            Displays usage information in the interactive window for the specified command.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.DisplayHelp">
+            <summary>
+            Displays help for all of the available commands.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands.Classify(Microsoft.VisualStudio.Text.SnapshotSpan)">
+            <summary>
+            Classifies the specified command snapshot.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommandsFactory">
+            <summary>
+            Creates an <see cref="T:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommands"/> which handles updating the context type for the command type,
+            classification of commands, and execution of commands.
+            </summary>
+            <remarks>
+            Engines need to use this interface to respond to checks if code can be executed and to
+            execute text when in a command mode.
+            
+            The commands that are available for this interactive window are provided at creation time
+            along with the prefix which commands should be prefaced with.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommandsFactory.CreateInteractiveCommands(Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow,System.String,System.Collections.Generic.IEnumerable{Microsoft.VisualStudio.InteractiveWindow.Commands.IInteractiveWindowCommand})">
+            <summary>
+            Creates the IInteractiveCommands instance.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.CustomTrackingSpan">
+            <summary>
+            This is a custom span which is like an EdgeInclusive span.  We need a custom span because elision buffers
+            do not allow EdgeInclusive unless it spans the entire buffer.  We create snippets of our language spans
+            and these are initially zero length.  When we insert at the beginning of these we'll end up keeping the
+            span zero length if we're just EdgePositive tracking.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.ExecutionResult">
+            <summary>
+            The result of command execution.  
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.History.Entry._cachedText">
+            <summary>
+            The cached text of this entry, which may exist if we've detached from the span.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.History.Entry._originalSpan">
+            <summary>
+            The span of the original submission of this text.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator">
+            <summary>
+            Implements an evaluator for a specific REPL implementation.  The evaluator is provided to the
+            REPL implementation by the IInteractiveEngineProvider interface.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.CurrentWindow">
+            <summary>
+            Gets or sets Interactive Window the engine is currently attached to.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.InitializeAsync">
+            <summary>
+            Initializes the interactive session. 
+            </summary>
+            <returns>Task that completes the initialization.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.ResetAsync(System.Boolean)">
+            <summary>
+            Re-starts the interpreter. Usually this closes the current process (if alive) and starts
+            a new interpreter.
+            </summary>
+            <returns>Task that completes reset and initialization of the new process.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.CanExecuteCode(System.String)">
+            <summary>
+            Returns true if the text can be executed.  Used to determine if there is a whole statement entered
+            in the REPL window.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.ExecuteCodeAsync(System.String)">
+            <summary>
+            Asynchronously executes the specified text.
+            </summary>
+            <param name="text">The code snippet to execute.</param>
+            <returns>Task that completes the execution.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.FormatClipboard">
+            <summary>
+            Formats the contents of the clipboard in a manner reasonable for the language.  Returns null if the
+            current clipboard cannot be formatted.
+            
+            </summary>
+            <remarks>
+            By default if the clipboard contains text it will be pasted.  The language can format
+            additional forms here - for example CSV data can be formatted in a language compatible
+            manner.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.AbortExecution">
+            <summary>
+            Aborts the current running command.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator.GetPrompt">
+            <summary>
+            Retrieves the prompt string.
+            </summary>
+            <returns>The prompt string.</returns>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow">
+            <summary>
+            An implementation of a Read Eval Print Loop Window for iteratively developing code.
+            
+            Instances of the repl window can be created by using MEF to import the IInteractiveWindowProvider interface.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.TextView">
+            <summary>
+            Gets the text view which the interactive window is running and writing output to.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.CurrentLanguageBuffer">
+            <summary>
+            Gets the current language buffer.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.OutputBuffer">
+            <summary>
+            Gets the output editor buffer.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.Evaluator">
+            <summary>
+            The language evaluator used in Repl Window
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.InitializeAsync">
+            <summary>
+            Initializes the execution environment and shows the initial prompt.
+            </summary>
+            <returns>Returns a started task that finishes as soon as the initialization completes.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.Close">
+            <summary>
+            Closes the underlying text view.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.InsertCode(System.String)">
+            <summary>
+            Insert the specified text to the active code buffer at the current caret position.
+            </summary>
+            <param name="text">Text to insert.</param>
+            <remarks>
+            Overwrites the current selection.
+            
+            If the REPL is in the middle of code execution the text is inserted at the end of a pending input buffer.
+            When the REPL is ready for input the pending input is inserted into the active code input.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.SubmitAsync(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Submits a sequence of inputs one by one.
+            </summary>
+            <param name="inputs">
+            Code snippets or REPL commands to submit.
+            </param>
+            <remarks>
+            Enqueues given code snippets for submission at the earliest time the REPL is prepared to
+            accept submissions. Any submissions are postponed until execution of the current
+            submission (if there is any) is finished or aborted.
+            
+            The REPL processes the given inputs one by one creating a prompt, input span and possibly output span for each input.
+            This method may be reentered if any of the inputs evaluates to a command that invokes this method.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.OutputWriter">
+            <summary>
+            Output writer.
+            
+            REVIEW: Remove, other people can wrap Write APIS
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.ErrorOutputWriter">
+            <summary>
+            Error output writer.
+            
+            REVIEW: Remove, other people can wrap Write APIS
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.WriteLine(System.String)">
+            <summary>
+            Writes string followed by a line break into the output buffer.
+            </summary>
+            <param name="text">Text to write. Might be null.</param>
+            <returns>
+            The offset in the output subject buffer where the text is inserted and the length of the inserted text including the line break.
+            </returns>
+            <remarks>
+            Note that the text might not be written to the editor buffer immediately but be buffered.
+            The returned offsets might thus be beyond the current length of the editor buffer.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.Write(System.String)">
+            <summary>
+            Writes a line into the output buffer.
+            </summary>
+            <param name="text">Text to write. Might be null.</param>
+            <returns>
+            The offset in the output subject buffer where the text is inserted.
+            </returns>
+            <remarks>
+            Note that the text might not be written to the editor buffer immediately but be buffered.
+            The returned offset might thus be beyond the current length of the editor buffer.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.Write(System.Windows.UIElement)">
+            <summary>
+            Writes a UI object to the REPL window.
+            </summary>
+            <remarks>
+            Flushes all text previously written to the output buffer before the element is inserted.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.ReadStandardInput">
+            <summary>
+            Reads input from the REPL window.
+            </summary>
+            <returns>The entered input or null if cancelled.</returns>
+        </member>
+        <member name="E:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.ReadyForInput">
+            <summary>
+            Event triggered when the REPL is ready to accept input.
+            </summary>
+            <remarks>
+            Called on the UI thread.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.IsRunning">
+            <summary>
+            True if there is currently an input being executed.
+            </summary>
+            
+            <remarks>
+            This value can only be reliably queried on the UI thread, otherwise the value
+            is transient.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.IsResetting">
+            <summary>
+            True if the interactive evaluator is currently resetting.
+            </summary>
+            
+            <remarks>
+            This value can only be reliably queried on the UI thread, otherwise the value
+            is transient.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.IsInitializing">
+            <summary>
+            True if the interactive evaluator is currently resetting.
+            </summary>
+            
+            <remarks>
+            This value can only be reliably queried on the UI thread, otherwise the value
+            is transient.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow.AddInput(System.String)">
+            <summary>
+            Appends a input into the editor buffer and history as if it has been executed.
+            
+            The input is not executed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowEditorFactoryService">
+            <summary>
+            Implements the service that creates text views and buffers for the interactive window.
+            
+            There is a single implementation of this service for each MEF composition catalog.  The
+            service understands how the editors and buffers need to be created and sets them up
+            so that commands are properly routed to the editor window.
+            
+            This service is imported by <see cref="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowFactoryService"/> 
+            to use in the creation of <see cref="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow"/>s.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowEditorFactoryService.CreateTextView(Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow,Microsoft.VisualStudio.Text.ITextBuffer,Microsoft.VisualStudio.Text.Editor.ITextViewRoleSet)">
+            <summary>
+            Creates a new text view for an interactive window.
+            </summary>
+            <param name="window">The interactive window the text view is being created for.</param>
+            <param name="buffer">The projection buffer used for displaying the interactive window</param>
+            <param name="roles">The requested text view roles.</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowEditorFactoryService.CreateAndActivateBuffer(Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindow)">
+            <summary>
+            Creates a new input buffer for the interactive window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowFactoryService">
+            <summary>
+            Creates instances of the IInteractiveWindow.  
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowFactoryService.CreateWindow(Microsoft.VisualStudio.InteractiveWindow.IInteractiveEvaluator)">
+            <summary>
+            Creates a new interactive window which runs against the provided interactive evaluator.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations">
+            <summary>
+            Provides access to low level editor operations on the REPL window.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Backspace">
+            <summary>
+            Deletes the current selection or the character before the caret.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.BreakLine">
+            <summary>
+            Attempts to insert a line break.  Returns true if a line break is inserted, false if not.
+            
+            Will not submit the input.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.ClearHistory">
+            <summary>
+            Clears the input history.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.ClearView">
+            <summary>
+            Clears the REPL window screen.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.HistoryNext(System.String)">
+            <summary>
+            Advances to the next item in history.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.HistoryPrevious(System.String)">
+            <summary>
+            Advanced to the previous item in history.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.HistorySearchNext">
+            <summary>
+            If no search has been performed captures the current input as
+            the search string.  Then searches through history for the next
+            match against the current search string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.HistorySearchPrevious">
+            <summary>
+            If no search has been performed captures the current input as
+            the search string.  Then searches through history for the previous
+            match against the current search string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Home(System.Boolean)">
+            <summary>
+            Moves to the beginning of the line.  
+            
+            When in a language buffer the caret is moved to the beginning of the
+            input region not into the prompt region.
+            
+            The caret is moved to the first non-whitespace character.
+            </summary>
+            <param name="extendSelection">True to extend the selection from the current caret position.</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.End(System.Boolean)">
+            <summary>
+            Moves to the end of the line.
+            </summary>
+            <param name="extendSelection">True to extend the selection from the current caret position.</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.SelectAll">
+            <summary>
+            Selects all of the text in the buffer
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Paste">
+            <summary>
+            Pastes the current clipboard contents into the interactive window.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Cut">
+            <summary>
+            Cuts the current selection to the clipboard.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Delete">
+            <summary>
+            Deletes the current selection.
+            
+            Returns true if the selection was deleted
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Return">
+            <summary>
+            Handles the user pressing return/enter.
+            
+            If the caret is at the end of an input submits the current input.  Otherwise if the caret is
+            in a language buffer it inserts a newline.
+            
+            If not inside of a buffer the caret well be moved to the current language buffer if possible.
+            
+            Returns true if the return was successfully processed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.TrySubmitStandardInput">
+            <summary>
+            If the current input is a standard input this will submit the input.
+            
+            Returns true if the input was submitted, false otherwise.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.ResetAsync(System.Boolean)">
+            <summary>
+            Resets the execution context clearing all variables.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.ExecuteInput">
+            <summary>
+            Executes the current input regardless of the caret position within the input. 
+            
+            If the caret is in a previously executed input then the input is pasted to the
+            end of the current input and not executed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.IInteractiveWindowOperations.Cancel">
+            <summary>
+            Clears the current input.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow">
+            <summary>
+            Provides implementation of a Repl Window built on top of the VS editor using projection buffers.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.Cancel">
+            <summary>
+            Clears the current input
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.Home(System.Boolean)">
+            <summary>
+            Moves to the beginning of the line.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.End(System.Boolean)">
+            <summary>
+            Moves to the end of the line.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetContainingRegion(Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            Given a point in projection buffer calculate a span that includes the point and comprises of 
+            subsequent projection spans forming a region, i.e. a sequence of output spans in between two subsequent submissions,
+            a language input block, or standard input block.
+            
+            Internal for testing.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.Paste">
+            <summary>
+            Pastes from the clipboard into the text view
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.IndentCurrentLine(Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            Indents the line where the caret is currently located.
+            </summary>
+            <remarks>
+            We don't send this command to the editor since smart indentation doesn't work along with
+            BufferChanged event. Instead, we need to implement indentation ourselves. We still use
+            ISmartIndentProvider provided by the language.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.DeletePreviousCharacter">
+            <summary>
+            Deletes characters preceding the current caret position in the current language buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.CutOrDeleteSelection(System.Boolean)">
+            <summary>
+            Deletes currently selected text from the language buffer and optionally saves it to the clipboard.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetClosestEditablePoint(Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            Finds a point in an editable buffer that is the closest towards the end to the given projection point.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.MapToEditableBuffer(Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            Maps point to the current language buffer or standard input buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetLanguageBuffer(Microsoft.VisualStudio.Text.SnapshotPoint)">
+            <summary>
+            Returns the language or command text buffer that the specified point belongs to.
+            If the point lays in a prompt returns the buffer corresponding to the prompt.
+            </summary>
+            <returns>The language or command buffer or null if the point doesn't belong to any.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetActiveCodeInsertionPosition">
+            <summary>
+            Returns the insertion point relative to the current language buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetActiveCode">
+            <summary>
+            Returns the full text of the current active input.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.SetActiveCode(System.String)">
+            <summary>
+            Sets the active code to the specified text w/o executing it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.SetActiveCodeToHistory(Microsoft.VisualStudio.InteractiveWindow.History.Entry)">
+            <summary>
+            Sets the active code to the specified history entry.
+            </summary>
+            <param name="entry"></param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.AppendInput(System.String)">
+            <summary>
+            Appends given text to the last input span (standard input or active code input).
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.AppendOutput(System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+            Appends text to the output buffer and updates projection buffer to include it.
+            WARNING: this has to be the only method that writes to the output buffer so that 
+            the output buffering counters are kept in sync.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.CountOutputLineBreaks(System.Collections.Generic.IEnumerable{System.String},System.Boolean@)">
+            <summary>
+            Counts the number of line breaks in the text appended to the given snapshot.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetOverlappingPrompts(Microsoft.VisualStudio.Text.SnapshotSpan)">
+            <summary>
+            Enumerates input prompts that overlap given span. 
+            Returns an empty set if we are in the middle of operation changing the mapping and/or projection buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.MeasurePrompts(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Returns the lengths of the longest and shortest prompts within the specified range of lines of the current submission buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.GetClosestPrecedingInputSpan(Microsoft.VisualStudio.Text.SnapshotPoint,System.Int32@)">
+            <summary>
+            Returns <see cref="T:Microsoft.VisualStudio.InteractiveWindow.ReplSpan"/> representing the closest language or stdin span preceding given point.
+            </summary>
+            <param name="point">Snapshot point.</param>
+            <param name="primaryPromptIndex">
+            The index to <see cref="F:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow._promptLineMapping"/> of the primary prompt corresponding to the returned input span.
+            </param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.AddLanguageBuffer">
+            <summary>
+            Creates and adds a new language buffer to the projection buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.CreateLanguageTrackingSpan(Microsoft.VisualStudio.Text.Span)">
+            <summary>
+            Creates the language span for the last line of the active input.  This span
+            is effectively edge inclusive so it will grow as the user types at the end.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.CreateNonGrowingLanguageTrackingSpan(Microsoft.VisualStudio.Text.Span)">
+            <summary>
+            Creates the tracking span for a line previous in the input.  This span
+            is negative tracking on the end so when the user types at the beginning of
+            the next line we don't grow with the change.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.AddStandardInputSpan">
+            <summary>
+            Add a zero-width tracking span at the end of the projection buffer mapping to the end of the standard input buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.ApplyProtection(Microsoft.VisualStudio.Text.ITextBuffer,Microsoft.VisualStudio.Text.IReadOnlyRegion[],System.Boolean)">
+            <summary>
+            Marks the entire buffer as read-only.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindow.RemoveProtection(Microsoft.VisualStudio.Text.ITextBuffer,Microsoft.VisualStudio.Text.IReadOnlyRegion[])">
+            <summary>
+            Removes read-only region from buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowExtensions.GetInteractiveWindow(Microsoft.VisualStudio.Text.ITextBuffer)">
+            <summary>
+            Gets the interactive window associated with the text buffer if the text
+            buffer is being hosted in the interactive window.
+            
+            Returns null if the text buffer is not hosted in the interactive window.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowOptions.SmartUpDown">
+            <summary>
+            Indicates that the window should be using smart up/down behavior.  When enabled pressing
+            the up or down arrow key will navigate history if the caret is at the end of the current
+            input.  When disabled the up/down arrow keys will always navigate the buffer.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources.AlreadyInitialized">
+            <summary>
+              Looks up a localized string similar to The interactive window has already been initialized..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources.DuplicateCommand">
+            <summary>
+              Looks up a localized string similar to A command with the name &apos;{0}&apos; has already been registered..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.InteractiveWindowResources.MissingCommandName">
+            <summary>
+              Looks up a localized string similar to .
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.OutputBuffer">
+            <summary>
+            Serializes and buffers output so that we avoid frequent switching to UI thread to write to the editor buffer.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.OutputBuffer.Write(System.String)">
+            <summary>
+            Appends text to the end of the buffer. 
+            </summary>
+            <param name="text">Text to append.</param>
+            <returns>Returns the position where this text is inserted relative to the buffer start.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.OutputBuffer.Flush">
+            <summary>
+            Flushes the buffer, should always be called from the UI thread.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.OutputClassifierProvider">
+            <summary>
+            Classifies error text in interactive window output.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.SortedSpans">
+            <summary>
+            Thread safe sequence of disjoint spans ordered by start position.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.PredefinedInteractiveTextViewRoles.InteractiveTextViewRole">
+            <summary>
+            The additional role found in any REPL editor window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.InteractiveWindow.PromptLineMapping">
+            <summary>
+            Maps line numbers in projection buffer to indices of projection spans corresponding to primary and stdin prompts.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.InteractiveWindow.PromptLineMapping.IsInconsistentWithProjections">
+            <summary>
+            If true the map might not be consistent with projection spans.
+            Used to work around the lack of an editor feature that would allow us 
+            to edit a subject buffer and projection spans atomically.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.InteractiveWindow.PromptLineMapping.GetMappingIndexByLineNumber(System.Int32)">
+            <summary>
+            Binary search for a prompt located on given line number. 
+            If no prompt is on the given line number returns the closest preceding prompt.
+            </summary>
+            <returns>An index in the prompt line map.</returns>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.Output">
+            <summary>
+            The span represents output from the program (standard output)
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.Prompt">
+            <summary>
+            The span represents a prompt for input of code.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.SecondaryPrompt">
+            <summary>
+            The span represents a secondary prompt for more code.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.Language">
+            <summary>
+            The span represents code inputted after a prompt or secondary prompt.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.StandardInputPrompt">
+            <summary>
+            The span represents the prompt for input for standard input (non code input)
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.InteractiveWindow.ReplSpanKind.StandardInput">
+            <summary>
+            The span represents the input for a standard input (non code input)
+            </summary>
+        </member>
+    </members>
+</doc>

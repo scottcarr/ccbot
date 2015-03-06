@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+vbi
+</name>
+</assembly>
+<members>
+<member name="T:VisualBasicInteractive.BasicInteractive.VbiResources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:VisualBasicInteractive.BasicInteractive.VbiResources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:VisualBasicInteractive.BasicInteractive.VbiResources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="P:VisualBasicInteractive.BasicInteractive.VbiResources.LogoLine1">
+<summary>
+  Looks up a localized string similar to Microsoft (R) Roslyn Visual Basic Interactive Compiler version {0}.
+</summary>
+</member>
+<member name="P:VisualBasicInteractive.BasicInteractive.VbiResources.LogoLine2">
+<summary>
+  Looks up a localized string similar to Copyright (C) Microsoft Corporation. All rights reserved..
+</summary>
+</member>
+</members>
+</doc>

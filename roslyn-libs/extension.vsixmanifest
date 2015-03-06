@@ -1,0 +1,34 @@
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Id="OpenSourceDebug..7922692f-f018-45e7-8f3f-d3b7c0262841" Version="0.7" Language="en-US" Publisher="MSOpenTech" />
+    <DisplayName>OpenSourceDebug</DisplayName>
+    <Description xml:space="preserve">Enable Open Source Debugging</Description>
+    <License>License.txt</License>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[14.0]" />
+    <InstallationTarget Version="[14.0]" Id="Microsoft.VisualStudio.Premium" />
+    <InstallationTarget Version="[14.0]" Id="Microsoft.VisualStudio.Ultimate" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.5,)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="enableopensource.pkgdef" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="OpenSourceDebug.pkgdef" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.CSharp.Desktop.dll" AssemblyName="Microsoft.CodeAnalysis.CSharp.Desktop,             Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.CSharp.dll" AssemblyName="Microsoft.CodeAnalysis.CSharp,                     Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.dll" AssemblyName="Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers,      Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.CSharp.Workspaces.dll" AssemblyName="Microsoft.CodeAnalysis.CSharp.Workspaces,          Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.CSharp.Desktop.dll" AssemblyName="Microsoft.CodeAnalysis.Desktop,                    Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.dll" AssemblyName="Microsoft.CodeAnalysis,                            Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.FxCopAnalyzers.dll" AssemblyName="Microsoft.CodeAnalysis.FxCopAnalyzers,             Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.VisualBasic.Desktop.dll" AssemblyName="Microsoft.CodeAnalysis.VisualBasic.Desktop,        Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.VisualBasic.dll" AssemblyName="Microsoft.CodeAnalysis.VisualBasic,                Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.VisualBasic.FxCopAnalyzers.dll" AssemblyName="Microsoft.CodeAnalysis.VisualBasic.FxCopAnalyzers, Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" AssemblyName="Microsoft.CodeAnalysis.VisualBasic.Workspaces,     Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Microsoft.CodeAnalysis.Workspaces.dll" AssemblyName="Microsoft.CodeAnalysis.Workspaces,                 Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Roslyn.SyntaxVisualizer.DgmlHelper.dll" AssemblyName="Roslyn.SyntaxVisualizer.DgmlHelper,                Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Asset Type="Microsoft.VisualStudio.Assembly" Path="Roslyn.SyntaxVisualizer.Control.dll" AssemblyName="Roslyn.SyntaxVisualizer.Control,                   Version=0.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+  </Assets>
+</PackageManifest>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Runtime.CSharp.Analyzers</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.Analyzers.CSharpDefineAccessorsForAttributeArgumentsAnalyzer">
+            <summary>
+            CA1019: Define accessors for attribute arguments
+            
+            Cause:
+            In its constructor, an attribute defines arguments that do not have corresponding properties.
+            </summary>
+        </member>
+    </members>
+</doc>

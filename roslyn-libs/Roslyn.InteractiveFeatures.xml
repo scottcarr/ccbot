@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Roslyn.InteractiveFeatures</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.InteractiveHostOptions">
+            <summary>
+            Settings that affect InteractiveHost process and initialization.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Interactive.InteractiveHostOptions.InitializationFile">
+            <summary>
+            Optional path to the .rsp file to process when initializing context of the process.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.InteractiveHost">
+            <summary>
+            Represents a process that hosts an interactive session.
+            </summary>
+            <remarks>
+            Handles spawning of the host process and communication between the local callers and the remote session.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.ResetAsync(Microsoft.CodeAnalysis.Interactive.InteractiveHostOptions)">
+            <summary>
+            Restarts and reinitializes the host process (or starts a new one if it is not running yet).
+            </summary>
+            <param name="optionsOpt">The options to initialize the new process with, or null to use the current options (or default options if the process isn't running yet).</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.ExecuteAsync(System.String)">
+            <summary>
+            Asynchronously executes given code in the remote interactive session.
+            </summary>
+            <param name="code">The code to execute.</param>
+            <remarks>
+            This method is thread safe. References can be added and source code executed in parallel. 
+            The operations are serialized to UI thread in the remote process in first come first served order.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.ExecuteFileAsync(System.String)">
+            <summary>
+            Asynchronously executes given code in the remote interactive session.
+            </summary>
+            <param name="path">The file to execute.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="path"/> is null.</exception>
+            <remarks>
+            This method is thread safe. All session operations are serialized to UI thread in the remote process in first come first served order.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.AddReferenceAsync(System.String)">
+            <summary>
+            Asynchronously adds a reference to the set of available references for next submission.
+            </summary>
+            <param name="reference">The reference to add.</param>
+            <remarks>
+            This method is thread safe. All session operations are serialized to UI thread in the remote process in first come first served order.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.SetPathsAsync(System.String[],System.String[],System.String)">
+            <summary>
+            Sets the current session's search paths and base directory.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service">
+            <summary>
+            A remote singleton server-activated object that lives in the interactive host process and controls it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.RunServer(System.String,System.String,System.Int32)">
+            <summary>
+            Implements remote server.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.InitializeContextAsync(Microsoft.CodeAnalysis.Interactive.InteractiveHost.RemoteAsyncOperation{Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult},System.String,System.Boolean)">
+            <summary>
+            Reads given initialization file (.rsp) and loads and executes all assembly references and files, respectively specified in it.
+            Execution is performed on the UI thread.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.AddReferenceAsync(Microsoft.CodeAnalysis.Interactive.InteractiveHost.RemoteAsyncOperation{System.Boolean},System.String)">
+            <summary>
+            Adds an assembly reference to the current session.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ExecuteAsync(Microsoft.CodeAnalysis.Interactive.InteractiveHost.RemoteAsyncOperation{Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult},System.String)">
+            <summary>
+            Executes given script snippet on the UI thread in the context of the current session.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ExecuteFileAsync(Microsoft.CodeAnalysis.Interactive.InteractiveHost.RemoteAsyncOperation{Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult},System.String)">
+            <summary>
+            Executes given script file on the UI thread in the context of the current session.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.InitializeContext(System.String,System.Boolean)">
+            <summary>
+            Loads references, set options and execute files specified in the initialization file.
+            Also prints logo unless <paramref name="isRestarting"/> is true.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ExecuteFile(System.String)">
+            <summary>
+            Executes specified script file as a submission.
+            </summary>
+            <param name="fullPath">Full source path.</param>
+            <returns>True if the code has been executed. False if the code doesn't compile.</returns>
+            <remarks>
+            All errors are written to the error output stream.
+            Uses source search paths to resolve unrooted paths.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.Execute(System.String)">
+            <summary>
+            Executes specified code.
+            </summary>
+            <param name="text">Source code.</param>
+            <returns>True if the code has been executed. False if the code doesn't compile.</returns>
+            <remarks>
+            All errors are written to the error output stream.
+            The resulting value (if any) is formatted and printed to the output stream.
+            </remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ErrorMode.SEM_FAILCRITICALERRORS">
+            <summary>
+            Use the system default, which is to display all error dialog boxes.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ErrorMode.SEM_NOGPFAULTERRORBOX">
+            <summary>
+            The system does not display the critical-error-handler message box. Instead, the system sends the error to the calling process.
+            Best practice is that all applications call the process-wide SetErrorMode function with a parameter of SEM_FAILCRITICALERRORS at startup. 
+            This is to prevent error mode dialogs from hanging the application.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ErrorMode.SEM_NOALIGNMENTFAULTEXCEPT">
+            <summary>
+            The system automatically fixes memory alignment faults and makes them invisible to the application. 
+            It does this for the calling process and any descendant processes. This feature is only supported by 
+            certain processor architectures. For more information, see the Remarks section.
+            After this value is set for a process, subsequent attempts to clear the value are ignored.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.InteractiveHost.Service.ErrorMode.SEM_NOOPENFILEERRORBOX">
+            <summary>
+            The system does not display a message box when it fails to find a file. Instead, the error is returned to the calling process.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Interactive.InteractiveHost.RemoteAsyncOperation`1.Completed(`0)">
+            <summary>
+            Might be called remotely from the service.
+            </summary>
+            <returns>Returns true if the operation hasn't been completed until this call.</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.IRepl">
+            <summary>
+            Provides basic REPL functionality.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult.NewSourcePaths">
+            <summary>
+            New value of source search paths after execution, or null if not changed since the last execution.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult.NewReferencePaths">
+            <summary>
+            New value of reference search paths after execution, or null if not changed since the last execution.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult.NewWorkingDirectory">
+            <summary>
+            New value of working directory in the remote process after execution, or null if not changed since the last execution.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Interactive.RemoteExecutionResult.ResolvedPath">
+            <summary>
+            Resolved path if applicable. Used by ExecuteFile.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.SearchPaths">
+            <summary>
+            Search path list facade that displays nicely in Interactive Window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Interactive.SynchronizedVersionedList`1">
+            <summary>
+            Synchronized list that tracks its version.
+            </summary>
+        </member>
+    </members>
+</doc>

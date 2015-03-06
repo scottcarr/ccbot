@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Roslyn.SyntaxVisualizer.Control</name>
+    </assembly>
+    <members>
+        <member name="T:Roslyn.SyntaxVisualizer.Control.SyntaxVisualizerControl">
+            <summary>
+            SyntaxVisualizerControl
+            </summary>
+        </member>
+        <member name="M:Roslyn.SyntaxVisualizer.Control.SyntaxVisualizerControl.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

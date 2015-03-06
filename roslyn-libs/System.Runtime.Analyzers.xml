@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Runtime.Analyzers</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.Analyzers.OverrideMethodsOnComparableTypesAnalyzer">
+            <summary>
+            CA1036: A public or protected type implements the System.IComparable interface and 
+            does not override Object.Equals or does not overload the language-specific operator
+            for equality, inequality, less than, or greater than. The rule does not report a
+            violation if the type inherits only an implementation of the interface.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Analyzers.DefineAccessorsForAttributeArgumentsAnalyzer">
+            <summary>
+            CA1019: Define accessors for attribute arguments
+            
+            Cause:
+            In its constructor, an attribute defines arguments that do not have corresponding properties.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Analyzers.MarkAttributesWithAttributeUsageAnalyzer">
+            <summary>
+            CA1018: Custom attributes should have AttributeUsage attribute defined.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Analyzers.TypesThatOwnDisposableFieldsShouldBeDisposableFixer">
+            <summary>
+            CA1001: Types that own disposable fields should be disposable
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Analyzers.TypesThatOwnDisposableFieldsShouldBeDisposableAnalyzer">
+            <summary>
+            CA1001: Types that own disposable fields should be disposable
+            </summary>
+        </member>
+        <member name="T:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryDesign">
+            <summary>
+              Looks up a localized string similar to Design.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryGlobalization">
+            <summary>
+              Looks up a localized string similar to Globalization.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryInteroperability">
+            <summary>
+              Looks up a localized string similar to Interoperability.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryNaming">
+            <summary>
+              Looks up a localized string similar to Naming.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryPerformance">
+            <summary>
+              Looks up a localized string similar to Performance.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryReliability">
+            <summary>
+              Looks up a localized string similar to Reliability.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CategoryUsage">
+            <summary>
+              Looks up a localized string similar to Usage.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CreatePropertyAccessorForParameter">
+            <summary>
+              Looks up a localized string similar to Create a property accessor..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.CustomAttrShouldHaveAttributeUsage">
+            <summary>
+              Looks up a localized string similar to Custom attributes should have AttributeUsage attribute defined..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.DefineAccessorsForAttributeArguments">
+            <summary>
+              Looks up a localized string similar to Define accessors for attribute arguments..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.DefineAccessorsForAttributeArgumentsDefault">
+            <summary>
+              Looks up a localized string similar to Add a public read-only property accessor for positional argument &apos;{0}&apos; of attribute &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.DefineAccessorsForAttributeArgumentsIncreaseVisibility">
+            <summary>
+              Looks up a localized string similar to If &apos;{0}&apos; is the property accessor for positional argument &apos;{1}&apos;, ensure that property getter is public..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.DefineAccessorsForAttributeArgumentsRemoveSetter">
+            <summary>
+              Looks up a localized string similar to Remove the property setter from &apos;{0}&apos; or reduce its accessibility because it corresponds to positional argument &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.ImplementComparable">
+            <summary>
+              Looks up a localized string similar to Implement Equality and Comparison methods and operators.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.ImplementIDisposableInterface">
+            <summary>
+              Looks up a localized string similar to Implement IDisposable Interface.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.MakeGetterPublic">
+            <summary>
+              Looks up a localized string similar to Make the getter of the property public.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.MakeSetterNonPublic">
+            <summary>
+              Looks up a localized string similar to Make the setter of the property non-public.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.MarkAttributesWithAttributeUsage">
+            <summary>
+              Looks up a localized string similar to Specify AttributeUsage attribute on &apos;{0}&apos; attribute class..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.OverloadOperatorEqualsOnIComparableInterface">
+            <summary>
+              Looks up a localized string similar to Overload operator Equals and comparison operators when implementing System.IComparable.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.OverloadOperatorEqualsOnIComparableInterfaceDescription">
+            <summary>
+              Looks up a localized string similar to Types that implement IComparable should redefine Equals and comparison operators to keep the meanings of less than, greater than, and equals consistent throughout the type..
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.TypeOwnsDisposableFieldButIsNotDisposable">
+            <summary>
+              Looks up a localized string similar to Type &apos;{0}&apos; owns disposable fields but is not disposable.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.Analyzers.SystemRuntimeAnalyzersResources.TypesThatOwnDisposableFieldsShouldBeDisposable">
+            <summary>
+              Looks up a localized string similar to Types that own disposable fields should be disposable.
+            </summary>
+        </member>
+    </members>
+</doc>
