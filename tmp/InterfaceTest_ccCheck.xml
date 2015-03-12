@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="IBM437"?>
+<CCCheckOutput>
+  <Statistics>Time spent connecting to the cache: 00:00:01.2168021</Statistics>
+  <Message>Cache used: (LocalDb)\v11.0</Message>
+  <Assembly Name="InterfaceTest">
+    <Method Name="M:InterfaceTest.Program.#ctor" />
+    <Method Name="M:InterfaceTest.Program.foo(InterfaceTest.Shape)">
+      <Check SourceLocation="SR5[0xd]" Message="requires unproven: source != null. Are you making some assumption on InterfaceTest.Shape.getName() that the static checker is unaware of? ">
+        <Result>unknown</Result>
+        <Score>0.930641867897727</Score>
+        <ConfidenceLevel>Medium</ConfidenceLevel>
+        <Justification>
+          <Feature>ContractRequires</Feature>
+          <Feature>WPReachedMethodEntry</Feature>
+          <Feature>InferredCalleeAssume (IsAbstract, IsNewSlot, IsVirtual, IsPublic, ReturnPrimitiveValue, ReturnReferenceType)</Feature>
+          <Feature>ViaMethodCall</Feature>
+        </Justification>
+        <RelatedLocation RelatedLocation="SR5[0xd]" />
+      </Check>
+      <Suggestion SuggestionKind="EnsuresNecessary" SourceLocation="c:\Users\carr27\Documents\GitHub\reviewbot\Tests\InterfaceTest\Program.cs(24,9-24,36)" Kind="ensures for member getName" Suggested="The caller expects the postcondition Contract.Ensures(Contract.Result&lt;System.String&gt;() != null); to hold for the interface member getName. Consider adding such postcondition to enforce all implementations to guarantee it">
+        <SuggestionExtraInfo CalleeDocumentId="M:InterfaceTest.Shape.getName" CalleeMemberKind="Interface" CalleeIsDeclaredInTheSameAssembly="True" TypeDocumentId="T:InterfaceTest.Shape" SuggestedCode="Contract.Ensures(Contract.Result&lt;System.String&gt;() != null);" />
+      </Suggestion>
+    </Method>
+    <Method Name="M:InterfaceTest.Program.Main(System.String[])" />
+    <Method Name="M:System.Diagnostics.Contracts.ContractDeclarativeAssemblyAttribute.#ctor" />
+  </Assembly>
+  <Statistics>Validated: 75.0 %</Statistics>
+  <Message>Checked 4 assertions: 3 correct 1 unknown </Message>
+  <Statistics>Contract density: 2.00</Statistics>
+  <Statistics>Total methods analyzed 4</Statistics>
+  <Statistics>Methods analyzed with a faster abstract domain 0</Statistics>
+  <Statistics>Method analyses read from the cache 4</Statistics>
+  <Statistics>Methods not found in the cache 0</Statistics>
+  <Statistics>Methods with 0 warnings 3</Statistics>
+  <Statistics>Total time 1.237sec. 309ms/method</Statistics>
+  <Message>Methods with necessary preconditions: 1</Message>
+  <Message>Retained 0 preconditions after filtering</Message>
+  <Message>Inferred 0 object invariants</Message>
+  <Message>Retained 0 object invariants after filtering</Message>
+  <Message>Detected 0 code fixes</Message>
+  <Message>Proof obligations with a code fix: 0</Message>
+  <FinalStatistic Assembly="InterfaceTest.exe">Checked 4 assertions: 3 correct 1 unknown </FinalStatistic>
+</CCCheckOutput>

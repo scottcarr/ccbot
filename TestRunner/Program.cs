@@ -15,9 +15,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.Research.ReviewBot;
 using Microsoft.Research.ReviewBot.Utils;
 
-namespace TestRunner
+namespace Microsoft.Research.ReviewBot.TestRunner
 {
   class Program
   {
@@ -32,18 +33,44 @@ namespace TestRunner
       var tmpDir = Path.Combine(slnDir.FullName, "tmp");
       Console.WriteLine(testDir);
       var projs = Directory.GetFiles(testDir, @"*.csproj", SearchOption.AllDirectories);
-      foreach (var p in projs) {
+      var MSBuild = @"C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe";
+      var Cccheck = @"C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe";
+      var CccheckOptions = @" -xml -remote=false -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full";
+      foreach (var p in projs)
+      {
         var projDir = Directory.GetParent(p);
         var pName = Path.GetFileNameWithoutExtension(p);
         var ccCheckXml = Path.Combine(tmpDir, pName + "_ccCheck.xml");
+
+        var rsp = Directory.GetFiles(projDir.FullName, @"*cccheck.rsp", SearchOption.AllDirectories).First();
         Console.WriteLine(p);
+
+        // run clousot
+        /*
+        if (!ExternalCommands.TryBuildSolution(sln, MSBuild))
+        {
+          Output.WriteErrorAndQuit("Couldn't build the solution");
+        }
+        */
+
+        if (!ExternalCommands.TryRunClousot(ccCheckXml, Cccheck, CccheckOptions, rsp))
+        {
+          Output.WriteErrorAndQuit("Cant' run Clousot");
+        } 
+
+        // run reviewbot
         var reviewArgs = new string[] {
                                 ccCheckXml, 
                                 "-project", p, 
                                 "-solution", sln, 
                                 "-output", "inplace"
                               };
+        if (Annotator.DoAnnotate(reviewArgs) != 0)
+        {
+          Console.WriteLine("Annotating failed.");
+        }
       }
+      Console.WriteLine("done.");
       Console.ReadKey();
     }
   }

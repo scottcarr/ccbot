@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="IBM437"?>
+<CCCheckOutput>
+  <Statistics>Time spent connecting to the cache: 00:00:03.4164060</Statistics>
+  <Message>Cache used: (LocalDb)\v11.0</Message>
+  <Assembly Name="ConsoleApplication1">
+    <Method Name="M:ConsoleApplication1.Program.#ctor" />
+    <Method Name="M:ConsoleApplication1.Program.Main(System.String[])" />
+    <Method Name="M:System.Diagnostics.Contracts.ContractDeclarativeAssemblyAttribute.#ctor" />
+  </Assembly>
+  <Statistics>Validated: 100.0 %</Statistics>
+  <Message>Checked 2 assertions: 2 correct </Message>
+  <Statistics>Contract density: 0.00</Statistics>
+  <Statistics>Total methods analyzed 3</Statistics>
+  <Statistics>Methods analyzed with a faster abstract domain 0</Statistics>
+  <Statistics>Method analyses read from the cache 2</Statistics>
+  <Statistics>Methods not found in the cache 1</Statistics>
+  <Statistics>Methods with 0 warnings 3</Statistics>
+  <Statistics>Time spent in internal, potentially costly, operations</Statistics>
+  <Statistics>Overall time spent performing action #KarrPutIntoRowEchelonForm: 00:00:00 (invoked 24 times)
+Overall time spent performing action #KarrIsBottom: 00:00:00 (invoked 34 times)
+</Statistics>
+  <Statistics>Total time 2.095sec. 698ms/method</Statistics>
+  <Message>Retained 0 preconditions after filtering</Message>
+  <Message>Inferred 0 object invariants</Message>
+  <Message>Retained 0 object invariants after filtering</Message>
+  <Message>Detected 0 code fixes</Message>
+  <Message>Proof obligations with a code fix: 0</Message>
+  <FinalStatistic Assembly="ConsoleApplication1.exe">Checked 2 assertions: 2 correct </FinalStatistic>
+</CCCheckOutput>

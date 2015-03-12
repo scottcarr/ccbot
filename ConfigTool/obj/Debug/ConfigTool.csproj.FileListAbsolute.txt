@@ -96,3 +96,10 @@ C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigT
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ConfigTool.csproj.GenerateResource.Cache
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.exe
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.pdb
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\CodeContracts\ReviewBotConfigTool.Contracts.dll
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\CodeContracts\ReviewBotConfigTool.Contracts.pdb
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\Decl\ReviewBotConfigTool.exe
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\Decl\ReviewBotConfigTool.pdb
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ConfigToolccrefgen.rsp
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.rewritten
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\CodeContractAnalysisRun.log
