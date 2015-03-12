@@ -41,7 +41,7 @@ namespace TestRunner
                                 ccCheckXml, 
                                 "-project", p, 
                                 "-solution", sln, 
-                                "-github", /*gitroot*/, /*branch?*/
+                                "-inplace"
                               };
       }
       Console.ReadKey();
