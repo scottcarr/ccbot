@@ -41,7 +41,7 @@ namespace TestRunner
                                 ccCheckXml, 
                                 "-project", p, 
                                 "-solution", sln, 
-                                "-inplace"
+                                "-output", "inplace"
                               };
       }
       Console.ReadKey();

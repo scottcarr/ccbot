@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Project>C:\Users\carr27\Documents\GitHub\reviewbot-tests\ConsoleApplication1\InterfaceTest\InterfaceTest.csproj</Project>
+  <Solution>C:\Users\carr27\Documents\GitHub\reviewbot-tests\ConsoleApplication1\ConsoleApplication1.sln</Solution>
+  <Git>C:\Program Files (x86)\Git\bin\git.exe</Git>
+  <GitRoot>C:\Users\carr27\Documents\GitHub\reviewbot-tests</GitRoot>
+  <GitBaseBranch>master</GitBaseBranch>
+  <Cccheck>C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe</Cccheck>
+  <CccheckXml>C:\Users\carr27\Documents\GitHub\reviewbot-tests\tmp\InterfaceCheck.xml</CccheckXml>
+  <CccheckOptions> -xml -remote=false -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full </CccheckOptions>
+  <MSBuild>C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe</MSBuild>
+  <RSP>C:\Users\carr27\Documents\GitHub\reviewbot-tests\ConsoleApplication1\InterfaceTest\obj\Debug\Decl\InterfaceTestcccheck.rsp</RSP>
+  <CodeFlowProject>ReviewBotTesting</CodeFlowProject>
+</Configuration>
