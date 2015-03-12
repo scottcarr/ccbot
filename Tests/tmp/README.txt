@@ -1,0 +1,1 @@
+This is a folder to put the output from the tests
