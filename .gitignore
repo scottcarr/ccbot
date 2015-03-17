@@ -172,3 +172,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 tmp/**.xml
+tmp/ConsoleApplication1_ccCheck.xml
