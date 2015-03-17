@@ -171,6 +171,3 @@ UpgradeLog*.htm
 *.bim_*.settings
 # Microsoft Fakes
 FakesAssemblies/
-tmp/**.xml
-tmp/ConsoleApplication1_ccCheck.xml
-tmp/ConsoleApplication1_ccCheck.xml

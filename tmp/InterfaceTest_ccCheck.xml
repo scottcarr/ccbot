@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="IBM437"?>
 <CCCheckOutput>
-  <Statistics>Time spent connecting to the cache: 00:00:01.2168021</Statistics>
+  <Statistics>Time spent connecting to the cache: 00:00:03.4531339</Statistics>
   <Message>Cache used: (LocalDb)\v11.0</Message>
   <Assembly Name="InterfaceTest">
     <Method Name="M:InterfaceTest.Program.#ctor" />
@@ -17,7 +17,7 @@
         </Justification>
         <RelatedLocation RelatedLocation="SR5[0xd]" />
       </Check>
-      <Suggestion SuggestionKind="EnsuresNecessary" SourceLocation="c:\Users\carr27\Documents\GitHub\reviewbot\Tests\InterfaceTest\Program.cs(24,9-24,36)" Kind="ensures for member getName" Suggested="The caller expects the postcondition Contract.Ensures(Contract.Result&lt;System.String&gt;() != null); to hold for the interface member getName. Consider adding such postcondition to enforce all implementations to guarantee it">
+      <Suggestion SuggestionKind="EnsuresNecessary" SourceLocation="c:\Users\Scott\Documents\GitHub\reviewbot\Tests\InterfaceTest\Program.cs(24,9-24,36)" Kind="ensures for member getName" Suggested="The caller expects the postcondition Contract.Ensures(Contract.Result&lt;System.String&gt;() != null); to hold for the interface member getName. Consider adding such postcondition to enforce all implementations to guarantee it">
         <SuggestionExtraInfo CalleeDocumentId="M:InterfaceTest.Shape.getName" CalleeMemberKind="Interface" CalleeIsDeclaredInTheSameAssembly="True" TypeDocumentId="T:InterfaceTest.Shape" SuggestedCode="Contract.Ensures(Contract.Result&lt;System.String&gt;() != null);" />
       </Suggestion>
     </Method>
@@ -32,7 +32,7 @@
   <Statistics>Method analyses read from the cache 4</Statistics>
   <Statistics>Methods not found in the cache 0</Statistics>
   <Statistics>Methods with 0 warnings 3</Statistics>
-  <Statistics>Total time 1.237sec. 309ms/method</Statistics>
+  <Statistics>Total time 2.251sec. 562ms/method</Statistics>
   <Message>Methods with necessary preconditions: 1</Message>
   <Message>Retained 0 preconditions after filtering</Message>
   <Message>Inferred 0 object invariants</Message>
