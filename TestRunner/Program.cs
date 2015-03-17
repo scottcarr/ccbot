@@ -22,36 +22,57 @@ namespace Microsoft.Research.ReviewBot.TestRunner
 {
   class Program
   {
+    static void CleanUp(string projDir)
+    {
+      var files = Directory.GetFiles(projDir, @"*_old.cs", SearchOption.AllDirectories);
+      foreach (var old in files)
+      {
+        var idx = old.IndexOf("_old");
+        var orig = old.Remove(idx, 4);
+        File.Delete(orig);
+        File.Move(old, orig);
+      }
+    }
+
+    static void Exit()
+    {
+      Console.WriteLine("done.");
+      Console.ReadKey();
+    }
+
     static void Main(string[] args)
     {
-
       // This assumes you didn't move the exe from the directory where VS puts it
+      // Prerequisite: Build All in ReviewBot.sln
       var cwd = Directory.GetCurrentDirectory();
       var slnDir = Directory.GetParent(Directory.GetParent(Directory.GetParent(cwd).FullName).FullName);
       var sln = Path.Combine(slnDir.FullName, "ReviewBot.sln"); 
       var testDir = Path.Combine(slnDir.FullName, "Tests");
       var tmpDir = Path.Combine(slnDir.FullName, "tmp");
+      var expectedDir = Path.Combine(slnDir.FullName, "TestRunner", "ExpectedOutputs");
       Console.WriteLine(testDir);
       var projs = Directory.GetFiles(testDir, @"*.csproj", SearchOption.AllDirectories);
-      var MSBuild = @"C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe";
+      //var MSBuild = @"C:\Program Files (x86)\MSBuild\12.0\Bin\amd64\MSBuild.exe";
       var Cccheck = @"C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe";
       var CccheckOptions = @" -xml -remote=false -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full";
-      foreach (var p in projs)
+      foreach (var csproj in projs)
       {
-        var projDir = Directory.GetParent(p);
-        var pName = Path.GetFileNameWithoutExtension(p);
+        var projDir = Directory.GetParent(csproj);
+        var pName = Path.GetFileNameWithoutExtension(csproj);
         var ccCheckXml = Path.Combine(tmpDir, pName + "_ccCheck.xml");
 
-        var rsp = Directory.GetFiles(projDir.FullName, @"*cccheck.rsp", SearchOption.AllDirectories).First();
-        Console.WriteLine(p);
-
-        // run clousot
-        /*
-        if (!ExternalCommands.TryBuildSolution(sln, MSBuild))
+        string rsp;
+        try
         {
-          Output.WriteErrorAndQuit("Couldn't build the solution");
+          rsp = Directory.GetFiles(projDir.FullName, @"*cccheck.rsp", SearchOption.AllDirectories).First();
         }
-        */
+        catch
+        {
+          Console.WriteLine("Couldn't find RSP file.  Did you build all and enable code contracts?");
+          Exit();
+          return;
+        }
+        Console.WriteLine(csproj);
 
         if (!ExternalCommands.TryRunClousot(ccCheckXml, Cccheck, CccheckOptions, rsp))
         {
@@ -61,7 +82,7 @@ namespace Microsoft.Research.ReviewBot.TestRunner
         // run reviewbot
         var reviewArgs = new string[] {
                                 ccCheckXml, 
-                                "-project", p, 
+                                "-project", csproj,
                                 "-solution", sln, 
                                 "-output", "inplace"
                               };
@@ -69,9 +90,9 @@ namespace Microsoft.Research.ReviewBot.TestRunner
         {
           Console.WriteLine("Annotating failed.");
         }
+        CleanUp(projDir.FullName);
+        Exit();
       }
-      Console.WriteLine("done.");
-      Console.ReadKey();
     }
   }
 }

@@ -4,6 +4,7 @@
 **/obj/Debug/**
 **/packages/**
 *~
+tmp/*.xml
 ConfigTool/obj/Debug/**
 ConfigTool/obj/Debug/*
 ReviewBot.sln.ide/*
