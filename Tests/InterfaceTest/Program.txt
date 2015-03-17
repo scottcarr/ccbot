@@ -1,0 +1,42 @@
+using System.Linq;
+using System.Diagnostics.Contracts;
+
+namespace InterfaceTest
+{
+    [ContractClass(typeof(ShapeContracts))]
+    interface Shape
+    {
+        float getArea();
+        string getName();
+
+    }
+
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+        }
+        static int foo(Shape s)
+        {
+            return s.getName().Count();
+        }
+    }
+    [ContractClassFor(typeof(Shape))]
+    internal abstract class ShapeContracts : Shape
+    {
+        public System.Single getArea()
+        {
+            throw new global::System.NotImplementedException();
+        }
+
+        public System.String getName()
+        {
+            #region CodeContracts 
+            Contract.Ensures(Contract.Result<System.String>() != null); // Suggested By ReviewBot 
+            #endregion CodeContracts 
+
+            throw new global::System.NotImplementedException();
+        }
+    }
+}
