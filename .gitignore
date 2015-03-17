@@ -4,7 +4,7 @@
 **/obj/Debug/**
 **/packages/**
 *~
-tmp/*.xml
+
 ConfigTool/obj/Debug/**
 ConfigTool/obj/Debug/*
 ReviewBot.sln.ide/*
@@ -171,3 +171,4 @@ UpgradeLog*.htm
 *.bim_*.settings
 # Microsoft Fakes
 FakesAssemblies/
+tmp/**.xml
