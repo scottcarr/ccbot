@@ -74,10 +74,13 @@ namespace Microsoft.Research.ReviewBot.TestRunner
         }
         Console.WriteLine(csproj);
 
-        if (!ExternalCommands.TryRunClousot(ccCheckXml, Cccheck, CccheckOptions, rsp))
+        if (!File.Exists(ccCheckXml)) 
         {
-          Output.WriteErrorAndQuit("Cant' run Clousot");
-        } 
+          if (!ExternalCommands.TryRunClousot(ccCheckXml, Cccheck, CccheckOptions, rsp))
+          {
+            Output.WriteErrorAndQuit("Cant' run Clousot");
+          } 
+        }
 
         // run reviewbot
         var reviewArgs = new string[] {
@@ -90,6 +93,7 @@ namespace Microsoft.Research.ReviewBot.TestRunner
         {
           Console.WriteLine("Annotating failed.");
         }
+
         CleanUp(projDir.FullName);
         Exit();
       }
