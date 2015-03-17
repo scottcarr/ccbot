@@ -40,6 +40,41 @@ namespace Microsoft.Research.ReviewBot.TestRunner
       Console.ReadKey();
     }
 
+    static bool isExpectedOutput(string projDir) 
+    {
+      var sources = Directory.GetFiles(projDir, "*.cs", SearchOption.AllDirectories);
+      foreach (var src in sources)
+      {
+        var fname = Path.GetFileNameWithoutExtension(src);
+        if (fname == "AssemblyInfo") { continue; }
+        if (src.Contains("_old.cs")) { continue; }
+        if (src.Contains("TemporaryGeneratedFile")) { continue; }
+        var expected_path = Path.ChangeExtension(src, ".txt");
+        var expectedLines = File.ReadAllLines(expected_path);
+        var observedLines = File.ReadAllLines(src);
+        if (observedLines.Length != expectedLines.Length)
+        {
+          Console.WriteLine("Expected and Observed files don't have the same number of lines");
+          return false;
+            
+
+        }
+        for (int i = 0; i < observedLines.Length; ++i)
+        {
+          if (observedLines[i] != expectedLines[i])
+          {
+            Console.WriteLine("Lines don't match:");
+            Console.WriteLine("Expected: " + expectedLines[i]);
+            Console.WriteLine("Observed: " + observedLines[i]);
+            return false;
+          }
+        }
+
+      }
+      return true;
+
+    }
+
     static void Main(string[] args)
     {
       // This assumes you didn't move the exe from the directory where VS puts it
@@ -94,9 +129,10 @@ namespace Microsoft.Research.ReviewBot.TestRunner
           Console.WriteLine("Annotating failed.");
         }
 
+        Console.WriteLine(isExpectedOutput(projDir.FullName));
         CleanUp(projDir.FullName);
-        Exit();
       }
+      Exit();
     }
   }
 }
