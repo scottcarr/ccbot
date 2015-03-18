@@ -14,12 +14,20 @@ namespace Microsoft.Research.ReviewBot.Github
   {
     public string RepoName;
     public readonly List<SolutionStats> SolutionCanBuildPairs = new List<SolutionStats>();
+    public bool skipped = false;
+    public string comment;
   }
   class SolutionStats
   {
     public string FilePath;
+    public bool canMsBuild;
+    public readonly List<ProjectStats> Projects = new List<ProjectStats>();
     public bool canRoslynOpen;
+  }
+  class ProjectStats
+  {
+    public string FilePath;
     public List<string> Diagnostics = new List<string>();
-    public bool isUserChoice = false;
+    public bool canRoslynOpen;
   }
 }

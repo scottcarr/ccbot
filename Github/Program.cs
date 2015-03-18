@@ -15,6 +15,11 @@ using System.Reflection;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
+  class Usable 
+  {
+    public string SolutionPath;
+    public string ProjectPath;
+  }
   class Program
   {
     //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
@@ -22,41 +27,100 @@ namespace Microsoft.Research.ReviewBot.Github
     static readonly string selectedReposPath = @"..\..\selectedRepos.txt";
     static readonly string selectedSolutionsPath = @"..\..\selectedSolutions.txt";
     static readonly string scanResultsPath = @"..\..\scanresults.json";
-    //static readonly string msbuildPath = Path.Combine(GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
-    static readonly string msbuildPath = "msbuild.exe";
+    static readonly string msbuildResultsPath = @"..\..\msbuildresults.txt";
+    static readonly string msbuildPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
+    //static readonly string msbuildPath = "msbuild.exe";
     static void Main(string[] args)
     {
-      /*
-      const int nPages = 1;
-      const int reposPerPage = 100; // max = 100
-      SearchResponse results = null;
-      for (int i = 0; i < nPages; i++)
-      {
-        var urlWithHole = "https://api.github.com/search/repositories?q=language:csharp&sort=stars&order=desc&page={0}&per_page={1}/";
-        var url = String.Format(urlWithHole, i, reposPerPage);
-        var request = HttpWebRequest.Create(new Uri(url)) as HttpWebRequest;
-        request.UserAgent = "ReviewBot"; // YOU MUST HAVE THIS SET TO SOMETHING !!!!
-        var resp = request.GetResponse() as HttpWebResponse;
-        var reader = new StreamReader(resp.GetResponseStream());
-        results = JsonConvert.DeserializeObject<SearchResponse>(reader.ReadToEnd());
-        foreach (var result in results.items) 
-        {
-            CloneRepo(result.clone_url);
-        }
-      }
-      */
 
-      /*
-      // this is generally the order to run but doing this whole thing takes forever
-      tryBuildingAllWithRoslyn(results);
-      // now go and mark "true" isUserSelected for the solutions you want
+      var githubResp = GetGitHubList(30);
+
+      //CloneAll(githubResp);
+
+      //tryBuildingAllWithRoslyn(githubResp);
+
       crossCheckWithMsbuild();
-      makeNicerResultsFile(results);
-      */
-      runReviewBotOnSelectedRepos();
+      var usables = findUsableProjects();
+      Console.WriteLine(usables.Count);
+      Console.WriteLine(" out of ");
+      Console.WriteLine(countTotalProjects());
+      //makeNicerResultsFile(results);
+      //runReviewBotOnSelectedRepos();
       Console.WriteLine("press a key to exit");
       Console.ReadKey();
     }
+
+    static int countTotalProjects()
+    {
+      int i = 0;
+      var text = File.ReadAllText(scanResultsPath);
+      var json = JsonConvert.DeserializeObject<ScanResult>(text);
+      foreach (var result in json.results)
+      {
+        foreach (var sln in result.SolutionCanBuildPairs) {
+          foreach (var p in sln.Projects)
+          {
+            ++i;
+          }
+        }
+      }
+      return i;
+    }
+
+    static List<Usable> findUsableProjects()
+    {
+      var usables = new List<Usable>();
+      var text = File.ReadAllText(scanResultsPath);
+      var json = JsonConvert.DeserializeObject<ScanResult>(text);
+      foreach (var result in json.results)
+      {
+        foreach (var sln in result.SolutionCanBuildPairs)
+        {
+          if (sln.canMsBuild)
+          {
+            foreach (var p in sln.Projects)
+            {
+              if (p.canRoslynOpen)
+              {
+                var usable = new Usable();
+                usable.SolutionPath = sln.FilePath;
+                usable.ProjectPath = p.FilePath;
+                usables.Add(usable);
+                //Console.WriteLine(p.FilePath);
+              }
+            }
+          }
+        }
+      }
+      return usables;
+    }
+
+    static void CloneAll(SearchResponse resp)
+    {
+      foreach (var result in resp.items)
+      {
+        CloneRepo(result.clone_url);
+      }
+    }
+
+    static SearchResponse GetGitHubList(int nRepos)
+    {
+      int nPages =1;
+      var urlWithHole = "https://api.github.com/search/repositories?q=language:csharp&sort=stars&order=desc&page={0}&per_page={1}/";
+      var url = String.Format(urlWithHole, nPages, nRepos);
+      var request = HttpWebRequest.Create(new Uri(url)) as HttpWebRequest;
+      request.UserAgent = "ReviewBot"; // YOU MUST HAVE THIS SET TO SOMETHING !!!!
+      var resp = request.GetResponse() as HttpWebResponse;
+      var reader = new StreamReader(resp.GetResponseStream());
+      return JsonConvert.DeserializeObject<SearchResponse>(reader.ReadToEnd());
+    }
+
+    static void writeJson(ScanResult sr, string path)
+    {
+      var text = JsonConvert.SerializeObject(sr, Newtonsoft.Json.Formatting.Indented);
+      File.WriteAllText(scanResultsPath, text);
+    }
+
     static void CloneRepo(string url)
     {
       Process p = new Process();
@@ -84,28 +148,28 @@ namespace Microsoft.Research.ReviewBot.Github
       var misses = new List<string>();
       var text = File.ReadAllText(scanResultsPath);
       var json = JsonConvert.DeserializeObject<ScanResult>(text);
+      var res = File.OpenWrite(msbuildResultsPath);
       foreach (var result in json.results)
       {
         foreach(var sln in result.SolutionCanBuildPairs)
         {
-          if (sln.canRoslynOpen && sln.isUserChoice)
-          {
-            if (Msbuild(sln.FilePath))
-            {
-              hits.Add(sln.FilePath);
-            }
-            else
-            {
-              misses.Add(sln.FilePath);
-            }
-          }
+          sln.canMsBuild = Msbuild(sln.FilePath);
+          //if (Msbuild(sln.FilePath))
+          //{
+          //  hits.Add(sln.FilePath);
+          //}
+          //else
+          //{
+          //  misses.Add(sln.FilePath);
+          //}
         }
       }
-      Console.WriteLine("MSBuild couldn't build:");
-      misses.ForEach(Console.WriteLine);
-      Console.WriteLine("MSBuild built:");
-      hits.ForEach(Console.WriteLine);
-      File.WriteAllLines(selectedSolutionsPath, hits);
+      //Console.WriteLine("MSBuild couldn't build:");
+      //misses.ForEach(Console.WriteLine);
+      //Console.WriteLine("MSBuild built:");
+      //hits.ForEach(Console.WriteLine);
+      //File.WriteAllLines(selectedSolutionsPath, hits);
+      writeJson(json, scanResultsPath);
     }
     static void makeNicerResultsFile(SearchResponse rsp)
     {
@@ -137,68 +201,138 @@ namespace Microsoft.Research.ReviewBot.Github
         var slnPaths = SolutionTools.ScanForSolutions(name);
         var localResults = new RepoResult();
         localResults.RepoName = name;
+        if (name.StartsWith("corefx"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "project Microsoft.CSharp doesn't build with roslyn";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("mono"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "mono takes forever to even open in roslyn";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("OpenRA"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "openRA takes forever to open in roslyn";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("Newtonsoft.Json"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "roslyn throws assert";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("roslyn"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "roslyn throws assert";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("ravendb"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "doesn't build with roslyn";
+          sr.results.Add(localResults);
+          continue;
+        }
+        if (name.StartsWith("SignalR"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "roslyn cant open the solution";
+          sr.results.Add(localResults);
+          continue;
+        }
+        /*
+        if (name.StartsWith("ILSpy"))
+        { 
+          localResults.skipped = true;
+          localResults.comment = "doesn't build with roslyn";
+          sr.results.Add(localResults);
+          continue;
+        }
+        */
         foreach (var slnPath in slnPaths)
         {
+          Console.WriteLine("In solution: " + slnPath);
           var msbw = MSBuildWorkspace.Create();
           var stats = new SolutionStats();
           stats.FilePath = slnPath;
+          Solution sln = null;
           try
           {
-            var sln = msbw.OpenSolutionAsync(slnPath).Result;
+            sln = msbw.OpenSolutionAsync(slnPath).Result;
+            stats.canRoslynOpen = true;
             if (!sln.Projects.Any()) { throw new FileNotFoundException("no projects"); }
-            var depGraph = sln.GetProjectDependencyGraph();
-            var projs = depGraph.GetTopologicallySortedProjects();
-            var assemblies = new List<Stream>();
-            var results = new List<bool>();
-            foreach(var projId in projs)
-            {
-              var proj = sln.GetProject(projId);
-              var stream = new MemoryStream();
-              var result = proj.GetCompilationAsync().Result.Emit(stream);
-              results.Add(result.Success);
-              if (!result.Success)
-              {
-                stats.Diagnostics = result.Diagnostics.Select(x => x.ToString()).ToList();
-              }
-              assemblies.Add(stream);
-            }
-            stats.canRoslynOpen = results.All(x => x);
           }
-          catch (Exception e)
+          catch
           {
-            var l = new List<string>();
-            l.Add(e.Message);
-            l.Add(e.StackTrace);
-            stats.Diagnostics.AddRange(l);
             stats.canRoslynOpen = false;
+            continue;
+          }
+          var depGraph = sln.GetProjectDependencyGraph();
+          var projs = depGraph.GetTopologicallySortedProjects();
+          //var assemblies = new List<Stream>();
+          //var results = new List<bool>();
+          foreach (var projId in projs)
+          {
+            var pstats = new ProjectStats();
+            pstats.canRoslynOpen = true;
+            var proj = sln.GetProject(projId);
+            pstats.FilePath = proj.FilePath;
+            Console.WriteLine("Building project: " + proj.Name);
+            var stream = new MemoryStream();
+            try
+            {
+              var comp = proj.GetCompilationAsync().Result;
+              string pathToDll = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\";
+              var metadataReferences = new List<string> {
+              "System.Runtime.dll",
+              "System.Runtime.Extensions.dll",
+              "System.Threading.Tasks.dll",
+              "System.IO.dll",
+              "System.Reflection.dll",
+              "System.Text.Encoding.dll"}.Select(s => MetadataReference.CreateFromFile(pathToDll + s));
+              comp = comp.AddReferences(metadataReferences);
+              comp.AddReferences(new MetadataReference[] { MetadataReference.CreateFromAssembly(typeof(object).Assembly) });
+              var errors = comp.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+              if (errors.Any())
+              {
+                pstats.Diagnostics = errors.Select(x => x.ToString()).ToList();
+                pstats.canRoslynOpen = false;
+              }
+              //var result = proj.GetCompilationAsync().Result.Emit(stream);
+              //results.Add(result.Success);
+              //if (!result.Success)
+              //{
+              //  stats.Diagnostics = result.Diagnostics.Select(x => x.ToString()).ToList();
+              //}
+              //assemblies.Add(stream);
+            }
+            catch (Exception e)
+            {
+              var l = new List<string>();
+              l.Add(e.Message);
+              l.Add(e.StackTrace);
+              pstats.Diagnostics.AddRange(l);
+              pstats.canRoslynOpen = false;
+            }
+            stats.Projects.Add(pstats);
+            //stats.canRoslynOpen = results.All(x => x);
           }
           localResults.SolutionCanBuildPairs.Add(stats);
         }
         sr.results.Add(localResults);
       }
-      var text = JsonConvert.SerializeObject(sr, Newtonsoft.Json.Formatting.Indented);
-      File.WriteAllText(@"..\..\scanresults.json", text);
-      /*
-      var msbw = MSBuildWorkspace.Create();
-      var sln = msbw.OpenSolutionAsync(@"C:\Users\carr27\Documents\Visual Studio 14\Projects\TestCase1\TestCase1.sln").Result;
-      var depGraph = sln.GetProjectDependencyGraph();
-      var projs = depGraph.GetTopologicallySortedProjects();
-      var assemblies = new List<Stream>();
-      foreach (var projId in projs)
-      {
-        var proj = sln.GetProject(projId);
-        var stream = new MemoryStream();
-        var er = proj.GetCompilationAsync().Result.Emit(stream);
-        if (!er.Success)
-        {
-          foreach(var d in er.Diagnostics)
-          {
-            Console.WriteLine(d);
-          }
-        }
-        assemblies.Add(stream);
-      }
-      */
+      writeJson(sr, scanResultsPath);
+      
     }
     static void runReviewBotOnSelectedRepos()
     {
