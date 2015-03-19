@@ -13,7 +13,7 @@ namespace Microsoft.Research.ReviewBot.Github
   class RepoResult
   {
     public string RepoName;
-    public readonly List<SolutionStats> SolutionCanBuildPairs = new List<SolutionStats>();
+    public readonly List<SolutionStats> SolutionResults = new List<SolutionStats>();
     public bool skipped = false;
     public string comment;
   }

@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Xml;
 using Microsoft.Research.ReviewBot;
+using Microsoft.Research.ReviewBot.Utils;
 using System.Reflection;
 
 namespace Microsoft.Research.ReviewBot.Github
@@ -19,6 +20,7 @@ namespace Microsoft.Research.ReviewBot.Github
   {
     public string SolutionPath;
     public string ProjectPath;
+    public string RepoName;
   }
   class Program
   {
@@ -37,15 +39,15 @@ namespace Microsoft.Research.ReviewBot.Github
 
       //CloneAll(githubResp);
 
-      //tryBuildingAllWithRoslyn(githubResp);
+      //trOpeningAllWithRoslyn(githubResp);
 
-      crossCheckWithMsbuild();
-      var usables = findUsableProjects();
-      Console.WriteLine(usables.Count);
-      Console.WriteLine(" out of ");
-      Console.WriteLine(countTotalProjects());
+      //TryBuildAllWithMSBuild();
+      //var usables = findUsableProjects();
+      //Console.WriteLine(usables.Count);
+      //Console.WriteLine(" out of ");
+      //Console.WriteLine(countTotalProjects());
       //makeNicerResultsFile(results);
-      //runReviewBotOnSelectedRepos();
+      runReviewBotOnUsableRepos();
       Console.WriteLine("press a key to exit");
       Console.ReadKey();
     }
@@ -57,7 +59,7 @@ namespace Microsoft.Research.ReviewBot.Github
       var json = JsonConvert.DeserializeObject<ScanResult>(text);
       foreach (var result in json.results)
       {
-        foreach (var sln in result.SolutionCanBuildPairs) {
+        foreach (var sln in result.SolutionResults) {
           foreach (var p in sln.Projects)
           {
             ++i;
@@ -74,7 +76,7 @@ namespace Microsoft.Research.ReviewBot.Github
       var json = JsonConvert.DeserializeObject<ScanResult>(text);
       foreach (var result in json.results)
       {
-        foreach (var sln in result.SolutionCanBuildPairs)
+        foreach (var sln in result.SolutionResults)
         {
           if (sln.canMsBuild)
           {
@@ -85,6 +87,7 @@ namespace Microsoft.Research.ReviewBot.Github
                 var usable = new Usable();
                 usable.SolutionPath = sln.FilePath;
                 usable.ProjectPath = p.FilePath;
+                usable.RepoName = result.RepoName;
                 usables.Add(usable);
                 //Console.WriteLine(p.FilePath);
               }
@@ -130,19 +133,19 @@ namespace Microsoft.Research.ReviewBot.Github
       p.Start();
       p.WaitForExit();
     }
-    static bool Msbuild(string slnPath)
-    {
-      var p = new Process();
-      p.StartInfo.FileName = msbuildPath;
-      p.StartInfo.Arguments = slnPath + " /toolsversion:12.0"; // I needed the tools version.  maybe you dont
-      //p.StartInfo.WorkingDirectory = Directory.GetParent(slnPath).ToString();
-      p.StartInfo.UseShellExecute = false;
-      p.Start();
-      p.WaitForExit();
-      return p.ExitCode == 0;
+    //static bool Msbuild(string slnPath)
+    //{
+    //  var p = new Process();
+    //  p.StartInfo.FileName = msbuildPath;
+    //  p.StartInfo.Arguments = slnPath + " /toolsversion:12.0"; // I needed the tools version.  maybe you dont
+    //  //p.StartInfo.WorkingDirectory = Directory.GetParent(slnPath).ToString();
+    //  p.StartInfo.UseShellExecute = false;
+    //  p.Start();
+    //  p.WaitForExit();
+    //  return p.ExitCode == 0;
 
-    }
-    static void crossCheckWithMsbuild()
+    //}
+    static void TryBuildAllWithMSBuild()
     {
       var hits = new List<string>();
       var misses = new List<string>();
@@ -151,24 +154,11 @@ namespace Microsoft.Research.ReviewBot.Github
       var res = File.OpenWrite(msbuildResultsPath);
       foreach (var result in json.results)
       {
-        foreach(var sln in result.SolutionCanBuildPairs)
+        foreach(var sln in result.SolutionResults)
         {
-          sln.canMsBuild = Msbuild(sln.FilePath);
-          //if (Msbuild(sln.FilePath))
-          //{
-          //  hits.Add(sln.FilePath);
-          //}
-          //else
-          //{
-          //  misses.Add(sln.FilePath);
-          //}
+          sln.canMsBuild = ExternalCommands.TryBuildSolution(sln.FilePath, msbuildPath);
         }
       }
-      //Console.WriteLine("MSBuild couldn't build:");
-      //misses.ForEach(Console.WriteLine);
-      //Console.WriteLine("MSBuild built:");
-      //hits.ForEach(Console.WriteLine);
-      //File.WriteAllLines(selectedSolutionsPath, hits);
       writeJson(json, scanResultsPath);
     }
     static void makeNicerResultsFile(SearchResponse rsp)
@@ -190,7 +180,7 @@ namespace Microsoft.Research.ReviewBot.Github
       Console.WriteLine(text);
 
     }
-    static void tryBuildingAllWithRoslyn(SearchResponse resp)
+    static void trOpeningAllWithRoslyn(SearchResponse resp)
     {
       var sr = new ScanResult();
       foreach (var pair in resp.items)
@@ -327,29 +317,22 @@ namespace Microsoft.Research.ReviewBot.Github
             stats.Projects.Add(pstats);
             //stats.canRoslynOpen = results.All(x => x);
           }
-          localResults.SolutionCanBuildPairs.Add(stats);
+          localResults.SolutionResults.Add(stats);
         }
         sr.results.Add(localResults);
       }
       writeJson(sr, scanResultsPath);
       
     }
-    static void runReviewBotOnSelectedRepos()
+    static void runReviewBotOnUsableRepos()
     {
-      var text = File.ReadAllText(selectedReposPath);
-      var repos = JsonConvert.DeserializeObject<List<RepoData>>(text);
-      foreach (var repo in repos)
+      var text = File.ReadAllText(scanResultsPath);
+      var scan = JsonConvert.DeserializeObject<ScanResult>(text);
+      var usable = findUsableProjects();
+      var usableBySln = usable.GroupBy(x => x.SolutionPath);
+      foreach (var slnGrp in usableBySln) 
       {
-        CloneRepo(repo.cloneUrl);
 
-        // copy our props file to the solution dir
-        try
-        {
-
-          File.Copy(@"..\..\Common.CodeContracts.props", Path.Combine(Path.GetDirectoryName(repo.selectedSolutionPath), "Common.CodeContracts.props"));
-        }
-        catch (IOException)
-        { }
 
         // rewrite every project
         MSBuildWorkspace msbw = null;
@@ -379,42 +362,48 @@ namespace Microsoft.Research.ReviewBot.Github
           //Display or log the error based on your application.
           Console.WriteLine(errorMessage);
         }
-        var sln = msbw.OpenSolutionAsync(repo.selectedSolutionPath).Result;
-        foreach (var proj in sln.Projects)
+        // enable code contracts first -- you cant edit a project file while roslyn has it open
+        foreach (var p in slnGrp)
         {
-          RewriteProject(proj.FilePath);
+          var slnDir = Path.GetDirectoryName(p.SolutionPath);
+          var ccFile = Path.Combine(slnDir, "Common.CodeContracts.props");
+          if (!File.Exists(ccFile)) 
+          {
+            File.Copy(@"..\..\Common.CodeContracts.props", ccFile);
+          }
+          RewriteProject(p.ProjectPath);
+          if (!ExternalCommands.TryBuildSolution(p.SolutionPath, msbuildPath))
+          {
+            return;
+          }
         }
-        Msbuild(repo.selectedSolutionPath);
-
-        var rsps = Directory.GetFiles(Path.GetDirectoryName(repo.selectedSolutionPath), "*.rsp", SearchOption.AllDirectories);
-
+        var sln = msbw.OpenSolutionAsync(slnGrp.First().SolutionPath).Result;
+        var rsps = Directory.GetFiles(Path.GetDirectoryName(sln.FilePath), "*.rsp", SearchOption.AllDirectories);
         // run reviewbot
         foreach(var proj in sln.Projects)
         {
-          var conf = new Configuration();
-          var defaultConfig = Configuration.GetDefaultConfiguration();
-          conf.GitRoot = Path.Combine(Directory.GetCurrentDirectory(), repo.name);
-          conf.Git = gitCmd;
-          conf.MSBuild = msbuildPath;
-          conf.Solution = repo.selectedSolutionPath;
-          conf.Cccheck = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "Microsoft", "Contracts", "bin", "cccheck.exe");
-          conf.Project = proj.FilePath;
-          conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
+          if (slnGrp.Any(x => x.ProjectPath == proj.FilePath)) // don't both with projects that don't work with rolsyn/msbuild
+          {
+            var projDir = Path.GetDirectoryName(proj.FilePath);
+            var repoName = slnGrp.First().RepoName;
+            var conf = new Configuration();
+            var defaultConfig = Configuration.GetDefaultConfiguration();
+            conf.GitRoot = Path.Combine(Directory.GetCurrentDirectory(), repoName);
+            conf.Git = gitCmd;
+            conf.MSBuild = msbuildPath;
+            conf.Solution = sln.FilePath;
+            conf.Cccheck = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "Microsoft", "Contracts", "bin", "cccheck.exe");
+            conf.Project = proj.FilePath;
+            conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
 
-          // if the next line dies, it couldnt find the rsp.  do you have cccheck installed?
-          conf.RSP = Path.Combine(Directory.GetCurrentDirectory(), rsps.First(x => x.Contains(proj.Name + "cccheck.rsp")));
-          conf.GitBaseBranch = "master";
-          conf.CccheckXml = Path.Combine(Directory.GetCurrentDirectory(), repo.name + "_" + proj.Name + "_clousot.xml");
+            // if the next line dies, it couldnt find the rsp.  do you have cccheck installed?
+            conf.RSP = Path.Combine(Directory.GetCurrentDirectory(), rsps.First(x => x.Contains(proj.Name + "cccheck.rsp")));
+            conf.GitBaseBranch = "master";
+            conf.CccheckXml = Path.Combine(projDir, proj.Name, "_clousout.xml");
 
-          ReviewBotMain.BuildAnalyzeInstrument(conf);
-
-          //if (!ExternalCommands.TryRunClousot(conf.CccheckXml, conf.Cccheck, conf.CccheckOptions, conf.RSP))
-          //{
-          //  Console.WriteLine("couldn't run clousot");
-          //  return;
-          //}
-          //return;
-
+            ReviewBotMain.BuildAnalyzeInstrument(conf);
+            //return; // run only once for debugging
+          }
         }
       }
     }
@@ -426,7 +415,7 @@ namespace Microsoft.Research.ReviewBot.Github
       foreach (var child in children)
       {
         var node = child as XmlElement;
-        if (node != null )
+        if (node != null)
         {
           var newnode = oldDoc.CreateElement("Import", oldDoc.DocumentElement.NamespaceURI);
           newnode.SetAttribute("Project", "$(SolutionDir)\\Common.CodeContracts.props");

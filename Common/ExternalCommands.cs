@@ -43,6 +43,7 @@ namespace Microsoft.Research.ReviewBot.Utils
             sw.WriteLine(line);
           }
         }
+        csproj.Close();
       }
       return TryRunMSBuild(solutionPath, MSBuildPath);
     }
