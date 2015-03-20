@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Xml;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,6 +67,99 @@ namespace Microsoft.Research.ReviewBot.Utils
 
         return new T[0];
       }
+    }
+    public static void EnableCodeContractsInProject(string csprojPath)
+    {
+      var cc_props_text = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+   <!-- Enable CC only in debug builds -->
+  <PropertyGroup Condition=""'$(Configuration)' == 'Debug'"">
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+	<CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsEnableCheckedExceptionChecking>False</CodeContractsEnableCheckedExceptionChecking>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<!-- Runtime checking -->
+	<CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+	<CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsLibPaths />
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+       
+	<!-- Static checking -->
+	
+	<!-- Proof obligations -->
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>True</CodeContractsEnumObligations>
+
+	<!-- Code Quality -->
+    <CodeContractsRedundantAssumptions>True</CodeContractsRedundantAssumptions>
+    <CodeContractsAssertsToContractsCheckBox>True</CodeContractsAssertsToContractsCheckBox>
+    <CodeContractsRedundantTests>True</CodeContractsRedundantTests>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsMissingPublicEnsuresAsWarnings>False</CodeContractsMissingPublicEnsuresAsWarnings>
+
+	<!-- Inference -->
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>True</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>True</CodeContractsInferObjectInvariants>
+   
+	<!-- Suggestions -->
+	<CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestAssumptionsForCallees>False</CodeContractsSuggestAssumptionsForCallees>
+    <CodeContractsSuggestRequires>False</CodeContractsSuggestRequires>
+    <CodeContractsNecessaryEnsures>False</CodeContractsNecessaryEnsures>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
+    
+	<!-- Baseline -->
+    <CodeContractsBaseLineFile />
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+
+
+	<!-- Cache -->
+    <CodeContractsSQLServerOption>cloudotserver</CodeContractsSQLServerOption>
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
+
+	<!-- Customize -->
+    <CodeContractsExtraAnalysisOptions>-maxpathsize=120 -warnIfSuggest  readonlyfields -warnIfSuggest asserttocontracts</CodeContractsExtraAnalysisOptions>
+    <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <CodeContractsAnalysisWarningLevel>1</CodeContractsAnalysisWarningLevel>
+
+	</PropertyGroup>
+</Project>
+";
+      var ccFile = Path.Combine(Path.GetDirectoryName(csprojPath), "Common.CodeContracts.props");
+      File.WriteAllText(ccFile, cc_props_text);
+      var oldDoc = new XmlDocument();
+      oldDoc.LoadXml(File.ReadAllText(csprojPath));
+      var children = oldDoc.ChildNodes;
+      foreach (var child in children)
+      {
+        var node = child as XmlElement;
+        if (node != null)
+        {
+          var newnode = oldDoc.CreateElement("Import", oldDoc.DocumentElement.NamespaceURI);
+          newnode.SetAttribute("Project", "$(ProjectDir)\\Common.CodeContracts.props");
+          node.AppendChild(newnode);
+
+        }
+      }
+      oldDoc.Save(csprojPath);
     }
   }
 }

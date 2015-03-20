@@ -27,7 +27,7 @@ namespace Microsoft.Research.ReviewBot.Utils
   {
     public static class Numerical
     {
-      public const int NumberOfIterations = 3;
+      public const int NumberOfIterations = 1;
     }
 
     public static class String

@@ -59,7 +59,8 @@ namespace Microsoft.Research.ReviewBot.Github
       var json = JsonConvert.DeserializeObject<ScanResult>(text);
       foreach (var result in json.results)
       {
-        foreach (var sln in result.SolutionResults) {
+        foreach (var sln in result.SolutionResults)
+        {
           foreach (var p in sln.Projects)
           {
             ++i;
@@ -108,7 +109,7 @@ namespace Microsoft.Research.ReviewBot.Github
 
     static SearchResponse GetGitHubList(int nRepos)
     {
-      int nPages =1;
+      int nPages = 1;
       var urlWithHole = "https://api.github.com/search/repositories?q=language:csharp&sort=stars&order=desc&page={0}&per_page={1}/";
       var url = String.Format(urlWithHole, nPages, nRepos);
       var request = HttpWebRequest.Create(new Uri(url)) as HttpWebRequest;
@@ -154,7 +155,7 @@ namespace Microsoft.Research.ReviewBot.Github
       var res = File.OpenWrite(msbuildResultsPath);
       foreach (var result in json.results)
       {
-        foreach(var sln in result.SolutionResults)
+        foreach (var sln in result.SolutionResults)
         {
           sln.canMsBuild = ExternalCommands.TryBuildSolution(sln.FilePath, msbuildPath);
         }
@@ -192,49 +193,49 @@ namespace Microsoft.Research.ReviewBot.Github
         var localResults = new RepoResult();
         localResults.RepoName = name;
         if (name.StartsWith("corefx"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "project Microsoft.CSharp doesn't build with roslyn";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("mono"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "mono takes forever to even open in roslyn";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("OpenRA"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "openRA takes forever to open in roslyn";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("Newtonsoft.Json"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "roslyn throws assert";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("roslyn"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "roslyn throws assert";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("ravendb"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "doesn't build with roslyn";
           sr.results.Add(localResults);
           continue;
         }
         if (name.StartsWith("SignalR"))
-        { 
+        {
           localResults.skipped = true;
           localResults.comment = "roslyn cant open the solution";
           sr.results.Add(localResults);
@@ -322,7 +323,7 @@ namespace Microsoft.Research.ReviewBot.Github
         sr.results.Add(localResults);
       }
       writeJson(sr, scanResultsPath);
-      
+
     }
     static void runReviewBotOnUsableRepos()
     {
@@ -330,7 +331,7 @@ namespace Microsoft.Research.ReviewBot.Github
       var scan = JsonConvert.DeserializeObject<ScanResult>(text);
       var usable = findUsableProjects();
       var usableBySln = usable.GroupBy(x => x.SolutionPath);
-      foreach (var slnGrp in usableBySln) 
+      foreach (var slnGrp in usableBySln)
       {
 
 
@@ -362,25 +363,30 @@ namespace Microsoft.Research.ReviewBot.Github
           //Display or log the error based on your application.
           Console.WriteLine(errorMessage);
         }
+
         // enable code contracts first -- you cant edit a project file while roslyn has it open
         foreach (var p in slnGrp)
         {
+          Output.WriteLine("Editing {0} to enable code contracts", p.ProjectPath);
           var slnDir = Path.GetDirectoryName(p.SolutionPath);
           var ccFile = Path.Combine(slnDir, "Common.CodeContracts.props");
-          if (!File.Exists(ccFile)) 
+          if (!File.Exists(ccFile))
           {
             File.Copy(@"..\..\Common.CodeContracts.props", ccFile);
           }
-          RewriteProject(p.ProjectPath);
-          if (!ExternalCommands.TryBuildSolution(p.SolutionPath, msbuildPath))
-          {
-            return;
-          }
+          EnableCodeContractsInProject(p.ProjectPath);
         }
-        var sln = msbw.OpenSolutionAsync(slnGrp.First().SolutionPath).Result;
+        var slnPath = slnGrp.First().SolutionPath;
+        Output.WriteLine("Building {0} to generate RSP files", slnPath);
+        if (!ExternalCommands.TryBuildSolution(slnPath, msbuildPath))
+        {
+          Output.WriteErrorAndQuit("MSBuild couldn't build: " + slnPath);
+          return;
+        }
+        var sln = msbw.OpenSolutionAsync(slnPath).Result;
         var rsps = Directory.GetFiles(Path.GetDirectoryName(sln.FilePath), "*.rsp", SearchOption.AllDirectories);
         // run reviewbot
-        foreach(var proj in sln.Projects)
+        foreach (var proj in sln.Projects)
         {
           if (slnGrp.Any(x => x.ProjectPath == proj.FilePath)) // don't both with projects that don't work with rolsyn/msbuild
           {
@@ -406,24 +412,6 @@ namespace Microsoft.Research.ReviewBot.Github
           }
         }
       }
-    }
-    static void RewriteProject(string path)
-    {
-      var oldDoc = new XmlDocument();
-      oldDoc.LoadXml(File.ReadAllText(path));
-      var children = oldDoc.ChildNodes;
-      foreach (var child in children)
-      {
-        var node = child as XmlElement;
-        if (node != null)
-        {
-          var newnode = oldDoc.CreateElement("Import", oldDoc.DocumentElement.NamespaceURI);
-          newnode.SetAttribute("Project", "$(SolutionDir)\\Common.CodeContracts.props");
-          node.AppendChild(newnode);
-
-        }
-      }
-      oldDoc.Save(path);
     }
   }
 } 
