@@ -50,17 +50,24 @@ namespace Microsoft.Research.ReviewBot.AutoConfig
       {
         Output.WriteErrorAndQuit("Couldn't find a *.csproj file");
       }
+      if (!ExternalCommands.TryRestoreNugetPackages(conf.GitRoot, conf.Solution))
+      {
+        Output.WriteErrorAndQuit("Couldn't restore NuGet packages");
+      }
       var xmls = new XmlSerializer(conf.GetType());
       var sw = new StringWriter();
       xmls.Serialize(sw, conf);
       Console.WriteLine(sw);
-      //Git.RevertToOriginal(conf.GitRoot, conf.GitBaseBranch, conf.Git);
-      //Helpers.EnableCodeContractsInProject(conf.Project);
-      //ExternalCommands.TryBuildSolution(conf.Solution, conf.MSBuild);
-      //if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(conf.Project), out conf.RSP)) 
-      //{
-      //  Output.WriteErrorAndQuit("Couldn't find a *.rsp file");
-      //}
+      Git.RevertToOriginal(conf.GitRoot, conf.GitBaseBranch, conf.Git);
+      Helpers.EnableCodeContractsInProject(conf.Project);
+      if (!ExternalCommands.TryBuildSolution(conf.Solution, conf.MSBuild))
+      {
+        Output.WriteErrorAndQuit("Couldn't build solution.");
+      }
+      if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(conf.Project), out conf.RSP)) 
+      {
+        Output.WriteErrorAndQuit("Couldn't find a *.rsp file");
+      }
       conf.CccheckXml = Path.Combine(Path.GetDirectoryName(conf.Project), Path.GetFileNameWithoutExtension(conf.Project) + "_cccheck.xml");
       conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
       xmls.Serialize(sw, conf);

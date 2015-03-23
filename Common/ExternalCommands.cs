@@ -17,11 +17,33 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//using System.Collections.ObjectModel;
+using System.Management.Automation;
+//using Microsoft.PowerShell;
 
 namespace Microsoft.Research.ReviewBot.Utils
 {
   public static class ExternalCommands
   {
+    public static bool TryRestoreNugetPackages(string basedir, string solution)
+    {
+
+      // I don't understand why I need this fully qualified namespace
+      //var files = Directory.GetFiles(directory, "NuGetRestore.ps1", SearchOption.AllDirectories);
+      var files = Directory.GetFiles(basedir, "NuGet.exe", SearchOption.AllDirectories);
+      if (!files.Any()) { return false; }
+      var nuget = files.First();
+      var p = new Process();
+      p.StartInfo.FileName = nuget;
+      p.StartInfo.Arguments = "restore " + solution;
+      p.StartInfo.RedirectStandardOutput = true;
+      p.StartInfo.UseShellExecute = false;
+      p.Start();
+      var o = p.StandardOutput.ReadToEndAsync();
+      p.WaitForExit();
+      Console.WriteLine(o.Result);
+      return true;
+    }
     public static bool TryBuildSolution(string solutionPath, string MSBuildPath, bool fixproject = false, string projectPath = "")
     {
       Contract.Requires(solutionPath != null);
@@ -167,7 +189,5 @@ namespace Microsoft.Research.ReviewBot.Utils
 
       return true;
     }
-    
-
   }
 }

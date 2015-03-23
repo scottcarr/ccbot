@@ -374,7 +374,7 @@ namespace Microsoft.Research.ReviewBot.Github
           {
             File.Copy(@"..\..\Common.CodeContracts.props", ccFile);
           }
-          EnableCodeContractsInProject(p.ProjectPath);
+          Helpers.EnableCodeContractsInProject(p.ProjectPath);
         }
         var slnPath = slnGrp.First().SolutionPath;
         Output.WriteLine("Building {0} to generate RSP files", slnPath);
