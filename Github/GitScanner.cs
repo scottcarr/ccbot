@@ -37,7 +37,7 @@ namespace Microsoft.Research.ReviewBot.Github
 
       var githubResp = GetGitHubList(30);
 
-      //CloneAll(githubResp);
+      CloneAll(githubResp);
 
       //trOpeningAllWithRoslyn(githubResp);
 
@@ -47,7 +47,7 @@ namespace Microsoft.Research.ReviewBot.Github
       //Console.WriteLine(" out of ");
       //Console.WriteLine(countTotalProjects());
       //makeNicerResultsFile(results);
-      runReviewBotOnUsableRepos();
+      //runReviewBotOnUsableRepos();
       Console.WriteLine("press a key to exit");
       Console.ReadKey();
     }

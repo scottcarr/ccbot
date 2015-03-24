@@ -85,9 +85,9 @@ namespace Microsoft.Research.ReviewBot.Utils
       p.StartInfo.RedirectStandardOutput = true;
 
       p.Start();
+      p.WaitForExit(); // It may take a while, as it also runs the CC static checker
       var buildOutputAsync = p.StandardOutput.ReadToEndAsync();
       Contract.Assume(buildOutputAsync != null, "Missing contract");
-      p.WaitForExit(); // It may take a while, as it also runs the CC static checker
 
       /*
       while(!p.HasExited)
@@ -121,6 +121,45 @@ namespace Microsoft.Research.ReviewBot.Utils
       }
 
       return true;
+    }
+
+    public static bool TryAutoBuildSolution(string solution, string msbuildpath="")
+    {
+      var buildScriptName = "reviewbotbuild.cmd";
+      var basedir = Path.GetDirectoryName(solution);
+      var buildScriptPath = Path.Combine(basedir, buildScriptName);
+      if (File.Exists(buildScriptPath))
+      {
+        var p = new Process();
+        p.StartInfo.FileName = buildScriptPath;
+        p.StartInfo.RedirectStandardOutput = true;
+        p.StartInfo.UseShellExecute = false;
+        p.StartInfo.WorkingDirectory = basedir;
+        p.Start();
+        // for some reason it needed these handlers or would hang:
+        p.OutputDataReceived += DataReceivedHandler;
+        p.ErrorDataReceived += DataReceivedHandler;
+        var buildOutputAsync = p.StandardOutput.ReadToEndAsync();
+        p.WaitForExit();
+        var text = buildOutputAsync.Result;
+        var buildOutputFileName = Constants.String.BuildOutputDir(Path.GetFileNameWithoutExtension(solution));
+        Helpers.IO.DumpBuildOutput(buildOutputFileName, text);
+
+        if (p.ExitCode != 0)
+        {
+          Output.WriteError("Building the solution failed. Check the build output file {0}", buildOutputFileName);
+          return false;
+        }
+        return true;
+
+      }
+      return TryBuildSolution(solution, msbuildpath);
+
+    }
+
+    private static void DataReceivedHandler(object sender, DataReceivedEventArgs e)
+    {
+      Console.WriteLine(e.Data);
     }
 
     public static bool TryRunClousot(string outputFile, string ClousotPath, string ClousotOptions, string rspPath)

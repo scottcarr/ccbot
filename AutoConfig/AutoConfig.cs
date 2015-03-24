@@ -7,13 +7,15 @@ using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Research.ReviewBot;
 using Microsoft.Research.ReviewBot.Utils;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Microsoft.Research.ReviewBot.AutoConfig
 {
   class Program
   {
     static string[] msbuildHints = {
-                              @"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
+                              @"C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe"
                                    };
     static string[] gitHints = {
                           @"C:\Program Files (x86)\Git\bin\git.exe" 
@@ -46,21 +48,27 @@ namespace Microsoft.Research.ReviewBot.AutoConfig
       {
         Output.WriteErrorAndQuit("Couldn't find a *.sln file");
       }
-      if (!TryFindProject(conf.GitRoot, out conf.Project))
+      if (!TryFindProject(conf.Solution, out conf.Project))
       {
         Output.WriteErrorAndQuit("Couldn't find a *.csproj file");
       }
+      if (!ExternalCommands.TryAutoBuildSolution(conf.Solution))
+      {
+        Output.WriteErrorAndQuit("Couldn't auto build solution");
+      }
+      /*
       if (!ExternalCommands.TryRestoreNugetPackages(conf.GitRoot, conf.Solution))
       {
         Output.WriteErrorAndQuit("Couldn't restore NuGet packages");
       }
+      */
       var xmls = new XmlSerializer(conf.GetType());
       var sw = new StringWriter();
       xmls.Serialize(sw, conf);
       Console.WriteLine(sw);
       Git.RevertToOriginal(conf.GitRoot, conf.GitBaseBranch, conf.Git);
       Helpers.EnableCodeContractsInProject(conf.Project);
-      if (!ExternalCommands.TryBuildSolution(conf.Solution, conf.MSBuild))
+      if (!ExternalCommands.TryAutoBuildSolution(conf.Solution, conf.MSBuild))
       {
         Output.WriteErrorAndQuit("Couldn't build solution.");
       }
@@ -105,9 +113,21 @@ namespace Microsoft.Research.ReviewBot.AutoConfig
       return TrySelectFilesWithExtension(".sln", basedir, out sln);
 
     }
-    static bool TryFindProject(string basedir, out string proj)
+    static bool TryFindProject(string solutionPath, out string proj)
     {
-      return TrySelectFilesWithExtension(".csproj", basedir, out proj);
+      Output.WriteLine("Opening solution to look for projects.  This might take a second...");
+      var msbw = MSBuildWorkspace.Create();
+      var sln = msbw.OpenSolutionAsync(solutionPath).Result;
+      var projs = sln.Projects.Select(x => x.FilePath);
+      if (projs.Any())
+      {
+        proj = ChooseOne(projs.ToArray());
+        return true;
+      } else {
+        proj = "";
+        return false;
+      }
+
     }
     static bool TryFindExe(string exename, string[] hints, out string exepath)
     {
