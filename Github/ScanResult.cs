@@ -6,28 +6,24 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
-  class ScanResult
-  {
-    public readonly List<RepoResult> results = new List<RepoResult>();
-  }
-  class RepoResult
+  class RepoInfo
   {
     public string RepoName;
-    public readonly List<SolutionStats> SolutionResults = new List<SolutionStats>();
+    public readonly List<SolutionInfo> SolutionInfos = new List<SolutionInfo>();
     public bool skipped = false;
     public string comment;
   }
-  class SolutionStats
+  class SolutionInfo
+  {
+    public string FilePath;
+    public readonly List<ProjectInfo> Projects = new List<ProjectInfo>();
+    public bool canRoslynOpen;
+    public string error;
+  }
+  class ProjectInfo
   {
     public string FilePath;
     public bool canMsBuild;
-    public readonly List<ProjectStats> Projects = new List<ProjectStats>();
-    public bool canRoslynOpen;
-  }
-  class ProjectStats
-  {
-    public string FilePath;
-    public List<string> Diagnostics = new List<string>();
-    public bool canRoslynOpen;
+    public string error;
   }
 }

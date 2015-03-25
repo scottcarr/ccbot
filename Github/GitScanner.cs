@@ -16,12 +16,6 @@ using System.Reflection;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
-  class Usable 
-  {
-    public string SolutionPath;
-    public string ProjectPath;
-    public string RepoName;
-  }
   class Program
   {
     //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
@@ -31,27 +25,20 @@ namespace Microsoft.Research.ReviewBot.Github
     static readonly string scanResultsPath = @"..\..\scanresults.json";
     static readonly string msbuildResultsPath = @"..\..\msbuildresults.txt";
     static readonly string msbuildPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
+    static readonly string autoConfResults = "repoInfo.json";
     //static readonly string msbuildPath = "msbuild.exe";
     static void Main(string[] args)
     {
 
       var githubResp = GetGitHubList(30);
 
-      //CloneAll(githubResp);
+      CloneAll(githubResp);
+
+      CreateSolutionAndProjectLists(githubResp);
+
 
       //trOpeningAllWithRoslyn(githubResp);
 
-      foreach (var i in githubResp.items) 
-      {
-        var dir = Path.Combine(Environment.CurrentDirectory, i.name);
-        string reason;
-        Configuration conf;
-        if (!AutoConfig.TryAutoConfig(dir, out conf, out reason))
-        {
-          Output.WriteError("AutoConfig failed.");
-          Output.WriteErrorAndQuit(reason);
-        }
-      }
 
       //TryBuildAllWithMSBuild();
       //var usables = findUsableProjects();
@@ -64,6 +51,61 @@ namespace Microsoft.Research.ReviewBot.Github
       Console.ReadKey();
     }
 
+    static void CreateSolutionAndProjectLists(SearchResponse githubResp)
+    {
+      var startDir = Environment.CurrentDirectory;
+      List<RepoInfo> repoInfos;
+      if (!File.Exists(autoConfResults)) 
+      {
+        repoInfos = new List<RepoInfo>();
+      }
+      else
+      {
+        var text = File.ReadAllText(autoConfResults);
+        repoInfos = JsonConvert.DeserializeObject<List<RepoInfo>>(text);
+        if (repoInfos == null)
+        {
+          repoInfos = new List<RepoInfo>();
+        }
+      }
+      foreach (var i in githubResp.items) 
+      {
+        var entry = new RepoInfo();
+        var repoDir = Path.Combine(startDir, i.name);
+        foreach (var slnPath in Directory.GetFiles(repoDir, "*.sln", SearchOption.AllDirectories))
+        {
+          Console.WriteLine("Opening solution: " + slnPath);
+          var msbw = MSBuildWorkspace.Create();
+          Solution sln;
+          var slnInfo = new SolutionInfo();;
+          try
+          {
+
+            sln = msbw.OpenSolutionAsync(slnPath).Result;
+            slnInfo.canRoslynOpen = true;
+            slnInfo = new SolutionInfo();
+            foreach (var proj in sln.Projects)
+            {
+              var pInfo = new ProjectInfo();
+              pInfo.FilePath = proj.FilePath;
+              slnInfo.Projects.Add(pInfo);
+            }
+          }
+          catch (Exception e)
+          {
+            slnInfo.error = e.Message;
+            slnInfo.canRoslynOpen = false;
+            entry.SolutionInfos.Add(slnInfo);
+          }
+        }
+        repoInfos.Add(entry);
+      }
+
+      var text2 = JsonConvert.SerializeObject(repoInfos);
+      File.WriteAllText(autoConfResults, text2);
+    }
+
+    /*
     static int countTotalProjects()
     {
       int i = 0;
@@ -111,6 +153,8 @@ namespace Microsoft.Research.ReviewBot.Github
       return usables;
     }
 
+     * */
+
     static void CloneAll(SearchResponse resp)
     {
       foreach (var result in resp.items)
@@ -131,7 +175,7 @@ namespace Microsoft.Research.ReviewBot.Github
       return JsonConvert.DeserializeObject<SearchResponse>(reader.ReadToEnd());
     }
 
-    static void writeJson(ScanResult sr, string path)
+    static void writeJson(List<RepoInfo> sr, string path)
     {
       var text = JsonConvert.SerializeObject(sr, Newtonsoft.Json.Formatting.Indented);
       File.WriteAllText(scanResultsPath, text);
@@ -158,14 +202,15 @@ namespace Microsoft.Research.ReviewBot.Github
     //  return p.ExitCode == 0;
 
     //}
+    /*
     static void TryBuildAllWithMSBuild()
     {
       var hits = new List<string>();
       var misses = new List<string>();
       var text = File.ReadAllText(scanResultsPath);
-      var json = JsonConvert.DeserializeObject<ScanResult>(text);
+      var json = JsonConvert.DeserializeObject<List<RepoInfo>>(text);
       var res = File.OpenWrite(msbuildResultsPath);
-      foreach (var result in json.results)
+      foreach (var result in json)
       {
         foreach (var sln in result.SolutionResults)
         {
@@ -174,6 +219,8 @@ namespace Microsoft.Research.ReviewBot.Github
       }
       writeJson(json, scanResultsPath);
     }
+    */
+    /*
     static void makeNicerResultsFile(SearchResponse rsp)
     {
       var selections = File.ReadAllLines(@"..\..\selectedSolutions.txt");
@@ -193,6 +240,8 @@ namespace Microsoft.Research.ReviewBot.Github
       Console.WriteLine(text);
 
     }
+    */
+#if false
     static void trOpeningAllWithRoslyn(SearchResponse resp)
     {
       var sr = new ScanResult();
@@ -202,7 +251,7 @@ namespace Microsoft.Research.ReviewBot.Github
         var url = pair.clone_url;
 
         var slnPaths = SolutionTools.ScanForSolutions(name);
-        var localResults = new RepoResult();
+        var localResults = new RepoInfo();
         localResults.RepoName = name;
         if (name.StartsWith("corefx"))
         {
@@ -266,7 +315,7 @@ namespace Microsoft.Research.ReviewBot.Github
         {
           Console.WriteLine("In solution: " + slnPath);
           var msbw = MSBuildWorkspace.Create();
-          var stats = new SolutionStats();
+          var stats = new SolutionInfo();
           stats.FilePath = slnPath;
           Solution sln = null;
           try
@@ -286,7 +335,7 @@ namespace Microsoft.Research.ReviewBot.Github
           //var results = new List<bool>();
           foreach (var projId in projs)
           {
-            var pstats = new ProjectStats();
+            var pstats = new ProjectInfo();
             pstats.canRoslynOpen = true;
             var proj = sln.GetProject(projId);
             pstats.FilePath = proj.FilePath;
@@ -337,6 +386,7 @@ namespace Microsoft.Research.ReviewBot.Github
       writeJson(sr, scanResultsPath);
 
     }
+/*
     static void runReviewBotOnUsableRepos()
     {
       var text = File.ReadAllText(scanResultsPath);
@@ -425,5 +475,6 @@ namespace Microsoft.Research.ReviewBot.Github
         }
       }
     }
+#endif
   }
 } 

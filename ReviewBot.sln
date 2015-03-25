@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22609.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{ECEF677B-B2FF-4B48-8120-EA55D54A1C24}"
 EndProject
@@ -31,8 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceTest", "Tests\InterfaceTest\InterfaceTest.csproj", "{1EFB9CB1-9E7F-4DB5-8D0B-16EEEABB095E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "Tests\ConsoleApplication1\ConsoleApplication1.csproj", "{0CDD4EE3-F67E-48A5-8BE6-367EB268B1B0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoConfig", "AutoConfig\AutoConfig.csproj", "{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,12 +93,6 @@ Global
 		{0CDD4EE3-F67E-48A5-8BE6-367EB268B1B0}.Internal9|Any CPU.Build.0 = Release|Any CPU
 		{0CDD4EE3-F67E-48A5-8BE6-367EB268B1B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CDD4EE3-F67E-48A5-8BE6-367EB268B1B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Internal9|Any CPU.ActiveCfg = Release|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Internal9|Any CPU.Build.0 = Release|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
