@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management.Automation" />
@@ -46,8 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoConfig.cs" />
     <Compile Include="Git.cs" />
     <Compile Include="HelpersForClousotXML.cs" />
+    <Compile Include="MSBuilder.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Constants.cs" />

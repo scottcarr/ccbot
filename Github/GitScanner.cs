@@ -37,9 +37,21 @@ namespace Microsoft.Research.ReviewBot.Github
 
       var githubResp = GetGitHubList(30);
 
-      CloneAll(githubResp);
+      //CloneAll(githubResp);
 
       //trOpeningAllWithRoslyn(githubResp);
+
+      foreach (var i in githubResp.items) 
+      {
+        var dir = Path.Combine(Environment.CurrentDirectory, i.name);
+        string reason;
+        Configuration conf;
+        if (!AutoConfig.TryAutoConfig(dir, out conf, out reason))
+        {
+          Output.WriteError("AutoConfig failed.");
+          Output.WriteErrorAndQuit(reason);
+        }
+      }
 
       //TryBuildAllWithMSBuild();
       //var usables = findUsableProjects();

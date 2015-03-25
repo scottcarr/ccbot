@@ -154,8 +154,14 @@ namespace Microsoft.Research.ReviewBot.Utils
 
       }
       return TryBuildSolution(solution, msbuildpath);
-
     }
+
+    /*
+    public static bool TryBuildProject(string projectPath)
+    {
+      return MSBuilder.TryBuildProject(projectPath);
+    }
+    */
 
     private static void DataReceivedHandler(object sender, DataReceivedEventArgs e)
     {

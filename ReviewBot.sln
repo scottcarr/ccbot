@@ -34,8 +34,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoConfig", "AutoConfig\AutoConfig.csproj", "{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBuilder", "MSBuilder\MSBuilder.csproj", "{CC54E234-037B-49E5-B575-583127D2A5E2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,12 +101,6 @@ Global
 		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Internal9|Any CPU.Build.0 = Release|Any CPU
 		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4EF4D8F-1B2A-475D-88BE-996C4102C07A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Internal9|Any CPU.ActiveCfg = Release|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Internal9|Any CPU.Build.0 = Release|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC54E234-037B-49E5-B575-583127D2A5E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

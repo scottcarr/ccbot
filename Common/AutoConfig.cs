@@ -5,11 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Serialization;
-using Microsoft.Research.ReviewBot.Utils;
 
-namespace Microsoft.Research.ReviewBot.AutoConfig
+namespace Microsoft.Research.ReviewBot.Utils
 {
-  class Program
+  public class AutoConfig
   {
     static string[] msbuildHints = {
                               @"C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe"
@@ -20,93 +19,56 @@ namespace Microsoft.Research.ReviewBot.AutoConfig
     static string[] cccheckHints = {
                           @"C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe" 
                                    };
-    static void Main(string[] args)
+    public static bool TryAutoConfig(string GitRoot, out Configuration conf, out string reason) 
     {
-      /*
-      ExternalCommands.TryBuildProject(@"C:\Users\carr27\Documents\GitHub\reviewbot\Github\bin\Debug\Nancy\src\Nancy\Nancy.csproj");
-      return;
-      */
 
-      if (args.Length != 1)
+      conf = new Configuration();
+      conf.GitRoot = GitRoot;
+      conf.GitBaseBranch = "master"; // a guess, TODO check if this is the default branch
+      if (!TryFindCcCheck(out conf.Cccheck))
       {
-        PrintUsage();
-        return;
+        reason = "Couldn't find cccheck.exe";
+        return false;
       }
-      //var conf = new Configuration();
-      var GitRoot = args[0];
-      var GitBaseBranch = "master"; // a guess, TODO check if this is the default branch
-      string Cccheck;
-      string git;
-      string Solution;
-      string Project;
-      string RSP;
-      if (!TryFindCcCheck(out Cccheck))
+      if (!TryFindGit(out conf.Git))
       {
-        Console.WriteLine("Couldn't find cccheck.exe");
-        return;
+        reason = "Couldn't find msbuild.exe";
+        return false;
       }
-      /*
-      if (!TryFindMsbuild(out conf.MSBuild))
+      if (!TryFindSolution(conf.GitRoot, out conf.Solution))
       {
-        Output.WriteErrorAndQuit("Couldn't find msbuild.exe");
+        reason = "Couldn't find a *.sln file";
+        return false;
       }
-      */
-      if (!TryFindGit(out git))
+      if (!TryFindProject(conf.Solution, out conf.Project))
       {
-        //Output.WriteErrorAndQuit("Couldn't find msbuild.exe");
-        Console.WriteLine("Couldn't find msbuild.exe");
-        return;
+        reason = "Couldn't find a *.csproj file";
+        return false;
       }
-      if (!TryFindSolution(GitRoot, out Solution))
-      {
-        //Output.WriteErrorAndQuit("Couldn't find a *.sln file");
-        Console.WriteLine("Couldn't find a *.sln file");
-        return;
-      }
-      if (!TryFindProject(Solution, out Project))
-      {
-        //Output.WriteErrorAndQuit("Couldn't find a *.csproj file");
-        Console.WriteLine("Couldn't find a *.csproj file");
-      }
-      /*
-      if (!ExternalCommands.TryAutoBuildSolution(conf.Solution))
-      {
-        Output.WriteErrorAndQuit("Couldn't auto build solution");
-      }
-      if (!ExternalCommands.TryRestoreNugetPackages(conf.GitRoot, conf.Solution))
-      {
-        Output.WriteErrorAndQuit("Couldn't restore NuGet packages");
-      }
-      */
-      //var xmls = new XmlSerializer(conf.GetType());
-      //var sw = new StringWriter();
-      //xmls.Serialize(sw, conf);
-      //Console.WriteLine(sw);
-      //Git.RevertToOriginal(conf.GitRoot, conf.GitBaseBranch, conf.Git);
-      Git.RevertToOriginal(GitRoot, GitBaseBranch, git);
-      Helpers.EnableCodeContractsInProject(Project);
-      if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(Project), out RSP)) 
+      
+      Git.RevertToOriginal(conf.GitRoot, conf.GitBaseBranch, conf.Git);
+      Helpers.EnableCodeContractsInProject(conf.Project);
+      if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(conf.Project), out conf.RSP)) 
       {
         //Output.WriteLine("Couldn't find a *.rsp file.  Will try to create one");
         Console.WriteLine("Couldn't find a *.rsp file.  Will try to create one");
-        if (!MSBuilder.TryBuildProject(Project))
+        if (!MSBuilder.TryBuildProject(conf.Project))
         {
           //Output.WriteErrorAndQuit("Couldn't build project.");
           Console.WriteLine("Couldn't build project.");
         }
-        if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(Project), out RSP)) 
+        if (!TrySelectFilesWithExtension("cccheck.rsp", Path.GetDirectoryName(conf.Project), out conf.RSP)) 
         {
           //Output.WriteErrorAndQuit("Couldn't find rsp after enabling code contracts and building.");
           Console.WriteLine("Couldn't find rsp after enabling code contracts and building.");
         }
-      } else
-      {
-        //Output.WriteLine("Found existing .rsp file.");
-        Console.WriteLine("Found existing .rsp file.");
-      }
-      /*
+      } 
+      
       conf.CccheckXml = Path.Combine(Path.GetDirectoryName(conf.Project), Path.GetFileNameWithoutExtension(conf.Project) + "_cccheck.xml");
       conf.CccheckOptions = "-xml -remote=false -suggest methodensures -suggest propertyensures -suggest objectinvariants -suggest necessaryensures  -suggest readonlyfields -suggest assumes -suggest nonnullreturn -sortWarns=false -warninglevel full -maxwarnings 99999999";
+      reason = "success";
+      return true;
+      /*
       if (!File.Exists(conf.CccheckXml))
       {
         Output.WriteLine("Running cccheck to create xml file.");
@@ -130,8 +92,6 @@ namespace Microsoft.Research.ReviewBot.AutoConfig
                               };
       Annotator.DoAnnotate(reviewArgs);
       */
-      Console.WriteLine("Done.");
-      Console.ReadKey();
     }
     static void PrintUsage()
     {
