@@ -27,6 +27,52 @@ namespace Microsoft.Research.ReviewBot.Github
     static readonly string msbuildPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
     static readonly string autoConfResults = "repoInfo.json";
     //static readonly string msbuildPath = "msbuild.exe";
+    static string startDir = Environment.CurrentDirectory;
+    static readonly string[] badSolutions = {
+            @"corefx\src\Microsoft.CSharp\Microsoft.CSharp.sln",
+            @"corefx\src\Microsoft.Win32.Registry\Microsoft.Win32.Registry.sln",
+            @"corefx\src\System.Collections.Immutable\System.Collections.Immutable.sln",
+            @"corefx\src\System.ComponentModel.Annotations\System.ComponentModel.Annotations.sln",
+            @"corefx\src\System.Diagnostics.Process\System.Diagnostics.Process.sln",
+            @"corefx\src\System.Globalization.Extensions\System.Globalization.Extensions.sln",
+            @"corefx\src\System.IO.FileSystem\System.IO.FileSystem.sln",
+            @"corefx\src\System.IO.FileSystem.Watcher\System.IO.FileSystem.Watcher.sln",
+            @"corefx\src\System.IO.MemoryMappedFiles\System.IO.MemoryMappedFiles.sln",
+            @"corefx\src\System.Linq.Expressions\System.Linq.Expressions.sln",
+            @"corefx\src\System.Linq.Parallel\System.Linq.Parallel.sln",
+            @"corefx\src\System.Private.DataContractSerialization\System.Private.DataContractSerialization.sln",
+            @"corefx\src\System.Reflection.Metadata\System.Reflection.Metadata.sln",
+            @"corefx\src\System.Runtime.Serialization.Json\System.Runtime.Serialization.Json.sln",
+            @"corefx\src\System.Runtime.Serialization.Xml\System.Runtime.Serialization.Xml.sln",
+            @"corefx\src\System.Threading.Tasks.Dataflow\System.Threading.Tasks.Dataflow.sln",
+            @"corefx\src\System.Threading.Tasks.Parallel\System.Threading.Tasks.Parallel.sln",
+            @"corefx\src\System.Xml.ReaderWriter\System.Xml.ReaderWriter.sln",
+            @"corefx\src\System.Xml.XDocument\System.Xml.XDocument.sln",
+            @"corefx\src\System.Xml.XmlDocument\System.Xml.XmlDocument.sln",
+            @"corefx\src\System.Xml.XmlSerializer\System.Xml.XmlSerializer.sln",
+            @"corefx\src\System.Xml.XPath\System.Xml.XPath.sln",
+            @"corefx\src\System.Xml.XPath.XDocument\System.Xml.XPath.XDocument.sln",
+            @"corefx\src\System.Xml.XPath.XmlDocument\System.Xml.XPath.XmlDocument.sln",
+            @"mono\mcs\class\System.Net.Http\System.Net.Http-net_4_5.sln",
+            @"mono\msvc\scripts\net_4_5.sln",
+            @"OpenRA\OpenRA.sln",
+            @"EntityFramework\EntityFramework.sln",
+            @"ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.WindowsPhone.sln",
+            @"roslyn\src\Roslyn.sln",
+            @"roslyn\src\RoslynLight.sln",
+            @"roslyn\src\Toolset.sln",
+            @"roslyn\src\InteractiveWindow\InteractiveWindow.sln",
+            @"ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.Silverlight.sln",
+            @"monodevelop\main\Main.sln"
+
+    };
+
+    static string stripBaseDir(string otherdir)
+    {
+      int n = startDir.Length;
+      return otherdir.Substring(n);
+    }
+
     static void Main(string[] args)
     {
 
@@ -53,7 +99,7 @@ namespace Microsoft.Research.ReviewBot.Github
 
     static void CreateSolutionAndProjectLists(SearchResponse githubResp)
     {
-      var startDir = Environment.CurrentDirectory;
+      /*
       List<RepoInfo> repoInfos;
       if (!File.Exists(autoConfResults)) 
       {
@@ -68,9 +114,12 @@ namespace Microsoft.Research.ReviewBot.Github
           repoInfos = new List<RepoInfo>();
         }
       }
+      */
+      //var repoInfos = new List<RepoInfo>();
       foreach (var i in githubResp.items) 
       {
         var entry = new RepoInfo();
+        entry.RepoName = i.name;
         var repoDir = Path.Combine(startDir, i.name);
         foreach (var slnPath in Directory.GetFiles(repoDir, "*.sln", SearchOption.AllDirectories))
         {
@@ -78,78 +127,60 @@ namespace Microsoft.Research.ReviewBot.Github
           var msbw = MSBuildWorkspace.Create();
           Solution sln;
           var slnInfo = new SolutionInfo();
-          slnInfo.FilePath = slnPath;
-          try
+          slnInfo.FilePath = stripBaseDir(slnPath);
+          if (badSolutions.Any(x => slnPath.EndsWith(x)))
           {
-
-            if (slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\Microsoft.CSharp\Microsoft.CSharp.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\Microsoft.Win32.Registry\Microsoft.Win32.Registry.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Collections.Immutable\System.Collections.Immutable.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.ComponentModel.Annotations\System.ComponentModel.Annotations.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Diagnostics.Process\System.Diagnostics.Process.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Globalization.Extensions\System.Globalization.Extensions.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.FileSystem\System.IO.FileSystem.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.FileSystem.Watcher\System.IO.FileSystem.Watcher.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.MemoryMappedFiles\System.IO.MemoryMappedFiles.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Linq.Parallel\System.Linq.Parallel.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Reflection.Metadata\System.Reflection.Metadata.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Threading.Tasks.Dataflow\System.Threading.Tasks.Dataflow.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Threading.Tasks.Parallel\System.Threading.Tasks.Parallel.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.ReaderWriter\System.Xml.ReaderWriter.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XDocument\System.Xml.XDocument.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XmlDocument\System.Xml.XmlDocument.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath\System.Xml.XPath.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath.XDocument\System.Xml.XPath.XDocument.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath.XmlDocument\System.Xml.XPath.XmlDocument.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\mono\mcs\class\System.Net.Http\System.Net.Http-net_4_5.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\mono\msvc\scripts\net_4_5.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\OpenRA\OpenRA.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\EntityFramework\EntityFramework.sln"
-                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.WindowsPhone.sln")
-            {
-              // opening these solutions with OpenSolutionAsync causes an assertion failure
-              slnInfo.canRoslynOpen = false;
-              entry.SolutionInfos.Add(slnInfo);
-              continue;
-            }
-            sln = msbw.OpenSolutionAsync(slnPath).Result;
-            slnInfo.canRoslynOpen = true;
-            slnInfo = new SolutionInfo();
-            foreach (var proj in sln.Projects)
-            {
-              var pInfo = new ProjectInfo();
-              pInfo.FilePath = proj.FilePath;
-              try
-              {
-                var cu = proj.GetCompilationAsync().Result;
-                var errors = cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
-                if (errors.Any())
-                {
-                  pInfo.hasErrors = true;
-                  pInfo.error = String.Join("\n", errors.Select(x => x.ToString()));
-                }
-              }
-              catch (Exception e)
-              {
-                pInfo.hasErrors = true;
-                pInfo.error = e.ToString();
-
-              }
-              slnInfo.Projects.Add(pInfo);
-            }
-          }
-          catch (Exception e)
-          {
-            slnInfo.error = e.Message;
             slnInfo.canRoslynOpen = false;
+            slnInfo.skipped = true;
             entry.SolutionInfos.Add(slnInfo);
           }
+          else
+          {
+            try
+            {
+
+              sln = msbw.OpenSolutionAsync(slnPath).Result;
+              slnInfo.canRoslynOpen = true;
+              slnInfo = new SolutionInfo();
+              foreach (var proj in sln.Projects)
+              {
+                var pInfo = new ProjectInfo();
+                pInfo.FilePath = stripBaseDir(proj.FilePath);
+                try
+                {
+                  var cu = proj.GetCompilationAsync().Result;
+                  var errors = cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+                  if (errors.Any())
+                  {
+                    pInfo.hasErrors = true;
+                    pInfo.error = String.Join("\n", errors.Select(x => x.ToString()));
+                  }
+                }
+                catch (Exception e)
+                {
+                  pInfo.hasErrors = true;
+                  pInfo.error = e.ToString();
+
+                }
+                slnInfo.Projects.Add(pInfo);
+              }
+              entry.SolutionInfos.Add(slnInfo);
+            }
+            catch (Exception e)
+            {
+              slnInfo.error = e.Message;
+              slnInfo.canRoslynOpen = false;
+              entry.SolutionInfos.Add(slnInfo);
+            }
+          }
         }
-        repoInfos.Add(entry);
+        //repoInfos.Add(entry);
+        var text2 = JsonConvert.SerializeObject(entry, Newtonsoft.Json.Formatting.Indented);
+        File.WriteAllText(entry.RepoName + "_reviewbot.json", text2);
       }
 
-      var text2 = JsonConvert.SerializeObject(repoInfos);
-      File.WriteAllText(autoConfResults, text2);
+      //var text2 = JsonConvert.SerializeObject(repoInfos, Newtonsoft.Json.Formatting.Indented);
+      //File.WriteAllText(autoConfResults, text2);
     }
 
     /*

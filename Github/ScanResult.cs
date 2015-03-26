@@ -10,7 +10,6 @@ namespace Microsoft.Research.ReviewBot.Github
   {
     public string RepoName;
     public readonly List<SolutionInfo> SolutionInfos = new List<SolutionInfo>();
-    public bool skipped = false;
     public string comment;
   }
   class SolutionInfo
@@ -18,6 +17,7 @@ namespace Microsoft.Research.ReviewBot.Github
     public string FilePath;
     public readonly List<ProjectInfo> Projects = new List<ProjectInfo>();
     public bool canRoslynOpen;
+    public bool skipped = false;
     public string error;
   }
   class ProjectInfo
