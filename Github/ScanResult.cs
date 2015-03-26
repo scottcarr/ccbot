@@ -24,6 +24,7 @@ namespace Microsoft.Research.ReviewBot.Github
   {
     public string FilePath;
     public bool canMsBuild;
+    public bool hasErrors;
     public string error;
   }
 }

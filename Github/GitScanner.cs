@@ -77,10 +77,41 @@ namespace Microsoft.Research.ReviewBot.Github
           Console.WriteLine("Opening solution: " + slnPath);
           var msbw = MSBuildWorkspace.Create();
           Solution sln;
-          var slnInfo = new SolutionInfo();;
+          var slnInfo = new SolutionInfo();
+          slnInfo.FilePath = slnPath;
           try
           {
 
+            if (slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\Microsoft.CSharp\Microsoft.CSharp.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\Microsoft.Win32.Registry\Microsoft.Win32.Registry.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Collections.Immutable\System.Collections.Immutable.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.ComponentModel.Annotations\System.ComponentModel.Annotations.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Diagnostics.Process\System.Diagnostics.Process.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Globalization.Extensions\System.Globalization.Extensions.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.FileSystem\System.IO.FileSystem.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.FileSystem.Watcher\System.IO.FileSystem.Watcher.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.IO.MemoryMappedFiles\System.IO.MemoryMappedFiles.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Linq.Parallel\System.Linq.Parallel.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Reflection.Metadata\System.Reflection.Metadata.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Threading.Tasks.Dataflow\System.Threading.Tasks.Dataflow.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Threading.Tasks.Parallel\System.Threading.Tasks.Parallel.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.ReaderWriter\System.Xml.ReaderWriter.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XDocument\System.Xml.XDocument.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XmlDocument\System.Xml.XmlDocument.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath\System.Xml.XPath.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath.XDocument\System.Xml.XPath.XDocument.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\corefx\src\System.Xml.XPath.XmlDocument\System.Xml.XPath.XmlDocument.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\mono\mcs\class\System.Net.Http\System.Net.Http-net_4_5.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\mono\msvc\scripts\net_4_5.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\OpenRA\OpenRA.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\EntityFramework\EntityFramework.sln"
+                || slnPath == @"C:\Users\Scott\Documents\GitHub\reviewbot\Github\bin\Debug\ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.WindowsPhone.sln")
+            {
+              // opening these solutions with OpenSolutionAsync causes an assertion failure
+              slnInfo.canRoslynOpen = false;
+              entry.SolutionInfos.Add(slnInfo);
+              continue;
+            }
             sln = msbw.OpenSolutionAsync(slnPath).Result;
             slnInfo.canRoslynOpen = true;
             slnInfo = new SolutionInfo();
@@ -88,6 +119,22 @@ namespace Microsoft.Research.ReviewBot.Github
             {
               var pInfo = new ProjectInfo();
               pInfo.FilePath = proj.FilePath;
+              try
+              {
+                var cu = proj.GetCompilationAsync().Result;
+                var errors = cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+                if (errors.Any())
+                {
+                  pInfo.hasErrors = true;
+                  pInfo.error = String.Join("\n", errors.Select(x => x.ToString()));
+                }
+              }
+              catch (Exception e)
+              {
+                pInfo.hasErrors = true;
+                pInfo.error = e.ToString();
+
+              }
               slnInfo.Projects.Add(pInfo);
             }
           }
