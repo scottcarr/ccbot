@@ -569,7 +569,7 @@
         </member>
         <member name="F:Microsoft.CodeAnalysis.WellKnownMemberNames.OnCompleted">
             <summary>
-            The name of the <see cref="M:System.Runtime.CompilerServices.INotifyCompletion.OnCompleted"/> method used to register a resumption delegate
+            The name of the <see cref="M:System.Runtime.CompilerServices.INotifyCompletion.OnCompleted(System.Action)"/> method used to register a resumption delegate
             (see C# Specification, §7.7.7.1 Awaitable expressions).
             </summary>
         </member>
@@ -584,48 +584,90 @@
             start &gt;= value &lt;= end
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.DebuggerTypeProxyExpansion">
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources">
             <summary>
-            Debugger type proxy expansion.
-            </summary>
-            <remarks>
-            May include <see cref="T:System.Collections.IEnumerable"/> and
-            <see cref="T:System.Collections.Generic.IEnumerable`1"/> as special cases.
-            (The proxy is not declared by an attribute, but is known to debugger.)
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion">
-            <summary>
-            The immediate children of a DkmEvaluationResult (e.g. the
-            elements within an array). Ideally, the children are generated
-            on demand, and not cached in the Expansion.
+              A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion.GetRows(Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem},Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,System.Int32,System.Int32,System.Boolean,System.Int32@)">
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResourceManager">
             <summary>
-            Get the rows within the given range. 'index' is advanced
-            to the end of the range, or if 'visitAll' is true, 'index' is
-            advanced to the end of the expansion.
+              Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion">
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.Culture">
             <summary>
-            Type member expansion.
-            </summary>
-            <remarks>
-            Includes accesses to static members with instance receivers and
-            accesses to instance members with dynamic receivers.
-            </remarks>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.NonPublicMembersExpansion">
-            <summary>
-            An explicit user request to bypass "Just My Code" and display
-            the inaccessible members of an instance of an imported type.
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.StaticMembersExpansion">
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ErrorName">
             <summary>
-            A transition from an instance of a type to the type itself (for inspecting static members).
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ExceptionThrown">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; threw an exception of type &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.InvalidPointerDereference">
+            <summary>
+              Looks up a localized string similar to Cannot dereference &apos;{0}&apos;. The pointer is not valid..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.NativeView">
+            <summary>
+              Looks up a localized string similar to Native View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.NativeViewNotNativeDebugging">
+            <summary>
+              Looks up a localized string similar to To inspect the native object, enable native code debugging..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.NonPublicMembers">
+            <summary>
+              Looks up a localized string similar to Non-Public members.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.RawView">
+            <summary>
+              Looks up a localized string similar to Raw View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsView">
+            <summary>
+              Looks up a localized string similar to Results View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNoSystemCore">
+            <summary>
+              Looks up a localized string similar to Results View requires System.Core.dll to be referenced.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNotEnumerable">
+            <summary>
+              Looks up a localized string similar to Only Enumerable types can have Results View.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewValueWarning">
+            <summary>
+              Looks up a localized string similar to Expanding the Results View will enumerate the IEnumerable.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.SharedMembers">
+            <summary>
+              Looks up a localized string similar to Shared Members.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.StaticMembers">
+            <summary>
+              Looks up a localized string similar to Static Members.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.TypeVariablesName">
+            <summary>
+              Looks up a localized string similar to Type variables.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter">
@@ -706,9 +748,73 @@
             NOTE: no curlies for enum values.
             </remarks>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.ConvertEnumUnderlyingTypeToUInt64(System.Object,System.TypeCode)">
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter.ConvertEnumUnderlyingTypeToUInt64(System.Object,Microsoft.VisualStudio.Debugger.Metadata.TypeCode)">
             <summary>
             Convert a boxed primitive (generally of the backing type of an enum) into a ulong.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider">
+            <summary>
+            Computes expansion of <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue"/> instances.
+            </summary>
+            <remarks>
+            This class provides implementation for the default ResultProvider component.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider.GetTypeName(Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.VisualStudio.Debugger.Clr.DkmClrType,Microsoft.CodeAnalysis.ExpressionEvaluator.ExpansionKind)">
+            <returns>
+            The qualified name (i.e. including containing types and namespaces) of a named, pointer,
+            or array type followed by the qualified name of the actual runtime type, if provided.
+            </returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.DebuggerTypeProxyExpansion">
+            <summary>
+            Debugger type proxy expansion.
+            </summary>
+            <remarks>
+            May include <see cref="T:System.Collections.IEnumerable"/> and
+            <see cref="T:System.Collections.Generic.IEnumerable`1"/> as special cases.
+            (The proxy is not declared by an attribute, but is known to debugger.)
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion">
+            <summary>
+            The immediate children of a DkmEvaluationResult (e.g. the
+            elements within an array). Ideally, the children are generated
+            on demand, and not cached in the Expansion.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.Expansion.GetRows(Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem},Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.CodeAnalysis.ExpressionEvaluator.EvalResultDataItem,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,System.Int32,System.Int32,System.Boolean,System.Int32@)">
+            <summary>
+            Get the rows within the given range. 'index' is advanced
+            to the end of the range, or if 'visitAll' is true, 'index' is
+            advanced to the end of the expansion.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion">
+            <summary>
+            Type member expansion.
+            </summary>
+            <remarks>
+            Includes accesses to static members with instance receivers and
+            accesses to instance members with dynamic receivers.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.NonPublicMembersExpansion">
+            <summary>
+            An explicit user request to bypass "Just My Code" and display
+            the inaccessible members of an instance of an imported type.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.MemberExpansion.StaticMembersExpansion">
+            <summary>
+            A transition from an instance of a type to the type itself (for inspecting static members).
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultsViewExpansion.CreateResultsOnlyRowIfSynthesizedEnumerable(Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,System.String,Microsoft.VisualStudio.Debugger.Clr.DkmClrType,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.CodeAnalysis.ExpressionEvaluator.Formatter)">
+            <summary>
+            Generate a Results Only row if the value is a synthesized
+            value declared as IEnumerable or IEnumerable&lt;T&gt;.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.EnumContextDataItem">
@@ -822,94 +928,9 @@
             with type arguments from 'typeArgs' in type 'type'.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ErrorName">
-            <summary>
-              Looks up a localized string similar to Error.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ExceptionThrown">
-            <summary>
-              Looks up a localized string similar to &apos;{0}&apos; threw an exception of type &apos;{1}&apos;.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.InvalidPointerDereference">
-            <summary>
-              Looks up a localized string similar to Cannot dereference &apos;{0}&apos;. The pointer is not valid..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.NonPublicMembers">
-            <summary>
-              Looks up a localized string similar to Non-Public members.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.RawView">
-            <summary>
-              Looks up a localized string similar to Raw View.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsView">
-            <summary>
-              Looks up a localized string similar to Results View.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNoSystemCore">
-            <summary>
-              Looks up a localized string similar to Results View requires System.Core.dll to be referenced.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewNotEnumerable">
-            <summary>
-              Looks up a localized string similar to Only Enumerable types can have Results View.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResultsViewValueWarning">
-            <summary>
-              Looks up a localized string similar to Expanding the Results View will enumerate the IEnumerable.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.TypeVariablesName">
-            <summary>
-              Looks up a localized string similar to Type variables.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider">
-            <summary>
-            Computes expansion of <see cref="T:Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue"/> instances.
-            </summary>
-            <remarks>
-            This class provides implementation for the default ResultProvider component.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProvider.GetTypeName(Microsoft.VisualStudio.Debugger.Evaluation.DkmInspectionContext,Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrValue,Microsoft.VisualStudio.Debugger.Clr.DkmClrType,Microsoft.CodeAnalysis.ExpressionEvaluator.ExpansionKind)">
-            <returns>
-            The qualified name (i.e. including containing types and namespaces) of a named, pointer,
-            or array type followed by the qualified name of the actual runtime type, if provided.
-            </returns>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.IErrorTypeSymbol">
             <summary>
             Required by <see cref="T:Microsoft.CodeAnalysis.SymbolDisplayPartKind"/>.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Environment">
-            <summary>
-            Required by <see cref="T:Microsoft.CodeAnalysis.FailFast"/>
             </summary>
         </member>
         <member name="T:Roslyn.Utilities.ObjectPool`1">
@@ -970,11 +991,6 @@
         <member name="T:Roslyn.Utilities.Hash">
             <summary>
             Required by <see cref="T:Microsoft.CodeAnalysis.CaseInsensitiveComparison"/>
-            </summary>
-        </member>
-        <member name="T:System.Runtime.CompilerServices.INotifyCompletion">
-            <summary>
-            This satisfies a cref on <see cref="T:Microsoft.CodeAnalysis.WellKnownMemberNames"/>.
             </summary>
         </member>
     </members>

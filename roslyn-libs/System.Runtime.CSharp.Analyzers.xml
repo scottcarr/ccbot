@@ -4,6 +4,11 @@
         <name>System.Runtime.CSharp.Analyzers</name>
     </assembly>
     <members>
+        <member name="T:System.Runtime.Analyzers.CSharpOverloadOperatorEqualsOnOverridingValueTypeEqualsFixer">
+            <summary>
+            CA2231: Overload operator equals on overriding ValueType.Equals
+            </summary>
+        </member>
         <member name="T:System.Runtime.Analyzers.CSharpDefineAccessorsForAttributeArgumentsAnalyzer">
             <summary>
             CA1019: Define accessors for attribute arguments

@@ -230,7 +230,7 @@ Microsoft.CodeAnalysis.VisualBasic
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._regionPlace">
  <summary> Tells whether we are analyzing the position before, during, or after the region </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.loopHeadState">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._loopHeadState">
  <summary>
  A cache of the state at the backward branch point of each loop.  This is not needed
  during normal flow analysis, but is needed for region analysis.
@@ -282,12 +282,12 @@ Microsoft.CodeAnalysis.VisualBasic
  initializer is being analyzed
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.methodOrInitializerMainNode">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._methodOrInitializerMainNode">
  <summary>
  The bound code of the method or initializer being analyzed
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.labels">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._labels">
  <summary>
  The flow analysis state at each label, computed by merging the state from branches to
  that label with the state when we fall into the label.  Entries are created when the
@@ -300,7 +300,7 @@ Microsoft.CodeAnalysis.VisualBasic
  3; l5: print x; l4: goto l5; l3: goto l4; l2: goto l3; l1: goto l2;"
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.labelsSeen">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._labelsSeen">
  <summary> All of the labels seen so far in this forward scan of the body </summary>
 </member>
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.backwardBranchChanged">
@@ -327,7 +327,7 @@ Microsoft.CodeAnalysis.VisualBasic
  Used only in the data flows out walker, we track unassignments as well as assignments
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.nesting">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._nesting">
  <summary>
  The current lexical nesting in the BoundTree. 
  </summary>
@@ -338,7 +338,7 @@ Microsoft.CodeAnalysis.VisualBasic
  Where all diagnostics are deposited.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1.suppressConstantExpressions">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass`1._suppressConstantExpressions">
  <summary> Indicates whether or not support of constant expressions (boolean and nothing)
  is enabled in this analyzer. In general, constant expressions support is enabled in analysis
  exposed to public API consumer and disabled when used from command-line compiler. </summary>
@@ -634,13 +634,13 @@ Microsoft.CodeAnalysis.VisualBasic
  and therefore must be moved to a field of a frame class.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.IntersectBitArrays(Microsoft.CodeAnalysis.BitArray@,Microsoft.CodeAnalysis.BitArray)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.IntersectBitArrays(Microsoft.CodeAnalysis.BitVector@,Microsoft.CodeAnalysis.BitVector)">
  <summary>
  Intersect bit arrays taking into account 'all bits set' flag
  </summary>
  <remarks>receiver will be changed as a result</remarks>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.UnionBitArrays(Microsoft.CodeAnalysis.BitArray@,Microsoft.CodeAnalysis.BitArray)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.UnionBitArrays(Microsoft.CodeAnalysis.BitVector@,Microsoft.CodeAnalysis.BitVector)">
  <summary>
  Union bit arrays taking into account 'all bits set' flag
  </summary>
@@ -720,7 +720,7 @@ Microsoft.CodeAnalysis.VisualBasic
  Variables that were used anywhere, in the sense required to suppress warnings about unused variables.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.writtenVariables">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass._writtenVariables">
  <summary>
  Variables that were initialized or written anywhere.
  </summary>
@@ -745,13 +745,13 @@ Microsoft.CodeAnalysis.VisualBasic
  the index of the next slot number to use.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.alreadyReported">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass._alreadyReported">
  <summary>
  Tracks variables for which we have already reported a definite assignment error.  This
  allows us to report at most one such error per variable.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.seenOnErrorOrResume">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass._seenOnErrorOrResume">
  <summary>
  Did we see [On Error] or [Resume] statement? Used to suppress some diagnostics.
  </summary>
@@ -800,7 +800,7 @@ Microsoft.CodeAnalysis.VisualBasic
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.SetSlotAssigned(System.Int32)">
  <summary>Assign a slot for a regular variable.</summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.typeToMembersCache">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass._typeToMembersCache">
  <summary> Hash structure fields as we may query them many times </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.CheckAssigned(Microsoft.CodeAnalysis.VisualBasic.Symbol,Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode,Microsoft.CodeAnalysis.VisualBasic.AbstractFlowPass{Microsoft.CodeAnalysis.VisualBasic.DataFlowPass.LocalState}.ReadWriteContext)">
@@ -909,22 +909,22 @@ Microsoft.CodeAnalysis.VisualBasic
  Represents analysis context attributes such as compilation, region, etc...
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.compilation">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._compilation">
  <summary> Current compilation </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.symbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._symbol">
  <summary> Method, field or property symbol </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.boundNode">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._boundNode">
  <summary> Bound node defining the root of the bound subtree to be analyzed </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.firstInRegion">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._firstInRegion">
  <summary> Region being analyzed: start node </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.lastInRegion">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._lastInRegion">
  <summary> Region being analyzed: end node </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.region">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext._region">
  <summary> Region itself </summary>
 </member>
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.RegionAnalysisContext.Failed">
@@ -2699,7 +2699,7 @@ Figure out the set of best candidates in the following preference order:
  Bind body of a lambda representing first Select operator selector for an aggregate clause in context of this binder.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Binder.QueryLambdaBinder.BindAbsorbingJoinSelector(Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryClauseSyntax,Microsoft.CodeAnalysis.SyntaxList{Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryClauseSyntax}.Enumerator,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol},Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode@,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol}@,Microsoft.CodeAnalysis.VisualBasic.BoundQueryClauseBase@,Microsoft.CodeAnalysis.VisualBasic.Binder.IntoClauseDisallowGroupReferenceBinder@,Microsoft.CodeAnalysis.DiagnosticBag)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Binder.QueryLambdaBinder.BindAbsorbingJoinSelector(Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryClauseSyntax,Microsoft.CodeAnalysis.SyntaxList{Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryClauseSyntax}.Enumerator,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.RangeVariableSymbol}@,Microsoft.CodeAnalysis.VisualBasic.BoundQueryClauseBase@,Microsoft.CodeAnalysis.VisualBasic.Binder.IntoClauseDisallowGroupReferenceBinder@,Microsoft.CodeAnalysis.DiagnosticBag)">
  <summary>
  Bind Join/From selector that absorbs following Select/Let in context of this binder.
  </summary>
@@ -2999,12 +2999,12 @@ Figure out the set of best candidates in the following preference order:
  <param name="methodOrPropertyGroup">The method or property group.</param>
  <param name="diagnostics">The diagnostics.</param>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Binder.IsFunctionWithoutArguments">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Binder.s_isFunctionWithoutArguments">
  <summary>
  Checks if a given symbol is a function that takes no parameters.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Binder.IsReadablePropertyWithoutArguments">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Binder.s_isReadablePropertyWithoutArguments">
  <summary>
  Checks if a given symbol is a property that is readable.
  </summary>
@@ -3870,7 +3870,7 @@ Figure out the set of best candidates in the following preference order:
  Binder used for field, auto property initializations and parameter default values.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.DeclarationInitializerBinder.m_symbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.DeclarationInitializerBinder._symbol">
  <summary>
  Backing field for the ContainingMember property
  </summary>
@@ -4119,34 +4119,6 @@ Figure out the set of best candidates in the following preference order:
  <summary>
  Causes lookups to ignore base classes. Used for binding
  Imports statements.
- </summary>
-</member>
-<member name="T:Microsoft.CodeAnalysis.VisualBasic.ImplicitVariableBinder">
- <summary>
- The ImplicitVariableBinder manages implicitly declared local variables in VB.
- Unlike other Binders, the ImplicitVariableBinder is observably 
- mutable -- as new implicit local variables are declared, those variables will be
- found by lookup operations on the binder. This mutability requires that use of the 
- ImplicitVariableBinder be treated with somewhat more care than other binders.
- 
- The implicit variable binder is placed immediately outside the method body binder
- when the method body binder is created.
- 
- Furthermore, the semantics of binding of implicitly declared local variables in VB
- are order dependent because of type characters:
-     x$ = "hello": x = "hi"   ' OK
-     x = "hi": X$ = "hello"   ' error: x is of type Object.
- 
- An ImplicitVariableBinder can be frozen, at which point additional variables cannot
- be declared. This should be done once an entire method body is bound.
- 
- Thus, it is important that only one thread at a time be allowed to access the implicit variable binder for
- declaration (once frozen, it is OK for multiple threads to do lookups.)
- 
- In Debug, Asserts validate these rules.
- 
- Additional assert to make sure that declarations are handled in order is handled by 
- <see cref="M:Microsoft.CodeAnalysis.VisualBasic.ExecutableCodeBinder.CheckSimpleNameBindingOrder(Microsoft.CodeAnalysis.VisualBasic.Syntax.SimpleNameSyntax)"/>
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.ImplicitVariableBinder.#ctor(Microsoft.CodeAnalysis.VisualBasic.Binder,Microsoft.CodeAnalysis.VisualBasic.Symbol)">
@@ -4956,11 +4928,6 @@ For more explanation of Kind, Symbol, Error - see LookupResult.
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager._concurrentDelegatesCache">
  <summary> Cache of created anonymous delegates </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager._sourceLocationsSeen">
- <summary>
- Holds a collection of all the locations of anonymous types and delegates from source
- </summary>
-</member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager.ConstructAnonymousTypeImplementationSymbol(Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager.AnonymousTypePublicSymbol)">
  <summary> 
  Given anonymous type public symbol construct an anonymous type symbol to be used 
@@ -5039,7 +5006,7 @@ For more explanation of Kind, Symbol, Error - see LookupResult.
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager.AnonymousTypePropertySymbol.PropertyIndex">
  <summary> Index of the property in the containing anonymous type </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager.AnonymousTypeOrDelegateTemplateSymbol.m_nameAndIndex">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AnonymousTypeManager.AnonymousTypeOrDelegateTemplateSymbol._nameAndIndex">
  <summary>
  The name used to emit definition of the type. Will be set when the type's 
  metadata is ready to be emitted, Name property will throw exception if this field 
@@ -7435,7 +7402,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Represents a .NET assembly. An assembly consists of one or more modules.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AssemblySymbol.m_CorLibrary">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.AssemblySymbol._corLibrary">
  <summary>
  The system assembly, which provides primitive types like Object, String, etc., e.g. mscorlib.dll. 
  The value is provided by ReferenceManager and must not be modified. For SourceAssemblySymbol, non-missing 
@@ -7791,12 +7758,12 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Helper class to resolve metadata tokens and signatures.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder.m_typeContextOpt">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder._typeContextOpt">
  <summary>
  Type context for resolving generic type arguments.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder.m_methodContextOpt">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder._methodContextOpt">
  <summary>
  Method context for resolving generic method type arguments.
  </summary>
@@ -7840,18 +7807,18 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_Assembly">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._assembly">
  <summary>
  An Assembly object providing metadata for the assembly.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_DocumentationProvider">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._documentationProvider">
  <summary>
  A MetadataDocumentationProvider providing XML documentation for this assembly.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_Modules">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._modules">
  <summary>
  The list of contained PEModuleSymbol objects.
  The list doesn't use type ReadOnlyCollection(Of PEModuleSymbol) so that we
@@ -7859,7 +7826,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_NoPiaResolutionAssemblies">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._noPiaResolutionAssemblies">
  <summary>
  An array of assemblies involved in canonical type resolution of
  NoPia local types defined within this assembly. In other words, all 
@@ -7867,7 +7834,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  The array and its content is provided by ReferenceManager and must not be modified.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_LinkedReferencedAssemblies">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._linkedReferencedAssemblies">
  <summary>
  An array of assemblies referenced by this assembly, which are linked (/l-ed) by 
  each compilation that is using this AssemblySymbol as a reference. 
@@ -7875,7 +7842,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  The array and its content is provided by ReferenceManager and must not be modified.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol.m_IsLinked">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEAssemblySymbol._isLinked">
  <summary>
  Assembly is /l-ed by compilation that is using it as a reference.
  </summary>
@@ -7919,7 +7886,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  This is for perf, not for correctness.
  </remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEGlobalNamespaceSymbol.m_ModuleSymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEGlobalNamespaceSymbol._moduleSymbol">
  <summary>
  The module containing the namespace.
  </summary>
@@ -7933,6 +7900,21 @@ we see that namespaces A and B and C are declared.  This declaration is represen
 <member name="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol">
  <summary>
  The class to represent all methods imported from a PE/module.
+ </summary>
+</member>
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields">
+ <summary>
+ A single field to hold optional auxiliary data.
+ In many scenarios it is possible to avoid allocating this, thus saving total space in <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol"/>.
+ Even for lazily-computed values, it may be possible to avoid allocating <see cref="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> if
+ the computed value is a well-known "empty" value. In this case, bits in <see cref="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol._packedFlags"/> are used
+ to indicate that the lazy values have been computed and, if <see cref="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> is null, then
+ the "empty" value should be inferred.
+ </summary>
+</member>
+<member name="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol.UncommonFields">
+ <summary>
+ Holds infrequently accessed fields. See <seealso cref="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> for an explanation.
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEMethodSymbol.SetAssociatedProperty(Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEPropertySymbol,Microsoft.CodeAnalysis.MethodKind)">
@@ -7958,31 +7940,31 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.m_AssemblySymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol._assemblySymbol">
  <summary>
  Owning AssemblySymbol. This can be a PEAssemblySymbol or a SourceAssemblySymbol.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.m_Module">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol._module">
  <summary>
  A Module object providing metadata.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.m_GlobalNamespace">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol._globalNamespace">
  <summary>
  Global namespace. 
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.m_LazySystemTypeSymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol._lazySystemTypeSymbol">
  <summary>
  Cache the symbol for well-known type System.Type because we use it frequently
  (for attributes).
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.DefaultTypeMapCapacity">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEModuleSymbol.s_defaultTypeMapCapacity">
  <summary>
  The same value as ConcurrentDictionary.DEFAULT_CAPACITY
  </summary>
@@ -8027,25 +8009,25 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol.m_lazyNestedTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol._lazyNestedTypes">
  <summary>
  A map of types immediately contained within this type 
  grouped by their name (case-insensitively).
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol.m_lazyMemberNames">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol._lazyMemberNames">
  <summary>
  A set of all the names of the members in this type.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol.m_lazyMembers">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol._lazyMembers">
  <summary>
  A map of members immediately contained within this type 
  grouped by their name (case-insensitively).
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol.m_lazyTypeKind">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamedTypeSymbol._lazyTypeKind">
  <summary>
  Lazily initialized by TypeKind property.
  Using Integer type to make sure read/write operations are atomic.
@@ -8109,7 +8091,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  grouped by their name (case-insensitively).
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamespaceSymbol.m_lazyNoPiaLocalTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENamespaceSymbol._lazyNoPiaLocalTypes">
  <summary>
  A map of NoPia local types immediately contained in this assembly.
  Maps fully-qualified type name to the row id.
@@ -8177,7 +8159,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENestedNamespaceSymbol.m_TypesByNS">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PENestedNamespaceSymbol._typesByNS">
  <summary>
  The sequence of groups of TypeDef row ids for types contained within the namespace, 
  recursively including those from nested namespaces. The row ids are grouped by the 
@@ -8235,7 +8217,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEParameterSymbol.m_lazyHiddenAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PEParameterSymbol._lazyHiddenAttributes">
  <summary>
  Attributes filtered out from m_lazyCustomAttributes, ParamArray, etc.
  </summary>
@@ -8276,7 +8258,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PETypeParameterSymbol.m_lazyBoundsErrorInfo">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.PETypeParameterSymbol._lazyBoundsErrorInfo">
  <summary>
  First error calculating bounds.
  </summary>
@@ -8317,13 +8299,13 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  - Symbols from referenced assemblies that must be retargeted are substituted with result of retargeting.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_UnderlyingAssembly">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._underlyingAssembly">
  <summary>
  The underlying AssemblySymbol, it leaks symbols that should be retargeted.
  This cannot be an instance of RetargetingAssemblySymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_Modules">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._modules">
  <summary>
  The list of contained ModuleSymbol objects. First item in the list
  is RetargetingModuleSymbol that wraps corresponding SourceModuleSymbol 
@@ -8331,7 +8313,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  added modules.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_NoPiaResolutionAssemblies">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._noPiaResolutionAssemblies">
  <summary>
  An array of assemblies involved in canonical type resolution of
  NoPia local types defined within this assembly. In other words, all 
@@ -8339,7 +8321,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  The array and its content is provided by ReferenceManager and must not be modified.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_LinkedReferencedAssemblies">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._linkedReferencedAssemblies">
  <summary>
  An array of assemblies referenced by this assembly, which are linked (/l-ed) by 
  each compilation that is using this AssemblySymbol as a reference. 
@@ -8352,12 +8334,12 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  A map from a local NoPia type to corresponding canonical type.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_IsLinked">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._isLinked">
  <summary>
  Assembly is /l-ed by compilation that is using it as a reference.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8396,17 +8378,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  This is for perf, not for correctness.
  </remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol.m_UnderlyingEvent">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol._underlyingEvent">
  <summary>
  The underlying EventSymbol, cannot be another RetargetingEventSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingEventSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8424,17 +8406,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol.m_UnderlyingField">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol._underlyingField">
  <summary>
  The underlying FieldSymbol, cannot be another RetargetingFieldSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingFieldSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8452,23 +8434,23 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol.m_UnderlyingMethod">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol._underlyingMethod">
  <summary>
  The underlying MethodSymbol, cannot be another RetargetingMethodSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol.m_LazyReturnTypeCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingMethodSymbol._lazyReturnTypeCustomAttributes">
  <summary>
  Retargeted return type attributes
  </summary>
@@ -8492,17 +8474,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  - Symbols from referenced assemblies that must be retargeted are substituted with result of retargeting.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol.m_RetargetingAssembly">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol._retargetingAssembly">
  <summary>
  Owning <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingAssemblySymbol"/>.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol.m_UnderlyingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol._underlyingModule">
  <summary>
  The underlying <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.ModuleSymbol"/>, cannot be another <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol"/>.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol.m_RetargetingAssemblyMap">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol._retargetingAssemblyMap">
  <summary>
  The map that captures information about what assembly should be retargeted 
  to what assembly. Key is the <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.AssemblySymbol"/> referenced by the underlying module,
@@ -8510,7 +8492,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  retargeting map for symbols.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8543,7 +8525,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  This is for perf, not for correctness.
  </remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol.m_SymbolMap">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingModuleSymbol._symbolMap">
  <summary>
  Retargeting map from underlying module to this one.
  </summary>
@@ -8584,17 +8566,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol.m_UnderlyingType">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol._underlyingType">
  <summary>
  The underlying NamedTypeSymbol, cannot be another RetargetingNamedTypeSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamedTypeSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8631,12 +8613,12 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamespaceSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamespaceSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamespaceSymbol.m_UnderlyingNamespace">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingNamespaceSymbol._underlyingNamespace">
  <summary>
  The underlying NamespaceSymbol, cannot be another RetargetingNamespaceSymbol.
  </summary>
@@ -8690,23 +8672,23 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.m_UnderlyingParameter">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol._underlyingParameter">
  <summary>
  The underlying ParameterSymbol, cannot be another RetargetingParameterSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.RetargetingMethodParameterSymbol.m_RetargetingMethod">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.RetargetingMethodParameterSymbol._retargetingMethod">
  <summary>
  Owning RetargetingMethodSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.RetargetingPropertyParameterSymbol.m_RetargetingProperty">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingParameterSymbol.RetargetingPropertyParameterSymbol._retargetingProperty">
  <summary>
  Owning RetargetingPropertySymbol.
  </summary>
@@ -8716,17 +8698,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  This is for perf, not for correctness.
  </remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol.m_UnderlyingProperty">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol._underlyingProperty">
  <summary>
  The underlying PropertySymbol, cannot be another RetargetingPropertySymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol.m_LazyCustomAttributes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingPropertySymbol._lazyCustomAttributes">
  <summary>
  Retargeted custom attributes
  </summary>
@@ -8744,12 +8726,12 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  It can retarget symbols for multiple assemblies at the same time.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingTypeParameterSymbol.m_RetargetingModule">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingTypeParameterSymbol._retargetingModule">
  <summary>
  Owning RetargetingModuleSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingTypeParameterSymbol.m_UnderlyingTypeParameter">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.Retargeting.RetargetingTypeParameterSymbol._underlyingTypeParameter">
  <summary>
  The underlying TypeParameterSymbol, cannot be another RetargetingTypeParameterSymbol.
  </summary>
@@ -9174,25 +9156,31 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax"/> (top-level statement).
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.SyntaxReference)">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.PrecedingInitializersLength">
+ <summary>
+ A sum of widths of spans of all preceding initializers
+ (instance and static initializers are summed separately, and trivias are not counted).
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.SyntaxReference,System.Int32)">
  <summary>
  Initializer for an executable statement in script code.
  </summary>
  <param name="syntax">The initializer syntax for the statement.</param>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldSymbol,Microsoft.CodeAnalysis.SyntaxReference)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldSymbol,Microsoft.CodeAnalysis.SyntaxReference,System.Int32)">
  <summary>
  Initializes a new instance of the <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer" /> structure.
  </summary>
  <param name="field">The field.</param>
  <param name="syntax">The initializer syntax for the field.</param>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbol},Microsoft.CodeAnalysis.SyntaxReference)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbol},Microsoft.CodeAnalysis.SyntaxReference,System.Int32)">
  <summary>
  Initializes a new instance of the <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer" /> structure.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.VisualBasic.Symbols.PropertySymbol,Microsoft.CodeAnalysis.SyntaxReference)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer.#ctor(Microsoft.CodeAnalysis.VisualBasic.Symbols.PropertySymbol,Microsoft.CodeAnalysis.SyntaxReference,System.Int32)">
  <summary>
  Initializes a new instance of the <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer" /> structure.
  </summary>
@@ -9430,14 +9418,14 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol.m_LazySpecialTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol._lazySpecialTypes">
  <summary>
  An array of cached Cor types defined in this assembly.
  Lazily filled by GetSpecialType method.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol.m_CachedSpecialTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol._cachedSpecialTypes">
  <summary>
  How many Cor types have we cached so far.
  </summary>
@@ -9472,7 +9460,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  <returns></returns>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol.m_LazySpecialTypeMembers">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MetadataOrSourceAssemblySymbol._lazySpecialTypeMembers">
  <summary>
  Lazy cache of special members.
  Not yet known value is represented by ErrorTypeSymbol.UnknownResultType
@@ -9598,7 +9586,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  with missing CorLibraries.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MissingCorLibrarySymbol.m_LazySpecialTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MissingCorLibrarySymbol._lazySpecialTypes">
  <summary>
  An array of cached Cor types defined in this assembly.
  Lazily filled by GetDeclaredSpecialType method.
@@ -9627,7 +9615,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Represents not nested missing type.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MissingMetadataTypeSymbol.TopLevel.m_LazyTypeId">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.MissingMetadataTypeSymbol.TopLevel._lazyTypeId">
  <summary>
  SpecialType.TypeId
  </summary>
@@ -10018,7 +10006,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  an assembly that is not missing, i.e. the "real" thing.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingAssemblySymbol.m_EmittedNameToTypeMap">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingAssemblySymbol._emittedNameToTypeMap">
  <summary>
  This is a cache similar to the one used by MetaImport::GetTypeByName
  in native compiler. The difference is that native compiler pre-populates 
@@ -10029,7 +10017,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingAssemblySymbol.m_lazyGlobalNamespace">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingAssemblySymbol._lazyGlobalNamespace">
  <summary>
  The global namespace symbol. Lazily populated on first access.
  </summary>
@@ -10077,7 +10065,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  a module that is not missing, i.e. the "real" thing.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingModuleSymbol.m_ModuleReferences">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.NonMissingModuleSymbol._moduleReferences">
  <summary>
  An array of <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.AssemblySymbol"/> objects corresponding to assemblies directly referenced by this module.
  </summary>
@@ -10212,7 +10200,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Represents a namespace.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.PEOrSourceOrMergedNamespaceSymbol.m_lazyExtensionMethodsMap">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.PEOrSourceOrMergedNamespaceSymbol._lazyExtensionMethodsMap">
  <summary>
  For a given namespace in context of a particular Compilation all binders use 
  either a compilation merged namespace symbol, or a module level namespace symbol 
@@ -10894,7 +10882,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol.m_Compilation">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol._compilation">
  <summary>
  A Compilation the assembly is created for.
  </summary>
@@ -10906,13 +10894,13 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol.m_Modules">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol._modules">
  <summary>
  A list of modules the assembly consists of. 
  The first (index=0) module is a SourceModuleSymbol, which is a primary module, the rest are net-modules.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol.m_lazyDuplicateAttributeIndices">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceAssemblySymbol._lazyDuplicateAttributeIndices">
  <summary>
  Indices of duplicate assembly attributes, i.e. attributes that bind to the same constructor and have identical arguments, that must not be emitted.
  </summary>
@@ -11259,7 +11247,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
   Structure to wrap the different arrays of members.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.MembersAndInitializers.#ctor(System.Collections.Generic.Dictionary{System.String,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbol}},System.Collections.Immutable.ImmutableArray{System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}},System.Collections.Immutable.ImmutableArray{System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}})">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.MembersAndInitializers.#ctor(System.Collections.Generic.Dictionary{System.String,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbol}},System.Collections.Immutable.ImmutableArray{System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}},System.Collections.Immutable.ImmutableArray{System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}},System.Int32,System.Int32)">
  <summary>
  Initializes a new instance of the <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.MembersAndInitializers" /> class.
  </summary>
@@ -11272,12 +11260,12 @@ we see that namespaces A and B and C are declared.  This declaration is represen
   Accumulates different members kinds used while building the members.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.AddInitializer(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}@,Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.AddInitializer(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}@,System.Func{System.Int32,Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer},System.Int32@)">
  <summary>
  Adds a field initializer for the field to list of field initializers
  </summary>
  <param name="initializers">All initializers.</param>
- <param name="initializer">The field initializer to add to the list of initializers.</param>
+ <param name="computeInitializer">Compute the field initializer to add to the list of initializers.</param>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.AddInitializers(Microsoft.CodeAnalysis.ArrayBuilder{System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer}}@,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.FieldOrPropertyInitializer})">
  <summary>
@@ -11299,7 +11287,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Poolable data set to be used in structure circularity detection.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.StructureCircularityDetectionDataSet.Pool">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberContainerTypeSymbol.StructureCircularityDetectionDataSet.s_pool">
  <summary> 
  Following C# implementation we keep up to 32 data sets so that we do not need to allocate 
  them over and over. In this implementation though, circularity detection in one type can trigger
@@ -11473,14 +11461,14 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Represents a method declared in source. 
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberMethodSymbol.m_otherPartOfPartial">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberMethodSymbol._otherPartOfPartial">
  <summary>
  If this symbol represents a partial method definition or implementation part, its other part (if any).
  This should be set, if at all, before this symbol appears among the members of its owner.  
  The implementation part is not listed among the "members" of the enclosing type.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberMethodSymbol.m_asyncStateMachineType">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceMemberMethodSymbol._asyncStateMachineType">
  <summary>
  In case the method is an 'Async' method, stores the reference to a state machine type 
  synthesized in AsyncRewriter. Note, that this field is mutable and is being assigned  
@@ -11606,7 +11594,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceModuleSymbol.m_AssemblySymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceModuleSymbol._assemblySymbol">
  <summary>
  Owning assembly.
  </summary>
@@ -11672,13 +11660,13 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Could be a class, structure, interface, delegate, enum, or module.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol.m_comClassData">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol._comClassData">
  <summary>
  Information for ComClass specific analysis and metadata generation, created
  once ComClassAttribute is encountered.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol.m_lazyCoClassType">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol._lazyCoClassType">
  <summary>
  Lazy CoClass type if the attribute is specified. Nothing if not.
  </summary>
@@ -11776,7 +11764,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  Encapsulates ComClass specific data and analysis.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol.ComClassData.m_SyntheticInterfaces">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SourceNamedTypeSymbol.ComClassData._syntheticInterfaces">
  <summary>
  Synthesized ComClass interfaces, can have the following values:
      Null - not yet initialized,
@@ -12355,7 +12343,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  The rest will be exactly as for the original type parameter T. In fact, OriginalDefinition will return symbol for T.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SubstitutedTypeParameterSymbol.m_ContainingSymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Symbols.SubstitutedTypeParameterSymbol._containingSymbol">
  <summary>
  Containing type or method.
  The field is not read-only because it is initialized after construction through
@@ -13877,12 +13865,6 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  returns type arguments or Nothing if group does not have type arguments.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.BoundNode.BoundNodeAttributes.WasCompilerGeneratedIsChecked">
- <summary>
- Captures the fact that consumers of the node already checked the state of the WasCompilerGenerated bit.
- Allows to assert on attempts to set WasCompilerGenerated bit after that.
- </summary>
-</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.BoundNode.WasCompilerGenerated">
  <summary>
  The node should not be treated as a direct semantical representation of the syntax it is associated with. 
@@ -14181,7 +14163,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
          Foo(x, ref x)     x cannot be duped as it is used in different context  
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeGen.StackScheduler.Analyzer.empty">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeGen.StackScheduler.Analyzer._empty">
  <summary>
  fake local that represents the eval stack. when we need to ensure that eval
  stack is not blocked by stack Locals, we record an access to empty.
@@ -14528,7 +14510,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  as long as its parse option is same
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyAssemblySymbol">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyAssemblySymbol">
  <summary>
  The SourceAssemblySymbol for this compilation. Do not access directly, use Assembly
  property instead. This field is lazily initialized by ReferenceManager,
@@ -14537,7 +14519,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  simultaneously.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_referenceManager">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._referenceManager">
  <summary>
  Holds onto data related to reference binding.
  The manager is shared among multiple compilations that we expect to have the same result of reference binding.
@@ -14546,34 +14528,34 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  We do so by creating a new reference manager for such compilation. 
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_Options">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._options">
  <summary>
  The options passed to the constructor of the Compilation
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyGlobalNamespace">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyGlobalNamespace">
  <summary>
  The global namespace symbol. Lazily populated on first access.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_syntaxTrees">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._syntaxTrees">
  <summary>
  The syntax trees explicitly given to the compilation at creation, in ordinal order.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyAllSyntaxTrees">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyAllSyntaxTrees">
  <summary>
  The syntax trees of this compilation plus all 'hidden' trees 
  added to the compilation by compiler, e.g. Vb Core Runtime.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_rootNamespaces">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._rootNamespaces">
  <summary>
  A map between syntax trees and the root declarations in the declaration table.
  Incrementally updated between compilation versions when source changes are made.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyImportInfos">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyImportInfos">
  <summary>
  Imports appearing in <see cref="T:Microsoft.CodeAnalysis.SyntaxTree"/>s in this compilation.
  </summary>
@@ -14582,7 +14564,7 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  that record the imports are persisted.
  </remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyClsComplianceDiagnostics">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyClsComplianceDiagnostics">
  <summary>
  Cache the CLS diagnostics for the whole compilation so they aren't computed repeatedly.
  </summary>
@@ -14599,24 +14581,24 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  SyntaxTree may be Nothing if the embedded tree is not needed for the Compilation.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_declarationTable">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._declarationTable">
  <summary>
  The declaration table that holds onto declarations from source. Incrementally updated
  between compilation versions when source changes are made.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_anonymousTypeManager">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._anonymousTypeManager">
  <summary>
  Manages anonymous types declared in this compilation. Unifies types that are structurally equivalent.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyEmbeddedSymbolManager">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyEmbeddedSymbolManager">
  <summary>
  Manages automatically embedded content.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyMyTemplate">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyMyTemplate">
  <summary>
  MyTemplate automatically embedded from resource in the compiler.
  It doesn't feel like it should be managed by EmbeddedSymbolManager
@@ -14626,17 +14608,17 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  SyntaxTree.Dummy means uninitialized.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_lazyEntryPoint">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyEntryPoint">
  <summary>
  Contains the main method of this assembly, if there is one.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.lazyCompilationUnitCompletedTrees">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyCompilationUnitCompletedTrees">
  <summary>
  The set of trees for which a <see cref="T:Microsoft.CodeAnalysis.Diagnostics.CompilationUnitCompletedEvent"/> has been added to the queue.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_LanguageVersion">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._languageVersion">
  <summary>
  The common language version among the trees of the compilation.
  </summary>
@@ -14983,14 +14965,14 @@ we see that namespaces A and B and C are declared.  This declaration is represen
  For testing purposes only.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_LazyWellKnownTypes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyWellKnownTypes">
  <summary>
  An array of cached well known types available for use in this Compilation.
  Lazily filled by GetWellKnownType method.
  </summary>
  <remarks></remarks>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation.m_LazyWellKnownTypeMembers">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation._lazyWellKnownTypeMembers">
  <summary>
  Lazy cache of well known members.
  Not yet known value is represented by ErrorTypeSymbol.UnknownResultType
@@ -16757,7 +16739,7 @@ End Class
  False and reports appropriate diagnostics.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Emit.PEAssemblyBuilderBase.m_MetadataName">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Emit.PEAssemblyBuilderBase._metadataName">
  <summary>
  This value will override m_SourceModule.MetadataName.
  </summary>
@@ -16969,12 +16951,15 @@ End Class
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.Symbol.GetLexicalSortKey">
  <summary>
- Get a source location key for sorting. For performance, it's important that this be 
+ <para>
+ Get a source location key for sorting. For performance, it's important that this
  be able to be returned from a symbol without doing any additional allocations (even
- if nothing is cached yet.) 
- 
- Only members of source namespaces, original source types, and namespaces that can be merged
- need implement this function.
+ if nothing is cached yet.)
+ </para>
+ <para>
+ Only (original) source symbols and namespaces that can be merged
+ need override this function if they want to do so for efficiency.
+ </para>
  </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.Symbol.Locations">
@@ -17940,7 +17925,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  The set of variables that were declared anywhere inside an expression lambda.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.Analysis.inExpressionLambda">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.Analysis._inExpressionLambda">
  <summary>
  Set to true while we are analyzing the interior of an expression lambda.
  </summary>
@@ -17991,10 +17976,10 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  Those are the majority, but should not be ever illegal (how user would fix them?).
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.rewrittenNodes">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter._rewrittenNodes">
  <summary> WARNING: used ONLY in DEBUG </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.Rewrite(Microsoft.CodeAnalysis.VisualBasic.BoundBlock,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Int32,System.Int32@,System.Int32@,System.Int32@,Microsoft.CodeAnalysis.CodeGen.VariableSlotAllocator,Microsoft.CodeAnalysis.VisualBasic.TypeCompilationState,System.Collections.Generic.ISet{Microsoft.CodeAnalysis.VisualBasic.Symbol},Microsoft.CodeAnalysis.DiagnosticBag,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.VisualBasic.BoundNode})">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.Rewrite(Microsoft.CodeAnalysis.VisualBasic.BoundBlock,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Int32,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CodeGen.LambdaDebugInfo},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CodeGen.ClosureDebugInfo},System.Int32@,Microsoft.CodeAnalysis.CodeGen.VariableSlotAllocator,Microsoft.CodeAnalysis.VisualBasic.TypeCompilationState,System.Collections.Generic.ISet{Microsoft.CodeAnalysis.VisualBasic.Symbol},Microsoft.CodeAnalysis.DiagnosticBag,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.VisualBasic.BoundNode})">
  <summary>
  Rewrite the given node to eliminate lambda expressions.  Also returned are the method symbols and their
  bound bodies for the extracted lambda bodies. These would typically be emitted by the caller such as
@@ -18008,7 +17993,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  <param name="symbolsCapturedWithoutCopyCtor">Set of symbols that should not be captured using a copy constructor</param>
  <param name="diagnostics">The caller's buffer into which we place any diagnostics for problems encountered</param>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.MakeFrames(System.Int32@)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaRewriter.MakeFrames(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CodeGen.ClosureDebugInfo})">
  <summary>
  Create the frame types.
  </summary>
@@ -18090,7 +18075,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  A method that results from the translation of a single lambda expression.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.SynthesizedLambdaMethod.#ctor(Microsoft.CodeAnalysis.CodeGen.VariableSlotAllocator,Microsoft.CodeAnalysis.VisualBasic.TypeCompilationState,Microsoft.CodeAnalysis.VisualBasic.Symbols.InstanceTypeSymbol,Microsoft.CodeAnalysis.VisualBasic.ClosureKind,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Int32,Microsoft.CodeAnalysis.VisualBasic.BoundLambda,System.Int32,Microsoft.CodeAnalysis.DiagnosticBag)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.SynthesizedLambdaMethod.#ctor(Microsoft.CodeAnalysis.VisualBasic.Symbols.InstanceTypeSymbol,Microsoft.CodeAnalysis.VisualBasic.ClosureKind,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,Microsoft.CodeAnalysis.CodeGen.DebugId,Microsoft.CodeAnalysis.VisualBasic.BoundLambda,Microsoft.CodeAnalysis.CodeGen.DebugId,Microsoft.CodeAnalysis.DiagnosticBag)">
  <summary>
  Creates a symbol for a synthesized lambda method
  </summary>
@@ -18098,17 +18083,6 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  - it is either Frame or enclosing class in a case if we do not lift anything.</param>
  <param name="topLevelMethod">Method that contains lambda expression for which we do the rewrite.</param>
  <param name="lambdaNode">Lambda expression which is represented by this method.</param>
-</member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.LocalRewriter.unstructuredExceptionHandlingResumableStatements">
- <summary>
- A map from SyntaxNode to corresponding visited BoundStatement.
- Used to ensure correct generation of resumable code for Unstructured Exception Handling.
- </summary>
-</member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.LocalRewriter.rewrittenNodes">
- <summary>
- Used to prevent multiple rewrite of the same nodes.
- </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.LocalRewriter.PlaceholderReplacement(Microsoft.CodeAnalysis.VisualBasic.BoundValuePlaceholderBase)">
  <summary>
@@ -19566,7 +19540,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  note that state is applied only to the token #1
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Scanner.EndOfXmlInsteadOfLastDocCommentLineBreak">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Scanner._endOfXmlInsteadOfLastDocCommentLineBreak">
  <remarks>See description in TryScanXmlDocComment(...)</remarks>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.Syntax.InternalSyntax.Scanner.ForceScanningXmlDocMode">
@@ -53285,7 +53259,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  Create a new ArrayTypeSymbol.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.OperatorNames">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.s_operatorNames">
  <summary>
  A map from Operator name to number of parameters and kind.
  </summary>
@@ -53357,7 +53331,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  Returns result type of the operator or SpecialType.None if operator is not supported.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.DetermineMostSpecificWideningConversion(Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol},Microsoft.CodeAnalysis.ArrayBuilder{System.Collections.Generic.KeyValuePair{Microsoft.CodeAnalysis.VisualBasic.ConversionKind,Microsoft.CodeAnalysis.VisualBasic.ConversionKind}},Microsoft.CodeAnalysis.BitArray@,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol@,System.Boolean,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DiagnosticInfo}@)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.DetermineMostSpecificWideningConversion(Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol},Microsoft.CodeAnalysis.ArrayBuilder{System.Collections.Generic.KeyValuePair{Microsoft.CodeAnalysis.VisualBasic.ConversionKind,Microsoft.CodeAnalysis.VisualBasic.ConversionKind}},Microsoft.CodeAnalysis.BitVector@,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol@,System.Boolean,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DiagnosticInfo}@)">
  <summary>
  Returns True if resolution of user defined conversions is complete, i.e. there were operators
  applicable for the "Most Specific Widening Conversion" purposes. 
@@ -53369,7 +53343,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  Returns false if operator should be ignored.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.DetermineMostSpecificNarrowingConversion(Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol},Microsoft.CodeAnalysis.ArrayBuilder{System.Collections.Generic.KeyValuePair{Microsoft.CodeAnalysis.VisualBasic.ConversionKind,Microsoft.CodeAnalysis.VisualBasic.ConversionKind}},Microsoft.CodeAnalysis.BitArray@,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol@,System.Boolean,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DiagnosticInfo}@)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.OverloadResolution.DetermineMostSpecificNarrowingConversion(Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.VisualBasic.Symbols.TypeSymbol,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol},Microsoft.CodeAnalysis.ArrayBuilder{System.Collections.Generic.KeyValuePair{Microsoft.CodeAnalysis.VisualBasic.ConversionKind,Microsoft.CodeAnalysis.VisualBasic.ConversionKind}},Microsoft.CodeAnalysis.BitVector@,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol@,System.Boolean,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DiagnosticInfo}@)">
  <summary>
  Returns True if resolution of user defined conversions is complete, i.e. there was an operator
  that converts from the most specific source type to the most specific target type. 
@@ -53874,7 +53848,7 @@ Creates a string representing the unformatted LocalizableErrorArgument instance.
  <see cref="T:System.DateTime"/>, and <c>Nothing</c>.
  </remarks>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay.ObjectDisplay.FormatLiteral(System.String,Microsoft.CodeAnalysis.ObjectDisplayOptions,System.Char)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.ObjectDisplay.ObjectDisplay.FormatLiteral(System.String,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
  <summary>
  Formats string literal.
  </summary>
@@ -70181,9 +70155,66 @@ Parse the input for leading trivia.
  Given a syntax node of query clause returns its leading keyword
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.SyntaxUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified node represents a lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.GetLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Given a node that represents a lambda body returns a node that represents the lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
  <summary>
  SyntaxNode.GetCorrespondingLambdaBody(SyntaxNode)
+ </summary>
+ <remarks>
+ We need to handle case when an old node that represents a lambda body with multiple nodes 
+ of the same kind is mapped to a new node that belongs to the lambda body but is 
+ different from the one that represents the new body.
+ 
+ In that case <paramref name="newLambdaOrPeer"/> isn't lambda representing node (the first range variable of a clause)
+ but its equivalent peer (another range variable of the same clause).
+ </remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambdaBody(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified <paramref name="node"/> represents a body of a lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambdaBodyStatementOrExpression(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ Returns true if the specified <paramref name="node"/> is part of a lambda body. 
+ Returns the node (<paramref name="lambdaBody"/>) that represents the containing lambda body.
+ </summary>
+ <remarks>
+ VB lambda bodies may be non-contiguous sequences of nodes whose ancestor (parent or grandparent) is a lambda node.
+ Whenever we need to check whether a node is a lambda body node we should use this method.
+ </remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.TryGetLambdaBodies(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ If the specified node represents a lambda returns a node (or nodes) that represent its body (bodies).
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.TryGetSimpleLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ If the specified node represents a "simple" lambda returns a node (or nodes) that represent its body (bodies).
+ Lambda is "simple" if all its body nodes are also its child nodes and vice versa.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsNonUserCodeQueryLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Non-user code lambdas are synthesized lambdas that create an instance of an anonymous type representing a pair of values,
+ or otherwise transform sequences/anonymous types from one form to another without calling user code.
+ TODO: Could we avoid generating proper lambdas for these?
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsClosureScope(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified node can represent a closure scope -- that is a scope of a captured variable.
+ Doesn't validate whether or not the node actually declares any captured variable.
  </summary>
 </member>
 <member name="T:Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxNode">
@@ -70378,7 +70409,7 @@ Parse the input for leading trivia.
  Map containing information about all conditional symbol definitions in the source file corresponding to a parsed syntax tree.
  </summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxTree.ConditionalSymbolsMap.m_conditionalsMap">
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxTree.ConditionalSymbolsMap._conditionalsMap">
  <summary>
  Conditional symbols map, where each key-value pair indicates:
    Key: Conditional symbol name.
@@ -74118,7 +74149,7 @@ Parse the input for leading trivia.
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_InvalidSwitchValue">
 <summary>
-  Looks up a localized string similar to the value &apos;{0}&apos; is invalid for option &apos;{1}&apos;.
+  Looks up a localized string similar to the value &apos;{1}&apos; is invalid for option &apos;{0}&apos;.
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_InvalidTypeForAliasesImport2">
@@ -74772,6 +74803,11 @@ Parse the input for leading trivia.
   Looks up a localized string similar to {0} &apos;{1}&apos; must be declared &apos;Shadows&apos; because another member with this name is declared &apos;Shadows&apos;..
 </summary>
 </member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_MutuallyExclusiveOptions">
+<summary>
+  Looks up a localized string similar to Compilation options &apos;{0}&apos; and &apos;{1}&apos; can&apos;t both be specified at the same time..
+</summary>
+</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_MyBaseAbstractCall1">
 <summary>
   Looks up a localized string similar to &apos;MyBase&apos; cannot be used with method &apos;{0}&apos; because it is declared &apos;MustOverride&apos;..
@@ -74984,7 +75020,7 @@ Parse the input for leading trivia.
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_NewInStruct">
 <summary>
-  Looks up a localized string similar to The feature &apos;Parameterless Instance Constructors in Structures&apos; requires language version 14 or above..
+  Looks up a localized string similar to Structures cannot declare a non-shared &apos;Sub New&apos; with no parameters..
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_NewOnAbstractClass">
@@ -76226,11 +76262,6 @@ Parse the input for leading trivia.
   Looks up a localized string similar to Attribute &apos;StructLayout&apos; cannot be applied to a generic type..
 </summary>
 </member>
-<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_StructParameterlessInstanceCtorMustBePublic">
-<summary>
-  Looks up a localized string similar to Parameterless instance constructors in structures must be public..
-</summary>
-</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.ERR_StructsCannotHandleEvents">
 <summary>
   Looks up a localized string similar to Methods declared in structures cannot have &apos;Handles&apos; clauses..
@@ -77250,7 +77281,7 @@ Parse the input for leading trivia.
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.IDS_LogoLine1">
 <summary>
-  Looks up a localized string similar to Microsoft (R) Visual Basic Compiler version {0}.
+  Looks up a localized string similar to {0} version {1}.
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.IDS_LogoLine2">
@@ -77281,6 +77312,11 @@ Parse the input for leading trivia.
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.IDS_TheSystemCannotFindThePathSpecified">
 <summary>
   Looks up a localized string similar to The system cannot find the path specified.
+</summary>
+</member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.IDS_ToolName">
+<summary>
+  Looks up a localized string similar to Microsoft (R) Visual Basic Compiler.
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBResources.IDS_UnrecognizedFileFormat">
@@ -79132,7 +79168,7 @@ Parse the input for leading trivia.
  A class representing Visual Basic compilation Options.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilationOptions.#ctor(Microsoft.CodeAnalysis.OutputKind,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.VisualBasic.GlobalImport},System.String,Microsoft.CodeAnalysis.VisualBasic.OptionStrict,System.Boolean,System.Boolean,System.Boolean,Microsoft.CodeAnalysis.VisualBasic.VisualBasicParseOptions,System.Boolean,Microsoft.CodeAnalysis.OptimizationLevel,System.Boolean,System.String,System.String,System.Nullable{System.Boolean},Microsoft.CodeAnalysis.Platform,Microsoft.CodeAnalysis.ReportDiagnostic,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,Microsoft.CodeAnalysis.ReportDiagnostic}},System.Boolean,Microsoft.CodeAnalysis.XmlReferenceResolver,Microsoft.CodeAnalysis.SourceReferenceResolver,Microsoft.CodeAnalysis.MetadataReferenceResolver,Microsoft.CodeAnalysis.AssemblyIdentityComparer,Microsoft.CodeAnalysis.StrongNameProvider)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilationOptions.#ctor(Microsoft.CodeAnalysis.OutputKind,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.VisualBasic.GlobalImport},System.String,Microsoft.CodeAnalysis.VisualBasic.OptionStrict,System.Boolean,System.Boolean,System.Boolean,Microsoft.CodeAnalysis.VisualBasic.VisualBasicParseOptions,System.Boolean,Microsoft.CodeAnalysis.OptimizationLevel,System.Boolean,System.String,System.String,System.Collections.Immutable.ImmutableArray{System.Byte},System.Nullable{System.Boolean},Microsoft.CodeAnalysis.Platform,Microsoft.CodeAnalysis.ReportDiagnostic,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,Microsoft.CodeAnalysis.ReportDiagnostic}},System.Boolean,Microsoft.CodeAnalysis.XmlReferenceResolver,Microsoft.CodeAnalysis.SourceReferenceResolver,Microsoft.CodeAnalysis.MetadataReferenceResolver,Microsoft.CodeAnalysis.AssemblyIdentityComparer,Microsoft.CodeAnalysis.StrongNameProvider)">
  <summary>
  Initializes a new instance of the VisualBasicCompilationOptions type with various options.
  </summary>
@@ -79151,6 +79187,7 @@ Parse the input for leading trivia.
  <param name="concurrentBuild">An optional parameter to specify enabling/disabling concurrent build.</param>
  <param name="cryptoKeyContainer">An optional parameter to specify a key container name for a key pair to give an assembly a strong name.</param>
  <param name="cryptoKeyFile">An optional parameter to specify a file containing a key or key pair to give an assembly a strong name.</param>
+ <param name="cryptoPublicKey">An optional parameter to specify a public key used to give an assembly a strong name.</param>
  <param name="delaySign">An optional parameter to specify whether the assembly will be fully or partially signed.</param>
  <param name="platform">An optional parameter to specify which platform version of common language runtime (CLR) can run compilation. <see cref="T:Microsoft.CodeAnalysis.Platform"/></param>
  <param name="generalDiagnosticOption">An optional parameter to specify the general warning level.</param>
@@ -79359,6 +79396,13 @@ Parse the input for leading trivia.
  </summary>
  <param name="path">The cryptography key file path. </param>        
  <returns>A new instance of VisualBasicCompilationOptions, if the cryptography key path is different; otherwise current instance.</returns>        
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilationOptions.WithCryptoPublicKey(System.Collections.Immutable.ImmutableArray{System.Byte})">
+ <summary>
+ Creates a new VisualBasicCompilationOptions instance with a different public key.
+ </summary>
+ <param name="value">The cryptography key file path. </param>        
+ <returns>A new instance of VisualBasicCompilationOptions, if the public key is different; otherwise current instance.</returns>        
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilationOptions.WithDelaySign(System.Nullable{System.Boolean})">
  <summary>
@@ -79929,47 +79973,84 @@ Parse the input for leading trivia.
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetSymbolInfo(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryClauseSyntax,System.Threading.CancellationToken)">
  <summary>
- DistinctClauseSyntax -       Returns Distinct method associated with DistinctClauseSyntax.
- 
- WhereClauseSyntax -          Returns Where method associated with WhereClauseSyntax.
- 
- PartitionWhileClauseSyntax - Returns TakeWhile/SkipWhile method associated with PartitionWhileClauseSyntax.
- 
- PartitionClauseSyntax -      Returns Take/Skip method associated with PartitionClauseSyntax.
- 
- GroupByClauseSyntax -        Returns GroupBy method associated with GroupByClauseSyntax.
- 
- JoinClauseSyntax -           Returns Join/GroupJoin method associated with JoinClauseSyntax/GroupJoinClauseSyntax.
- 
- SelectClauseSyntax -         Returns Select method associated with SelectClauseSyntax, if needed.
- 
- FromClauseSyntax -           Returns Select method associated with FromClauseSyntax, which has only one 
-                              CollectionRangeVariableSyntax and is the only query clause within 
-                              QueryExpressionSyntax. NotNeeded SymbolInfo otherwise. 
-                              The method call is injected by the compiler to make sure that query is translated to at 
-                              least one method call. 
- 
- LetClauseSyntax -            NotNeeded SymbolInfo.
- 
- OrderByClauseSyntax -        NotNeeded SymbolInfo.
- 
- AggregateClauseSyntax -      Empty SymbolInfo. GetAggregateClauseInfo should be used instead.
+ Returns symbol information for a query clause.
  </summary>
+ <remarks>
+ <list type="table">
+ <listheader>
+     <term>Syntax node type</term>
+     <description>Symbol information returned</description>
+ </listheader>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.DistinctClauseSyntax"/></term>
+     <description>Returns Distinct method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.DistinctClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.WhereClauseSyntax"/></term>
+     <description>Returns Where method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.WhereClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionWhileClauseSyntax"/></term>
+     <description>Returns TakeWhile/SkipWhile method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionWhileClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionClauseSyntax"/></term>
+     <description>Returns Take/Skip method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.PartitionClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.GroupByClauseSyntax"/></term>
+     <description>Returns GroupBy method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.GroupByClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.JoinClauseSyntax"/></term>
+     <description>Returns Join/GroupJoin method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.JoinClauseSyntax"/>.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectClauseSyntax"/></term>
+     <description>Returns Select method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.SelectClauseSyntax"/>, or <see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/> if none is.</description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.FromClauseSyntax"/></term>
+     <description>
+         Returns Select method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.FromClauseSyntax"/>, which has only one 
+         <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.CollectionRangeVariableSyntax"/> and is the only query clause within 
+         <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.QueryExpressionSyntax"/>. <see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/> otherwise. 
+         The method call is injected by the compiler to make sure that query is translated to at 
+         least one method call. 
+     </description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.LetClauseSyntax"/></term>
+     <description><see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/></description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.OrderByClauseSyntax"/></term>
+     <description><see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/></description>
+ </item>
+ <item>
+     <term><see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.AggregateClauseSyntax"/></term>
+     <description>
+         <see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/>.
+         Use <see cref="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetAggregateClauseSymbolInfo(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.AggregateClauseSyntax,System.Threading.CancellationToken)"/> instead.
+     </description>
+ </item>
+ </list>
+ </remarks>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetSymbolInfo(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionRangeVariableSyntax,System.Threading.CancellationToken)">
  <summary>
- Returns Select method associated with ExpressionRangeVariableSyntax within a LetClauseSyntax, if needed.
- NotNeeded SymbolInfo otherwise.
+ Returns Select method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.ExpressionRangeVariableSyntax"/> within a <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.LetClauseSyntax"/>, 
+ or <see cref="F:Microsoft.CodeAnalysis.SymbolInfo.None"/> otherwise if none is.
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetSymbolInfo(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.FunctionAggregationSyntax,System.Threading.CancellationToken)">
  <summary>
- Returns aggregate function associated with FunctionAggregationSyntax.
+ Returns aggregate function associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.FunctionAggregationSyntax"/>.
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.GetSymbolInfo(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.OrderingSyntax,System.Threading.CancellationToken)">
  <summary>
- Returns OrdrBy/OrderByDescending/ThenBy/ThenByDescending method associated with OrderingSyntax.
+ Returns OrderBy/OrderByDescending/ThenBy/ThenByDescending method associated with <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.OrderingSyntax"/>.
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions.AnalyzeControlFlow(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax,Microsoft.CodeAnalysis.VisualBasic.Syntax.StatementSyntax)">

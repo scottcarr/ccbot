@@ -152,11 +152,6 @@
               Looks up a localized string similar to Apply FlagsAttribute to enum..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopFixersResources.OverloadOperatorEqualsOnOverridingValueTypeEquals">
-            <summary>
-              Looks up a localized string similar to Overload operator equals on overriding ValueType.Equals.
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopFixersResources.RemoveEmptyFinalizers">
             <summary>
               Looks up a localized string similar to Remove empty finalizers.
@@ -203,24 +198,9 @@
               Looks up a localized string similar to Add [Serializable] to {0} as this type implements ISerializable.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.AssembliesShouldBeMarkedWithAssemblyVersionAttribute">
-            <summary>
-              Looks up a localized string similar to Assemblies should be marked with AssemblyVersionAttribute.
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.AvoidUnsealedAttributes">
             <summary>
               Looks up a localized string similar to Avoid unsealed attributes..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.CA1017_AttributeTrue">
-            <summary>
-              Looks up a localized string similar to Consider changing the ComVisible attribute on {0} to false, and opting in at the type level..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.CA1017_NoAttribute">
-            <summary>
-              Looks up a localized string similar to Because {0} exposes externally visible types, mark it with ComVisible(false) at the assembly level and then mark all types within the assembly that should be exposed to COM clients with ComVisible(true)..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.CategoryDesign">
@@ -363,16 +343,6 @@
               Looks up a localized string similar to Interface names should be prefixed with &apos;I&apos;.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAllAssembliesWithComVisible">
-            <summary>
-              Looks up a localized string similar to Mark all assemblies with ComVisible.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAllAssembliesWithComVisibleDescription">
-            <summary>
-              Looks up a localized string similar to The System.Runtime.InteropServices.ComVisible attribute indicates whether COM clients can use the library. Good design dictates that developers explicitly indicate COM visibility. The default value for this attribute is &apos;true&apos;. However, the best design is to mark the assembly ComVisible false, and then mark types, interfaces, and individual members as ComVisible true, as appropriate..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAllNonSerializableFields">
             <summary>
               Looks up a localized string similar to Mark all non-serializable fields..
@@ -381,16 +351,6 @@
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAllNonSerializableFieldsDescription">
             <summary>
               Looks up a localized string similar to All fields that cannot be serialized directly should have the NonSerializedAttribute. Types that have the SerializableAttribute should not have fields of types that do not have the SerializableAttribute unless the fields are marked with the NonSerializedAttribute..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAssembliesWithCLSCompliantAttribute">
-            <summary>
-              Looks up a localized string similar to Mark assemblies with CLSCompliantAttribute.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkAssembliesWithCLSCompliantDescription">
-            <summary>
-              Looks up a localized string similar to Assemblies should explicitly state their CLS compliance using the CLSCompliant attribute. An assembly without this attribute is not CLS-compliant. Assemblies, modules, and types can be CLS-compliant even if some parts of the assembly, module, or type are not CLS-compliant. The following rules apply: 1) If the element is marked CLSCompliant, any noncompliant members must have the CLSCompliant attribute present with its argument set to false. 2) A comparable CLS-compliant alternative member must be supplied f [rest of string was truncated]&quot;;.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MarkEnumsWithFlags">
@@ -421,16 +381,6 @@
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.MovePInvokesToNativeMethodsClass">
             <summary>
               Looks up a localized string similar to Move P/Invokes to native methods class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.OverloadOperatorEqualsOnOverridingValueTypeEquals">
-            <summary>
-              Looks up a localized string similar to Overload operator equals on overriding ValueType.Equals.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.OverloadOperatorEqualsOnOverridingValueTypeEqualsDescription">
-            <summary>
-              Looks up a localized string similar to Value types that redefine System.ValueType.Equals should redefine the equality operator as well to ensure that these members return the same results. This helps ensure that types that rely on Equals (such as ArrayList and Hashtable) behave in a manner that is expected and consistent with the equality operator..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FxCopAnalyzers.FxCopRulesResources.PInvokeMethodShouldNotBeVisible">
@@ -787,19 +737,9 @@
             instance that invokes the method has not executed. 
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.FxCopAnalyzers.Usage.CA2231DiagnosticAnalyzer">
-            <summary>
-            CA2231: Complain if the type implements Equals without overloading the equality operator.
-            </summary>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.FxCopAnalyzers.Usage.CA2213CodeFixProviderBase">
             <summary>
             CA2213: Disposable fields should be disposed
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.FxCopAnalyzers.Usage.CA2231CodeFixProviderBase">
-            <summary>
-            CA2231: Overload operator equals on overriding ValueType.Equals
             </summary>
         </member>
         <member name="F:Microsoft.CodeAnalysis.Diagnostics.DiagnosticCustomTags.s_microsoftCustomTags">

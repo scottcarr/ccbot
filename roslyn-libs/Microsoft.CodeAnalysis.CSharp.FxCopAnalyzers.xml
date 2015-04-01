@@ -64,11 +64,6 @@
             CA2213: Disposable fields should be disposed
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.Usage.CA2231CSharpCodeFixProvider">
-            <summary>
-            CA2231: Overload operator equals on overriding ValueType.Equals
-            </summary>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.FxCopAnalyzers.Usage.CSharpCA2213DiagnosticAnalyzer">
             <summary>
             CA2213: Disposable fields should be disposed

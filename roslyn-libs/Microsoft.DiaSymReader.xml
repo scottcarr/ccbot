@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.DiaSymReader</name>
+    </assembly>
+    <members>
+        <member name="F:Microsoft.DiaSymReader.SymUnmanagedSearchPolicy.AllowRegistryAccess">
+            <summary>
+            Query the registry for symbol search paths.
+            </summary>
+        </member>
+        <member name="F:Microsoft.DiaSymReader.SymUnmanagedSearchPolicy.AllowSymbolServerAccess">
+            <summary>
+            Access a symbol server.
+            </summary>
+        </member>
+        <member name="F:Microsoft.DiaSymReader.SymUnmanagedSearchPolicy.AllowOriginalPathAccess">
+            <summary>
+            Look at the path specified in Debug Directory.
+            </summary>
+        </member>
+        <member name="F:Microsoft.DiaSymReader.SymUnmanagedSearchPolicy.AllowReferencePathAccess">
+            <summary>
+            Look for PDB in the place where the exe is.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymEncUnmanagedMethod.GetFileNameFromOffset(System.Int32,System.Int32,System.Int32@,System.Char[])">
+            <summary>
+            Get the file name for the line associated with offset dwOffset.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymEncUnmanagedMethod.GetLineFromOffset(System.Int32,System.Int32@,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Get the Line information associated with <paramref name="offset"/>.
+            </summary>
+            <remarks>
+            If <paramref name="offset"/> is not a sequence point it is associated with the previous one.
+            <paramref name="sequencePointOffset"/> provides the associated sequence point.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymEncUnmanagedMethod.GetDocumentsForMethodCount(System.Int32@)">
+            <summary>
+            Get the number of Documents that this method has lines in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymEncUnmanagedMethod.GetDocumentsForMethod(System.Int32,System.Int32@,Microsoft.DiaSymReader.ISymUnmanagedDocument[])">
+            <summary>
+            Get the documents this method has lines in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymEncUnmanagedMethod.GetSourceExtentInDocument(Microsoft.DiaSymReader.ISymUnmanagedDocument,System.Int32@,System.Int32@)">
+            <summary>
+            Get the smallest start line and largest end line, for the method, in a specific document.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedBinder.GetReaderForFile(System.Object,System.String,System.String,Microsoft.DiaSymReader.ISymUnmanagedReader@)">
+            <summary>
+            Given a metadata interface and a file name, returns the
+            correct <see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/> that will read the debugging symbols
+            associated with the module.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedBinder.GetReaderFromStream(System.Object,System.Object,Microsoft.DiaSymReader.ISymUnmanagedReader@)">
+            <summary>
+            Given a metadata interface and a stream that contains
+            the symbol store, returns the <see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/>
+            that will read the debugging symbols from the given
+            symbol store.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedBinder2.GetReaderForFile(System.Object,System.String,System.String,Microsoft.DiaSymReader.ISymUnmanagedReader@)">
+            <summary>
+            Given a metadata interface and a file name, returns the
+            correct <see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/> that will read the debugging symbols
+            associated with the module.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedBinder2.GetReaderFromStream(System.Object,System.Object,Microsoft.DiaSymReader.ISymUnmanagedReader@)">
+            <summary>
+            Given a metadata interface and a stream that contains
+            the symbol store, returns the <see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/>
+            that will read the debugging symbols from the given
+            symbol store.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedBinder2.GetReaderForFile2(System.Object,System.String,System.String,Microsoft.DiaSymReader.SymUnmanagedSearchPolicy,Microsoft.DiaSymReader.ISymUnmanagedReader@)">
+            <summary>
+            Given a metadata interface and a file name, returns the 
+            <see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/> interface that will read the debugging symbols associated
+            with the module.
+            </summary>
+            <remarks>
+            This version of the function can search for the PDB in areas other than
+            right next to the module.
+            The search policy can be controlled by combining CorSymSearchPolicyAttributes
+            e.g AllowReferencePathAccess|AllowSymbolServerAccess will look for the pdb next
+            to the PE file and on a symbol server, but won't query the registry or use the path
+            in the PE file.
+            If a searchPath is provided, those directories will always be searched.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedMethod.GetOffset(Microsoft.DiaSymReader.ISymUnmanagedDocument,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets the IL offset within the method that corresponds to the specified position.
+            </summary>
+            <param name="document">The document for which the offset is requested. </param>
+            <param name="line">The document line corresponding to the offset. </param>
+            <param name="column">The document column corresponding to the offset. </param>
+            <param name="offset">The offset within the specified document.</param>
+            <returns>HResult.</returns>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedMethod.GetRanges(Microsoft.DiaSymReader.ISymUnmanagedDocument,System.Int32,System.Int32,System.Int32,System.Int32@,System.Int32[])">
+            <summary>
+            Gets an array of start and end offset pairs that correspond to the ranges of IL that a given position covers within this method.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedMethod.GetParameters(System.Int32,System.Int32@,Microsoft.DiaSymReader.ISymUnmanagedVariable[])">
+            <summary>
+            Gets method parameters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedMethod.GetSourceStartEnd(Microsoft.DiaSymReader.ISymUnmanagedDocument[],System.Int32[],System.Int32[],System.Boolean@)">
+            <summary>
+            Gets the start and end positions for the source of the current method.
+            </summary>
+            <param name="documents">The starting and ending source documents.</param>
+            <param name="lines">The starting and ending lines in the corresponding source documents. </param>
+            <param name="columns">The starting and ending columns in the corresponding source documents. </param>
+            <param name="defined">true if the positions were defined; otherwise, false.</param>
+            <returns>HResult</returns>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedReader3.GetSymAttributeByVersion(System.Int32,System.Int32,System.String,System.Int32,System.Int32@,System.Byte[])">
+            <summary>
+            Gets a custom debug information based upon its name and an EnC 1-based version number. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.DiaSymReader.ISymUnmanagedReader3.GetSymAttributeByVersionPreRemap(System.Int32,System.Int32,System.String,System.Int32,System.Int32@,System.Byte[])">
+            <summary>
+            Gets a custom debug information based upon its name and an EnC 1-based version number. 
+            </summary>
+        </member>
+    </members>
+</doc>

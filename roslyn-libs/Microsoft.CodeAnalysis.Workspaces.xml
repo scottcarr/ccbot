@@ -4,6 +4,42 @@
         <name>Microsoft.CodeAnalysis.Workspaces</name>
     </assembly>
     <members>
+        <member name="M:Microsoft.CodeAnalysis.BitVector.Create(System.Int32)">
+            <summary>
+            Create BitArray with at least the specified number of bits.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BitVector.AllSet(System.Int32)">
+            <summary>
+            return a bit array with all bits set from index 0 through bitCount-1
+            </summary>
+            <param name="capacity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BitVector.Clone">
+            <summary>
+            Maky a copy of a bit array.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BitVector.IsNull">
+            <summary>
+            Is the given bit array null?
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BitVector.IntersectWith(Microsoft.CodeAnalysis.BitVector)">
+            <summary>
+            Modify this bit vector by bitwise AND-ing each element with the other bit vector.
+            For the purposes of the intersection, any bits beyond the current length will be treated as zeroes.
+            Return true if any changes were made to the bits of this bit vector.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BitVector.UnionWith(Microsoft.CodeAnalysis.BitVector)">
+            <summary>
+            Modify this bit vector by '|'ing each element with the other bit vector.
+            </summary>
+            <param name="other"></param>
+        </member>
         <member name="T:Microsoft.CodeAnalysis.ImmutableArrayExtensions">
             <summary>
             The collection of extension methods for the <see cref="T:System.Collections.Immutable.ImmutableArray`1"/> type
@@ -1569,6 +1605,26 @@
         <member name="M:Microsoft.CodeAnalysis.Editing.DocumentEditor.GetChangedDocument">
             <summary>
             Returns the changed <see cref="T:Microsoft.CodeAnalysis.Document"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Editing.ImportAdder.AddImportsAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Adds namespace imports / using directives for namespace references found in the document.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Editing.ImportAdder.AddImportsAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.Text.TextSpan,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Adds namespace imports / using directives for namespace references found in the document within the span specified.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Editing.ImportAdder.AddImportsAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.SyntaxAnnotation,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Adds namespace imports / using directives for namespace references found in the document within the sub-trees annotated with the <see cref="T:Microsoft.CodeAnalysis.SyntaxAnnotation"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Editing.ImportAdder.AddImportsAsync(Microsoft.CodeAnalysis.Document,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.Text.TextSpan},Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Adds namespace imports / using directives for namespace references found in the document within the spans specified.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Editing.SolutionEditor">
@@ -3912,7 +3968,7 @@
             log message that can generate string lazily
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Internal.Log.LogMessage.Free">
+        <member name="M:Microsoft.CodeAnalysis.Internal.Log.LogMessage.FreeCore">
             <summary>
             Logger will call this to return LogMessage to its pool
             </summary>
@@ -3964,6 +4020,346 @@
             so, for example, all interactions in the Fast class are perceived as fast and roughly feel like 
             they have the same performance. By defining these interaction classes, we can describe 
             performance using adjectives that have a precise, consistent meaning.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation">
+            <summary>
+            This annotation will be used by rename to mark all places where it needs to rename an identifier (token replacement) and where to 
+            check if the semantics have been changes (conflict detection).
+            </summary>
+            <remarks>This annotation should be put on tokens only.</remarks>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.OriginalSpan">
+            <summary>
+            The span this token occupied in the original syntax tree. Can be used to show e.g. conflicts in the UI.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsRenameLocation">
+            <summary>
+            A flag indicating whether this is a location that needs to be renamed or just tracked for conflicts.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsOriginalTextLocation">
+            <summary>
+            A flag indicating whether the token at this location has the same ValueText then the original name 
+            of the symbol that gets renamed.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.Prefix">
+            <summary>
+            When replacing the annotated token this string will be prepended to the token's value. This is used when renaming compiler 
+            generated fields and methods backing properties (e.g. "get_X" or "_X" for property "X").
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.Suffix">
+            <summary>
+            When replacing the annotated token this string will be appended to the token's value. This is used when renaming compiler 
+            generated types whose names are derived from user given names (e.g. "XEventHandler" for event "X").
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.RenameDeclarationLocationReferences">
+            <summary>
+            A single dimensional array of annotations to verify after rename.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsNamespaceDeclarationReference">
+            <summary>
+            States if this token is a Namespace Declaration Reference
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsInvocationExpression">
+            <summary>
+            States if this token is annotated as a part of the Invocation Expression that needs to be checked for the Conflicts
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference">
+            <summary>
+            This class is used to refer to a Symbol definition which could be in source or metadata
+            it has a metadata name.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.Name">
+            <summary>
+            The metadata name for this symbol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.SymbolLocationsCount">
+            <summary>
+            Count of symbol location (Partial Types, Constructors, etc).
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.IsOverriddenFromMetadata">
+            <summary>
+            A flag indicating that the associated symbol is an override of a symbol from metadata
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictingIdentifierTracker._currentIdentifiersInScope">
+            <summary>
+            The core data structure of the tracker. This is a dictionary of variable name to the
+            current identifier tokens that are declaring variables. This should only ever be updated
+            via the AddIdentifier and RemoveIdentifier helpers.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution">
+            <summary>
+            The result of the conflict engine. Once this object is returned from the engine, it is
+            immutable.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.RelatedLocations">
+            <summary>
+            The list of all symbol locations that are referenced either by the original symbol or
+            the renamed symbol. This includes both resolved and unresolved conflicts.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.DocumentIds">
+            <summary>
+            The list of all document ids of documents that have been touched for this rename operation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.NewSolution">
+            <summary>
+            The new workspace snapshot
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.OldSolution">
+            <summary>
+            The base workspace snapshot
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.ReplacementTextValid">
+            <summary>
+            Whether the text that was resolved with was even valid. This may be false if the
+            identifier was not valid in some language that was involved in the rename.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.ReplacementText">
+            <summary>
+            The original text that is the rename replacement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.ResolveConflictsAsync(Microsoft.CodeAnalysis.Rename.RenameLocationSet,System.String,System.String,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Performs the renaming of the symbol in the solution, identifies renaming conflicts and automatically resolves them where possible.
+            </summary>
+            <param name="renameLocationSet">The locations to perform the renaming at.</param>
+            <param name="originalText">The original name of the identifier.</param>
+            <param name="replacementText">The new name of the identifier</param>
+            <param name="optionSet">The option for rename</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A conflict resolution containing the new solution.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.SymbolsForEnclosingInvocationExpressionWorker(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SemanticModel,System.Threading.CancellationToken)">
+            <summary>
+            Used to find the symbols associated with the Invocation Expression surrounding the Token
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.AddDeclarationConflictsAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ISymbol},Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution,System.Collections.Generic.IDictionary{Microsoft.CodeAnalysis.Location,Microsoft.CodeAnalysis.Location},System.Threading.CancellationToken)">
+            <summary>
+            Computes an adds conflicts relating to declarations, which are independent of
+            location-based checks. Examples of these types of conflicts include renaming a member to
+            the same name as another member of a type: binding doesn't change (at least from the
+            perspective of find all references), but we still need to track it.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.GetSymbolLocationAsync(Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.ISymbol,System.Threading.CancellationToken)">
+            <summary>
+            Gives the First Location for a given Symbol by ordering the locations using DocumentId first and Location starting position second
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session">
+            <summary>
+            Helper class to track the state necessary for finding/resolving conflicts in a 
+            rename session.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.IdentifyConflictsAsync(System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DocumentId},Microsoft.CodeAnalysis.ProjectId,Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution)">
+            <summary>
+            Find conflicts in the new solution 
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.GetNodesOrTokensToCheckForConflicts(Microsoft.CodeAnalysis.DocumentId,Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Gets the list of the nodes that were annotated for a conflict check 
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.FindDocumentsAndPossibleNameConflicts">
+            <summary>
+            The method determines the set of documents that need to be processed for Rename and also determines
+             the possible set of names that need to be checked for conflicts.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocation">
+            <summary>
+            Gives information about an identifier span that was affected by Rename (Reference or Non reference)
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.NoConflict">
+            <summary>
+            There was no conflict. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.ResolvedReferenceConflict">
+            <summary>
+            A conflict was resolved at a location that references the symbol being renamed.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.ResolvedNonReferenceConflict">
+            <summary>
+            A conflict was resolved in a piece of code that does not reference the symbol being
+            renamed.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.PossibilyResolvableConflict">
+            <summary>
+            There was a conflict that could not be resolved.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.UnresolvableConflict">
+            <summary>
+            These are the conflicts that cannot be resolved. E.g.: Declaration Conflict
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenamedSpansTracker">
+            <summary>
+            Tracks the text spans that were modified as part of a rename operation
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenamedSpansTracker.ComplexifiedSpan">
+            <summary>
+            Information to track deltas of complexified spans
+            
+            Consider the following example where renaming a->b causes a conflict 
+            and Foo is an extension method:
+                "a.Foo(a)" is rewritten to "NS1.NS2.Foo(NS3.a, NS3.a)"
+            
+            The OriginalSpan is the span of "a.Foo(a)"
+            
+            The NewSpan is the span of "NS1.NS2.Foo(NS3.a, NS3.a)"
+            
+            The ModifiedSubSpans are the pairs of complexified symbols sorted 
+            according to their order in the original source code span:
+                "a", "NS3.a"
+                "Foo", "NS1.NS2.Foo"
+                "a", "NS3.a"
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.AnnotateAndRename(Microsoft.CodeAnalysis.Rename.RenameRewriterParameters)">
+            <summary>
+            This method annotates the given syntax tree with all the locations that need to be checked for conflict
+            after the rename operation.  It also renames all the reference locations and expands any conflict locations.
+            </summary>
+            <param name="parameters">The options describing this rename operation</param>
+            <returns>The root of the annotated tree.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.TryAddPossibleNameConflicts(Microsoft.CodeAnalysis.ISymbol,System.String,System.Collections.Generic.ICollection{System.String})">
+            <summary>
+            Based on the kind of the symbol and the new name, this function determines possible conflicting names that
+            should be tracked for semantic changes during rename.
+            </summary>
+            <param name="symbol">The symbol that gets renamed.</param>
+            <param name="newName">The new name for the symbol.</param>
+            <param name="possibleNameConflicts">List where possible conflicting names will be added to.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputeDeclarationConflictsAsync(System.String,Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ISymbol},Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.Solution,System.Collections.Generic.IDictionary{Microsoft.CodeAnalysis.Location,Microsoft.CodeAnalysis.Location},System.Threading.CancellationToken)">
+            <summary>
+            Identifies the conflicts caused by the new declaration created during rename.
+            </summary>
+            <param name="replacementText">The replacementText as given from the user.</param>
+            <param name="renamedSymbol">The new symbol (after rename).</param>
+            <param name="renameSymbol">The original symbol that got renamed.</param>
+            <param name="referencedSymbols">All referenced symbols that are part of this rename session.</param>
+            <param name="baseSolution">The original solution when rename started.</param>
+            <param name="newSolution">The resulting solution after rename.</param>
+            <param name="reverseMappedLocations">A mapping from new to old locations.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>All locations where conflicts were caused because the new declaration.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputeImplicitReferenceConflicts(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.FindSymbols.ReferenceLocation},System.Threading.CancellationToken)">
+            <summary>
+            Identifies the conflicts caused by implicitly referencing the renamed symbol.
+            </summary>
+            <param name="renameSymbol">The original symbol that got renamed.</param>
+            <param name="renamedSymbol">The new symbol (after rename).</param>
+            <param name="implicitReferenceLocations">All implicit reference locations.</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A list of implicit conflicts.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputePossibleImplicitUsageConflicts(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.Location,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Identifies the conflicts caused by implicitly referencing the renamed symbol.
+            </summary>
+            <param name="renamedSymbol">The new symbol (after rename).</param>
+            <param name="semanticModel">The SemanticModel of the document in the new solution containing the renamedSymbol</param>
+            <param name="originalDeclarationLocation">The location of the renamedSymbol in the old solution</param>
+            <param name="newDeclarationLocationStartingPosition">The starting position of the renamedSymbol in the new solution</param>
+            <param name="cancellationToken">The cancellation token.</param>
+            <returns>A list of implicit conflicts.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.LocalVariableConflict(Microsoft.CodeAnalysis.SyntaxToken)">
+            <summary>
+            Identifies potential Conflicts into the inner scope locals. This may give false positives.
+            </summary>
+            <param name="token">The Token that may introduce errors else where</param>
+            <returns>Returns if there is a potential conflict</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.IsIdentifierValid(System.String,Microsoft.CodeAnalysis.LanguageServices.ISyntaxFactsService)">
+            <summary>
+            Used to find if the replacement Identifier is valid
+            </summary>
+            <param name="replacementText"></param>
+            <param name="syntaxFactsService"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.GetExpansionTargetForLocation(Microsoft.CodeAnalysis.SyntaxToken)">
+            <summary>
+            Gets the top most enclosing statement as target to call MakeExplicit on.
+            It's either the enclosing statement, or if this statement is inside of a lambda expression, the enclosing
+            statement of this lambda.
+            </summary>
+            <param name="token">The token to get the complexification target for.</param>
+            <returns></returns>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.RenameEntityKind.BaseSymbol">
+            <summary>
+            mentions that the result is for the base symbol of the rename
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Rename.RenameEntityKind.OverloadedSymbols">
+            <summary>
+            mentions that the result is for the overloaded symbols of the rename
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Rename.RenameLocationSet">
+            <summary>
+            A helper class that contains some of the methods and filters that must be used when
+            processing the raw results from the FindReferences API.
+            </summary>
+            <summary>
+            Holds the ILocations of a symbol that should be renamed, along with the symbol and Solution
+            for the set.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.GetRenamableSymbolAsync(Microsoft.CodeAnalysis.Document,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Given a symbol in a document, returns the "right" symbol that should be renamed in
+            the case the name binds to things like aliases _and_ the underlying type at once.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.FindDefinitionSymbolAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,System.Threading.CancellationToken)">
+            <summary>
+            Given a symbol, finds the symbol that actually defines the name that we're using.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.GetRenamableDefinitionLocationsAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,System.Threading.CancellationToken)">
+            <summary>
+            Given a ISymbol, returns the renamable locations for a given symbol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.FindAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
+            <summary>
+            Find the locations that need to be renamed.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Shared.Extensions.TextDocumentExtensions.WithText(Microsoft.CodeAnalysis.TextDocument,Microsoft.CodeAnalysis.Text.SourceText)">
@@ -4069,11 +4465,6 @@
             
             also, symbols from the semantic model returned by this API might have out of date location information. 
             if exact location (not relative location) is needed from symbol, regular GetSemanticModel should be used.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Shared.Extensions.DocumentExtensions.VerifyNoErrorsAsync(Microsoft.CodeAnalysis.Document,System.String,System.Threading.CancellationToken,System.Collections.Generic.List{System.String})">
-            <summary>
-            Debug only extension method to verify no errors were introduced by formatting, pretty listing and other related document altering service in error-free code.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Shared.Extensions.INamespaceSymbolExtensions.FindNamespaces(Microsoft.CodeAnalysis.INamespaceSymbol,System.String,System.Threading.CancellationToken)">
@@ -4214,6 +4605,62 @@
             <summary>
             merge provided spans to each distinct group of spans in ascending order
             </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer">
+            <summary>
+            Provides a way to test two symbols for equivalence.  While there are ways to ask for
+            different sorts of equivalence, the following must hold for two symbols to be considered
+            equivalent.
+            
+            1) The kinds of the two symbols must match.
+            
+            2) The names of the two symbols must match.
+            
+            3) The arity of the two symbols must match.
+            
+            4) If the symbols are methods or parameterized properties, then the signatures of the two
+            symbols must match.
+            
+            5) Both symbols must be definitions or must be instantiations.  If they are instantiations,
+            then they must be instantiated in the same manner.
+            
+            6) The containing symbols of the two symbols must be equivalent.
+            
+            Note: equivalence does not concern itself with whole symbols.  Two types are considered
+            equivalent if the above hold, even if one type has different members than the other.  Note:
+            type parameters, and signature parameters are not considered 'children' when comparing
+            symbols.
+            
+            Options are provided to tweak the above slightly.  For example, by default, symbols are
+            equivalent only if they come from the same assembly or different assemblies of the same simple name.
+            However, one can ask if two symbols are equivalent even if their assemblies differ.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.Equals(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol)">
+            <summary>
+            Compares given symbols <paramref name="x"/> and <paramref name="y"/> for equivalence.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.Equals(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol})">
+            <summary>
+            Compares given symbols <paramref name="x"/> and <paramref name="y"/> for equivalence and populates <paramref name="equivalentTypesWithDifferingAssemblies"/>
+            with equivalent non-nested named type key-value pairs that are contained in different assemblies.
+            These equivalent named type key-value pairs represent possibly equivalent forwarded types, but this API doesn't perform any type forwarding equivalence checks. 
+            </summary>
+            <remarks>This API is only supported for <see cref="F:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.IgnoreAssembliesInstance"/>.</remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.EquivalenceVisitor.HandleNamedTypesWorker(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol,System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol})">
+            <summary>
+            Worker for comparing two named types for equivalence. Note: The two
+            types must have the same TypeKind.
+            </summary>
+            <param name="x">The first type to compare</param>
+            <param name="y">The second type to compare</param>
+            <param name="equivalentTypesWithDifferingAssemblies">
+            Map of equivalent non-nested types to be populated, such that each key-value pair of named types are equivalent but reside in different assemblies.
+            This map is populated only if we are ignoring assemblies for symbol equivalence comparison, i.e. <see cref="F:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer._assemblyComparerOpt"/> is true.
+            </param>
+            <returns>True if the two types are equivalent.</returns>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Shared.Utilities.XmlFragmentParser">
             <summary>
@@ -4501,6 +4948,15 @@
             Utility class that can be used to track the progress of an operation in a threadsafe manner.
             </summary>
         </member>
+        <member name="T:Microsoft.CodeAnalysis.Shared.Utilities.StringBreaks">
+            <summary>
+            Values returned from <see cref="T:Microsoft.CodeAnalysis.Shared.Utilities.StringBreaker"/> routines.
+            Optimized for short strings with a handful of spans.
+            Each span is encoded in two bitfields 'gap' and 'length' and these
+            bitfields are stored in a 32-bit bitmap.
+            Falls back to a <see cref="T:System.Collections.Generic.List`1"/> if the encoding won't work.
+            </summary>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.StringBreaker.BreakIntoCharacterParts(System.String)">
             <summary>
             Breaks an identifier string into constituent parts.
@@ -4510,62 +4966,6 @@
             <summary>
             Breaks an identifier string into constituent parts.
             </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer">
-            <summary>
-            Provides a way to test two symbols for equivalence.  While there are ways to ask for
-            different sorts of equivalence, the following must hold for two symbols to be considered
-            equivalent.
-            
-            1) The kinds of the two symbols must match.
-            
-            2) The names of the two symbols must match.
-            
-            3) The arity of the two symbols must match.
-            
-            4) If the symbols are methods or parameterized properties, then the signatures of the two
-            symbols must match.
-            
-            5) Both symbols must be definitions or must be instantiations.  If they are instantiations,
-            then they must be instantiated in the same manner.
-            
-            6) The containing symbols of the two symbols must be equivalent.
-            
-            Note: equivalence does not concern itself with whole symbols.  Two types are considered
-            equivalent if the above hold, even if one type has different members than the other.  Note:
-            type parameters, and signature parameters are not considered 'children' when comparing
-            symbols.
-            
-            Options are provided to tweak the above slightly.  For example, by default, symbols are
-            equivalent only if they come from the same assembly.  However, one can ask if two symbols are
-            equivalent even if their assemblies differ.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.Equals(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol)">
-            <summary>
-            Compares given symbols <paramref name="x"/> and <paramref name="y"/> for equivalence.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.Equals(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol})">
-            <summary>
-            Compares given symbols <paramref name="x"/> and <paramref name="y"/> for equivalence and populates <paramref name="equivalentTypesWithDifferingAssemblies"/>
-            with equivalent non-nested named type key-value pairs that are contained in different assemblies.
-            These equivalent named type key-value pairs represent possibly equivalent forwarded types, but this API doesn't perform any type forwarding equivalence checks. 
-            </summary>
-            <remarks>This API is only supported for <see cref="F:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.IgnoreAssembliesInstance"/>.</remarks>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer.EquivalenceVisitor.HandleNamedTypesWorker(Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol,System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.INamedTypeSymbol,Microsoft.CodeAnalysis.INamedTypeSymbol})">
-            <summary>
-            Worker for comparing two named types for equivalence. Note: The two
-            types must have the same TypeKind.
-            </summary>
-            <param name="x">The first type to compare</param>
-            <param name="y">The second type to compare</param>
-            <param name="equivalentTypesWithDifferingAssemblies">
-            Map of equivalent non-nested types to be populated, such that each key-value pair of named types are equivalent but reside in different assemblies.
-            This map is populated only if we are ignoring assemblies for symbol equivalence comparison, i.e. <see cref="F:Microsoft.CodeAnalysis.Shared.Utilities.SymbolEquivalenceComparer._assembliesCanDiffer"/> is true.
-            </param>
-            <returns>True if the two types are equivalent.</returns>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Shared.Utilities.AbstractSpeculationAnalyzer`8">
             <summary>
@@ -4929,71 +5329,10 @@
             An annotation that holds onto information about a type or namespace symbol.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.Versions.ISemanticVersionTrackingService">
+        <member name="T:Microsoft.CodeAnalysis.Host.CachedWeakValueSource`1">
             <summary>
-            A service that knows how to convert semantic version to project version
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.AdhocWorkspace">
-            <summary>
-            A workspace that allows full manipulation of projects and documents,
-            but does not persist changes.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.ClearSolution">
-            <summary>
-            Clears all projects and documents from the workspace.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddSolution(Microsoft.CodeAnalysis.SolutionInfo)">
-            <summary>
-            Adds an entire solution to the workspace, replacing any existing solution.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProject(System.String,System.String)">
-            <summary>
-            Adds a project to the workspace. All previous projects remain intact.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProject(Microsoft.CodeAnalysis.ProjectInfo)">
-            <summary>
-            Adds a project to the workspace. All previous projects remain intact.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProjects(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ProjectInfo})">
-            <summary>
-            Adds multiple projects to the workspace at once. All existing projects remain intact.
-            </summary>
-            <param name="projectInfos"></param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddDocument(Microsoft.CodeAnalysis.ProjectId,System.String,Microsoft.CodeAnalysis.Text.SourceText)">
-            <summary>
-            Adds a document to the workspace.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddDocument(Microsoft.CodeAnalysis.DocumentInfo)">
-            <summary>
-            Adds a document to the workspace.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.OpenDocument(Microsoft.CodeAnalysis.DocumentId,System.Boolean)">
-            <summary>
-            Puts the specified document into the open state.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.CloseDocument(Microsoft.CodeAnalysis.DocumentId)">
-            <summary>
-            Puts the specified document into the closed state.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.OpenAdditionalDocument(Microsoft.CodeAnalysis.DocumentId,System.Boolean)">
-            <summary>
-            Puts the specified additional document into the open state.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.CloseAdditionalDocument(Microsoft.CodeAnalysis.DocumentId)">
-            <summary>
-            Puts the specified additional document into the closed state
+            A value source that cache's its value weakly once obtained from its source.
+            The source must allow repeatable accesses.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Host.IProjectCacheService">
@@ -5235,26 +5574,28 @@
             Factory service for creating syntax trees.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.Host.RecoverableCachedObjectSource`1">
+        <member name="T:Microsoft.CodeAnalysis.Host.RecoverableWeakValueSource`1">
             <summary>
-            This class is a ValueSource that manages storing an item in a cache,
-            saving the item's state when it is evicted from the cache and recovering
-            it from its saved state when the value source is accessed again.
+            This class is a <see cref="T:Roslyn.Utilities.ValueSource`1"/> that holds onto a value weakly, 
+            but can save its value and recover it on demand if needed.
+            
+            The initial value comes from the <see cref="T:Roslyn.Utilities.ValueSource`1"/> specified in the constructor.
+            Derived types implement SaveAsync and RecoverAsync.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableCachedObjectSource`1.SaveAsync(`0,System.Threading.CancellationToken)">
+        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableWeakValueSource`1.SaveAsync(`0,System.Threading.CancellationToken)">
             <summary>
             Override this to save the state of the instance so it can be recovered.
             This method will only ever be called once.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableCachedObjectSource`1.RecoverAsync(System.Threading.CancellationToken)">
+        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableWeakValueSource`1.RecoverAsync(System.Threading.CancellationToken)">
             <summary>
             Override this method to implement asynchronous recovery semantics.
             This method may be called multiple times.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableCachedObjectSource`1.Recover(System.Threading.CancellationToken)">
+        <member name="M:Microsoft.CodeAnalysis.Host.RecoverableWeakValueSource`1.Recover(System.Threading.CancellationToken)">
             <summary>
             Override this method to implement synchronous recovery semantics.
             This method may be called multiple times.
@@ -5478,6 +5819,73 @@
         <member name="T:Microsoft.CodeAnalysis.Host.IWorkspaceService">
             <summary>
             Empty interface just to mark workspace services.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.Versions.ISemanticVersionTrackingService">
+            <summary>
+            A service that knows how to convert semantic version to project version
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.AdhocWorkspace">
+            <summary>
+            A workspace that allows full manipulation of projects and documents,
+            but does not persist changes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.ClearSolution">
+            <summary>
+            Clears all projects and documents from the workspace.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddSolution(Microsoft.CodeAnalysis.SolutionInfo)">
+            <summary>
+            Adds an entire solution to the workspace, replacing any existing solution.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProject(System.String,System.String)">
+            <summary>
+            Adds a project to the workspace. All previous projects remain intact.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProject(Microsoft.CodeAnalysis.ProjectInfo)">
+            <summary>
+            Adds a project to the workspace. All previous projects remain intact.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddProjects(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ProjectInfo})">
+            <summary>
+            Adds multiple projects to the workspace at once. All existing projects remain intact.
+            </summary>
+            <param name="projectInfos"></param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddDocument(Microsoft.CodeAnalysis.ProjectId,System.String,Microsoft.CodeAnalysis.Text.SourceText)">
+            <summary>
+            Adds a document to the workspace.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.AddDocument(Microsoft.CodeAnalysis.DocumentInfo)">
+            <summary>
+            Adds a document to the workspace.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.OpenDocument(Microsoft.CodeAnalysis.DocumentId,System.Boolean)">
+            <summary>
+            Puts the specified document into the open state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.CloseDocument(Microsoft.CodeAnalysis.DocumentId)">
+            <summary>
+            Puts the specified document into the closed state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.OpenAdditionalDocument(Microsoft.CodeAnalysis.DocumentId,System.Boolean)">
+            <summary>
+            Puts the specified additional document into the open state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AdhocWorkspace.CloseAdditionalDocument(Microsoft.CodeAnalysis.DocumentId)">
+            <summary>
+            Puts the specified additional document into the closed state
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Formatting.FormattingContext">
@@ -6339,345 +6747,6 @@
             values.
             </summary>
         </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation">
-            <summary>
-            This annotation will be used by rename to mark all places where it needs to rename an identifier (token replacement) and where to 
-            check if the semantics have been changes (conflict detection).
-            </summary>
-            <remarks>This annotation should be put on tokens only.</remarks>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.OriginalSpan">
-            <summary>
-            The span this token occupied in the original syntax tree. Can be used to show e.g. conflicts in the UI.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsRenameLocation">
-            <summary>
-            A flag indicating whether this is a location that needs to be renamed or just tracked for conflicts.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsAccessorLocation">
-            <summary>
-            A flag indicating if this identifier represents an accessor. E.g. get_Foo (of property Foo).
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsOriginalTextLocation">
-            <summary>
-            A flag indicating whether the token at this location has the same ValueText then the original name 
-            of the symbol that gets renamed.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.Suffix">
-            <summary>
-            When replacing the annotated token this string will be appended to the token's value. This is used when renaming compiler 
-            generated types whose names are derived from user given names (e.g. "XEventHandler" for event "X").
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.RenameDeclarationLocationReferences">
-            <summary>
-            A single dimensional array of annotations to verify after rename.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsNamespaceDeclarationReference">
-            <summary>
-            States if this token is a Namespace Declaration Reference
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameActionAnnotation.IsInvocationExpression">
-            <summary>
-            States if this token is annotated as a part of the Invocation Expression that needs to be checked for the Conflicts
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference">
-            <summary>
-            This class is used to refer to a Symbol definition which could be in source or metadata
-            it has a metadata name.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.Name">
-            <summary>
-            The metadata name for this symbol.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.SymbolLocationsCount">
-            <summary>
-            Count of symbol location (Partial Types, Constructors, etc).
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenameDeclarationLocationReference.IsOverriddenFromMetadata">
-            <summary>
-            A flag indicating that the associated symbol is an override of a symbol from metadata
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictingIdentifierTracker._currentIdentifiersInScope">
-            <summary>
-            The core data structure of the tracker. This is a dictionary of variable name to the
-            current identifier tokens that are declaring variables. This should only ever be updated
-            via the AddIdentifier and RemoveIdentifier helpers.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution">
-            <summary>
-            The result of the conflict engine. Once this object is returned from the engine, it is
-            immutable.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.RelatedLocations">
-            <summary>
-            The list of all symbol locations that are referenced either by the original symbol or
-            the renamed symbol. This includes both resolved and unresolved conflicts.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.DocumentIds">
-            <summary>
-            The list of all document ids of documents that have been touched for this rename operation.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.NewSolution">
-            <summary>
-            The new workspace snapshot
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.OldSolution">
-            <summary>
-            The base workspace snapshot
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.ReplacementTextValid">
-            <summary>
-            Whether the text that was resolved with was even valid. This may be false if the
-            identifier was not valid in some language that was involved in the rename.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution.ReplacementText">
-            <summary>
-            The original text that is the rename replacement.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.ResolveConflictsAsync(Microsoft.CodeAnalysis.Rename.RenameLocationSet,System.String,System.String,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
-            <summary>
-            Performs the renaming of the symbol in the solution, identifies renaming conflicts and automatically resolves them where possible.
-            </summary>
-            <param name="renameLocationSet">The locations to perform the renaming at.</param>
-            <param name="originalText">The original name of the identifier.</param>
-            <param name="replacementText">The new name of the identifier</param>
-            <param name="optionSet">The option for rename</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns>A conflict resolution containing the new solution.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.SymbolsForEnclosingInvocationExpressionWorker(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SemanticModel,System.Threading.CancellationToken)">
-            <summary>
-            Used to find the symbols associated with the Invocation Expression surrounding the Token
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.AddDeclarationConflictsAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ISymbol},Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution,System.Collections.Generic.IDictionary{Microsoft.CodeAnalysis.Location,Microsoft.CodeAnalysis.Location},System.Threading.CancellationToken)">
-            <summary>
-            Computes an adds conflicts relating to declarations, which are independent of
-            location-based checks. Examples of these types of conflicts include renaming a member to
-            the same name as another member of a type: binding doesn't change (at least from the
-            perspective of find all references), but we still need to track it.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.GetSymbolLocationAsync(Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.ISymbol,System.Threading.CancellationToken)">
-            <summary>
-            Gives the First Location for a given Symbol by ordering the locations using DocumentId first and Location starting position second
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session">
-            <summary>
-            Helper class to track the state necessary for finding/resolving conflicts in a 
-            rename session.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.IdentifyConflictsAsync(System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.DocumentId},Microsoft.CodeAnalysis.ProjectId,Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolution)">
-            <summary>
-            Find conflicts in the new solution 
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.GetNodesOrTokensToCheckForConflicts(Microsoft.CodeAnalysis.DocumentId,Microsoft.CodeAnalysis.SyntaxNode)">
-            <summary>
-            Gets the list of the nodes that were annotated for a conflict check 
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.ConflictEngine.ConflictResolver.Session.FindDocumentsAndPossibleNameConflicts">
-            <summary>
-            The method determines the set of documents that need to be processed for Rename and also determines
-             the possible set of names that need to be checked for conflicts.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocation">
-            <summary>
-            Gives information about an identifier span that was affected by Rename (Reference or Non reference)
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.NoConflict">
-            <summary>
-            There was no conflict. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.ResolvedReferenceConflict">
-            <summary>
-            A conflict was resolved at a location that references the symbol being renamed.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.ResolvedNonReferenceConflict">
-            <summary>
-            A conflict was resolved in a piece of code that does not reference the symbol being
-            renamed.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.PossibilyResolvableConflict">
-            <summary>
-            There was a conflict that could not be resolved.
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.ConflictEngine.RelatedLocationType.UnresolvableConflict">
-            <summary>
-            These are the conflicts that cannot be resolved. E.g.: Declaration Conflict
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenamedSpansTracker">
-            <summary>
-            Tracks the text spans that were modified as part of a rename operation
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.ConflictEngine.RenamedSpansTracker.ComplexifiedSpan">
-            <summary>
-            Information to track deltas of complexified spans
-            
-            Consider the following example where renaming a->b causes a conflict 
-            and Foo is an extension method:
-                "a.Foo(a)" is rewritten to "NS1.NS2.Foo(NS3.a, NS3.a)"
-            
-            The OriginalSpan is the span of "a.Foo(a)"
-            
-            The NewSpan is the span of "NS1.NS2.Foo(NS3.a, NS3.a)"
-            
-            The ModifiedSubSpans are the pairs of complexified symbols sorted 
-            according to their order in the original source code span:
-                "a", "NS3.a"
-                "Foo", "NS1.NS2.Foo"
-                "a", "NS3.a"
-            
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.AnnotateAndRename(Microsoft.CodeAnalysis.Rename.RenameRewriterParameters)">
-            <summary>
-            This method annotates the given syntax tree with all the locations that need to be checked for conflict
-            after the rename operation.  It also renames all the reference locations and expands any conflict locations.
-            </summary>
-            <param name="parameters">The options describing this rename operation</param>
-            <returns>The root of the annotated tree.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.TryAddPossibleNameConflicts(Microsoft.CodeAnalysis.ISymbol,System.String,System.Collections.Generic.ICollection{System.String})">
-            <summary>
-            Based on the kind of the symbol and the new name, this function determines possible conflicting names that
-            should be tracked for semantic changes during rename.
-            </summary>
-            <param name="symbol">The symbol that gets renamed.</param>
-            <param name="newName">The new name for the symbol.</param>
-            <param name="possibleNameConflicts">List where possible conflicting names will be added to.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputeDeclarationConflictsAsync(System.String,Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ISymbol},Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.Solution,System.Collections.Generic.IDictionary{Microsoft.CodeAnalysis.Location,Microsoft.CodeAnalysis.Location},System.Threading.CancellationToken)">
-            <summary>
-            Identifies the conflicts caused by the new declaration created during rename.
-            </summary>
-            <param name="replacementText">The replacementText as given from the user.</param>
-            <param name="renamedSymbol">The new symbol (after rename).</param>
-            <param name="renameSymbol">The original symbol that got renamed.</param>
-            <param name="referencedSymbols">All referenced symbols that are part of this rename session.</param>
-            <param name="baseSolution">The original solution when rename started.</param>
-            <param name="newSolution">The resulting solution after rename.</param>
-            <param name="reverseMappedLocations">A mapping from new to old locations.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns>All locations where conflicts were caused because the new declaration.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputeImplicitReferenceConflicts(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.FindSymbols.ReferenceLocation},System.Threading.CancellationToken)">
-            <summary>
-            Identifies the conflicts caused by implicitly referencing the renamed symbol.
-            </summary>
-            <param name="renameSymbol">The original symbol that got renamed.</param>
-            <param name="renamedSymbol">The new symbol (after rename).</param>
-            <param name="implicitReferenceLocations">All implicit reference locations.</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns>A list of implicit conflicts.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.ComputePossibleImplicitUsageConflicts(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.Location,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Identifies the conflicts caused by implicitly referencing the renamed symbol.
-            </summary>
-            <param name="renamedSymbol">The new symbol (after rename).</param>
-            <param name="semanticModel">The SemanticModel of the document in the new solution containing the renamedSymbol</param>
-            <param name="originalDeclarationLocation">The location of the renamedSymbol in the old solution</param>
-            <param name="newDeclarationLocationStartingPosition">The starting position of the renamedSymbol in the new solution</param>
-            <param name="cancellationToken">The cancellation token.</param>
-            <returns>A list of implicit conflicts.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.LocalVariableConflict(Microsoft.CodeAnalysis.SyntaxToken)">
-            <summary>
-            Identifies potential Conflicts into the inner scope locals. This may give false positives.
-            </summary>
-            <param name="token">The Token that may introduce errors else where</param>
-            <returns>Returns if there is a potential conflict</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.IsIdentifierValid(System.String,Microsoft.CodeAnalysis.LanguageServices.ISyntaxFactsService)">
-            <summary>
-            Used to find if the replacement Identifier is valid
-            </summary>
-            <param name="replacementText"></param>
-            <param name="syntaxFactsService"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.IRenameRewriterLanguageService.GetExpansionTargetForLocation(Microsoft.CodeAnalysis.SyntaxToken)">
-            <summary>
-            Gets the top most enclosing statement as target to call MakeExplicit on.
-            It's either the enclosing statement, or if this statement is inside of a lambda expression, the enclosing
-            statement of this lambda.
-            </summary>
-            <param name="token">The token to get the complexification target for.</param>
-            <returns></returns>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.RenameEntityKind.BaseSymbol">
-            <summary>
-            mentions that the result is for the base symbol of the rename
-            </summary>
-        </member>
-        <member name="F:Microsoft.CodeAnalysis.Rename.RenameEntityKind.OverloadedSymbols">
-            <summary>
-            mentions that the result is for the overloaded symbols of the rename
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.Rename.RenameLocationSet">
-            <summary>
-            A helper class that contains some of the methods and filters that must be used when
-            processing the raw results from the FindReferences API.
-            </summary>
-            <summary>
-            Holds the ILocations of a symbol that should be renamed, along with the symbol and Solution
-            for the set.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.GetRenamableSymbolAsync(Microsoft.CodeAnalysis.Document,System.Int32,System.Threading.CancellationToken)">
-            <summary>
-            Given a symbol in a document, returns the "right" symbol that should be renamed in
-            the case the name binds to things like aliases _and_ the underlying type at once.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.FindDefinitionSymbolAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,System.Threading.CancellationToken)">
-            <summary>
-            Given a symbol, finds the symbol that actually defines the name that we're using.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.ReferenceProcessing.GetRenamableDefinitionLocationsAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,System.Threading.CancellationToken)">
-            <summary>
-            Given a ISymbol, returns the renamable locations for a given symbol.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Rename.RenameLocationSet.FindAsync(Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.Options.OptionSet,System.Threading.CancellationToken)">
-            <summary>
-            Find the locations that need to be renamed.
-            </summary>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.SemanticModelWorkspaceService.ISemanticModelService">
             <summary>
             a service that provides a semantic model that will re-use last known compilation if
@@ -6841,6 +6910,11 @@
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AdditionalTextDocument.GetText(System.Threading.CancellationToken)">
             <summary>
             Retrieves a <see cref="T:Microsoft.CodeAnalysis.Text.SourceText"/> with the contents of this file.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.DocumentState.TreeTextSource">
+            <summary>
+            A source for TextAndVersion constructed from an syntax tree
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.BranchId">
@@ -7546,8 +7620,7 @@
         </member>
         <member name="T:Microsoft.CodeAnalysis.RecoverableTextAndVersion">
             <summary>
-            A text retainer that will save text to temporary storage when it is evicted from the
-            text cache and reload from that storage if and when it is needed again.
+            A recoverable TextAndVersion source that saves its text to temporary storage.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Solution">
@@ -9446,11 +9519,6 @@
               Looks up a localized string similar to Removed:.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.WorkspacesResources.RemoveUnnecessaryImportsOrUsings">
-            <summary>
-              Looks up a localized string similar to Remove Unnecessary Imports/Usings..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.WorkspacesResources.RemovingAdditionalDocumentsIsNotSupported">
             <summary>
               Looks up a localized string similar to Removing additional documents is not supported..
@@ -10272,13 +10340,12 @@
             any cancellation is observed from the token.
             </summary>
         </member>
-        <member name="T:Roslyn.Utilities.AsyncSemaphore">
+        <member name="T:Roslyn.Utilities.SemaphoreSlimFactory">
             <summary>
-            A semaphore that supports a WaitAsync() operation. Unlike SemaphoreSlim, WaitAsync
-            does not have bugs where the semaphore can be acquired but WaitAsync returns cancelled.
+            Container for a <see cref="T:System.Threading.SemaphoreSlim"/> factory.
             </summary>
         </member>
-        <member name="F:Roslyn.Utilities.AsyncSemaphore.Factory">
+        <member name="F:Roslyn.Utilities.SemaphoreSlimFactory.Instance">
             <summary>
             Factory object that may be used for lazy initialization. Creates AsyncSemaphore instances with an initial count of 1.
             </summary>

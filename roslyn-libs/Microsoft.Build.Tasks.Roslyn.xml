@@ -4,88 +4,233 @@
         <name>Microsoft.Build.Tasks.Roslyn</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.CodeAnalysis.CSharp.SyntaxFacts">
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest">
             <summary>
-            Defines a set of methods to determine how Unicode characters are treated by the C# compiler.
+            Represents a request from the client. A request is as follows.
+            
+             Field Name         Type                Size (bytes)
+            ----------------------------------------------------
+             Length             Integer             4
+             Language           RequestLanguage     4
+             Argument Count     UInteger            4
+             Arguments          Argument[]          Variable
+            
+            See <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument"/> for the format of an
+            Argument.
+            
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsHexDigit(System.Char)">
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
-            Returns true if the Unicode character is a hexadecimal digit.
+            Read a Request from the given stream.
+            
+            The total request size must be less than 1MB.
             </summary>
-            <param name="c">The Unicode character.</param>
-            <returns>true if the character is a hexadecimal digit 0-9, A-F, a-f.</returns>
+            <returns>null if the Request was too large, the Request otherwise.</returns>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsDecDigit(System.Char)">
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.WriteAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
-            Returns true if the Unicode character is a decimal digit.
-            </summary>
-            <param name="c">The Unicode character.</param>
-            <returns>true if the Unicode character is a decimal digit.</returns>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.HexValue(System.Char)">
-            <summary>
-            Returns the value of a hexadecimal Unicode character.
-            </summary>
-            <param name="c">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.DecValue(System.Char)">
-            <summary>
-            Returns the value of a decimal Unicode character.
-            </summary>
-            <param name="c">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsWhitespace(System.Char)">
-            <summary>
-            Returns true if the Unicode character represents a whitespace.
-            </summary>
-            <param name="ch">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsNewLine(System.Char)">
-            <summary>
-            Returns true if the Unicode character is a newline character.
-            </summary>
-            <param name="ch">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierStartCharacter(System.Char)">
-            <summary>
-            Returns true if the Unicode character can be the starting character of a C# identifier.
-            </summary>
-            <param name="ch">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsIdentifierPartCharacter(System.Char)">
-            <summary>
-            Returns true if the Unicode character can be a part of a C# identifier.
-            </summary>
-            <param name="ch">The Unicode character.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsValidIdentifier(System.String)">
-            <summary>
-            Check that the name is a valid identifier.
+            Write a Request to the stream.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.ContainsDroppedIdentifierCharacters(System.String)">
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument">
             <summary>
-            Spec section 2.4.2 says that identifiers are compared without regard
-            to leading "@" characters or unicode formatting characters.  As in dev10,
-            this is actually accomplished by dropping such characters during parsing.
-            Unfortunately, metadata names can still contain these characters and will
-            not be referenceable from source if they do (lookup will fail since the
-            characters will have been dropped from the search string).
-            See DevDiv #14432 for more.
+            A command line argument to the compilation. 
+            An argument is formatted as follows:
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             ID                 UInteger        4
+             Index              UInteger        4
+             Value              String          Variable
+            
+            Strings are encoded via a length prefix as a signed
+            32-bit integer, followed by an array of characters.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Char)">
-            <summary>
-            Returns true if the Unicode character is a formatting character (Unicode class Cf).
-            </summary>
-            <param name="ch">The Unicode character.</param>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildResponse">
+             <summary>
+             Base class for all possible responses to a request.
+             The ResponseType enum should list all possible response types
+             and ReadResponse creates the appropriate response subclass based
+             on the response type sent by the client.
+             The format of a response is:
+            
+             Field Name       Field Type          Size (bytes)
+             -------------------------------------------------
+             responseLength   int (positive)      4  
+             responseType     enum ResponseType   4
+             responseBody     Response subclass   variable
+             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsFormattingChar(System.Globalization.UnicodeCategory)">
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildResponse.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
-            Returns true if the Unicode character is a formatting character (Unicode class Cf).
+            May throw exceptions if there are pipe problems.
             </summary>
-            <param name="cat">The Unicode character.</param>
+            <param name="stream"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompletedBuildResponse">
+            <summary>
+            Represents a Response from the server. A response is as follows.
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             Length             UInteger        4
+             ReturnCode         Integer         4
+             Output             String          Variable
+             ErrorOutput        String          Variable
+            
+            Strings are encoded via a character count prefix as a 
+            32-bit integer, followed by an array of characters.
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.MismatchedVersionBuildResponse.AddResponseBody(System.IO.BinaryWriter)">
+            <summary>
+            MismatchedVersion has no body.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants">
+            <summary>
+            Constants about the protocol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ProtocolVersion">
+            <summary>
+            The version number for this protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.GetPipeName(System.String)">
+            <summary>
+            Given the full path to the directory containing the compiler exes,
+            retrieves the name of the pipe for client/server communication on
+            that instance of the compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadLengthPrefixedString(System.IO.BinaryReader)">
+            <summary>
+            Read a string from the Reader where the string is encoded
+            as a length prefix (signed 32-bit integer) followed by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.WriteLengthPrefixedString(System.IO.BinaryWriter,System.String)">
+            <summary>
+            Write a string to the Writer where the string is encoded
+            as a length prefix (signed 32-bit integer) follows by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadAllAsync(System.IO.Stream,System.Byte[],System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            This task does not complete until we are completely done reading.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger">
+            <summary>
+            Class for logging information about what happens in the server and client parts of the 
+            Roslyn command line compiler and build tasks. Useful for debugging what is going on.
+            </summary>
+            <remarks>
+            To use the logging, set the environment variable RoslynCommandLineLogFile to the name
+            of a file to log to. This file is logged to by both client and server components.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.#cctor">
+            <summary>
+            Static class initializer that initializes logging.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Initialize(System.String)">
+            <summary>
+            Set the logging prefix that describes our role.
+            Typically a 3-letter abbreviation. If logging happens before this, it's logged with "---".
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.LogException(System.Exception,System.String)">
+            <summary>
+            Log an exception. Also logs information about inner exceptions.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String,System.Object[])">
+            <summary>
+            Log a line of text to the logging file, with string.Format arguments.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String)">
+            <summary>
+            Log a line of text to the logging file.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.GetLoggingPrefix">
+            <summary>
+            Get the string that prefixes all log entries. Shows the process, thread, and time.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.BuildClient">
+            <summary>
+            Client class that handles communication to the server.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.RunWithConsoleOutput(System.String[],System.String,System.String,Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.RequestLanguage,System.Func{System.String,System.String[],System.Int32})">
+            <summary>
+            Run a compilation through the compiler server and print the output
+            to the console. If the compiler server fails, run the fallback
+            compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryRunServerCompilation(Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.RequestLanguage,System.String,System.String,System.Collections.Generic.IList{System.String},System.Threading.CancellationToken,System.String,System.String)">
+            <summary>
+            Returns a Task with a null BuildResponse if no server
+            response was received.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryCompile(System.IO.Pipes.NamedPipeClientStream,Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.CancellationToken)">
+            <summary>
+            Try to compile using the server. Returns null if a response from the
+            server cannot be retrieved.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.CreateMonitorDisconnectTask(System.IO.Pipes.NamedPipeClientStream,System.Threading.CancellationToken)">
+             <summary>
+             The IsConnected property on named pipes does not detect when the client has disconnected
+             if we don't attempt any new I/O after the client disconnects. We start an async I/O here
+             which serves to check the pipe for disconnection. 
+            
+             This will return true if the pipe was disconnected.
+             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.QueryFullProcessImageName(System.IntPtr,System.Int32,System.Text.StringBuilder,System.Int32@)">
+            <summary>
+            Get the file path of the executable that started this process.
+            </summary>
+            <param name="processHandle"></param>
+            <param name="flags">Should always be 0: Win32 path format.</param>
+            <param name="exeNameBuffer">Buffer for the name</param>
+            <param name="bufferSize">
+            Size of the buffer coming in, chars written coming out.
+            </param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryConnectToProcess(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Connect to the pipe for a given directory and return it.
+            Throws on cancellation.
+            </summary>
+            <param name="pipeName">Name of the named pipe to connect to.</param>
+            <param name="timeoutMs">Timeout to allow in connecting to process.</param>
+            <param name="cancellationToken">Cancellation token to cancel connection to server.</param>
+            <returns>
+            An open <see cref="T:System.IO.Pipes.NamedPipeClientStream"/> to the server process or null on failure.
+            </returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryCreateServerProcess(System.String)">
+            <summary>
+            Create a new instance of the server process, returning true on success
+            and false otherwise.
+            </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.BuildTasks.CanonicalError">
              <summary>
@@ -336,8 +481,6 @@
              list of aliases, and if any of the aliases specified is the string "global",
              then we add that reference to the command-line without an alias.
              </summary>
-             <param name="commandLine"></param>
-             <owner>RGoel</owner>
         </member>
         <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.GetDefineConstantsSwitch(System.String)">
             <summary>
@@ -354,6 +497,49 @@
             other words, a constant is either defined or not defined ... it can't have
             an actual value.
             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.InitializeHostCompiler(Microsoft.Build.Tasks.Hosting.ICscHostObject)">
+             <summary>
+             This method will initialize the host compiler object with all the switches,
+             parameters, resources, references, sources, etc.
+            
+             It returns true if everything went according to plan.  It returns false if the
+             host compiler had a problem with one of the parameters that was passed in.
+             
+             This method also sets the "this.HostCompilerSupportsAllParameters" property
+             accordingly.
+            
+             Example:
+                 If we attempted to pass in WarningLevel="9876", then this method would
+                 set HostCompilerSupportsAllParameters=true, but it would give a
+                 return value of "false".  This is because the host compiler fully supports
+                 the WarningLevel parameter, but 9876 happens to be an illegal value.
+            
+             Example:
+                 If we attempted to pass in NoConfig=false, then this method would set
+                 HostCompilerSupportsAllParameters=false, because while this is a legal
+                 thing for csc.exe, the IDE compiler cannot support it.  In this situation
+                 the return value will also be false.
+             </summary>
+             <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.InitializeHostObject">
+            <summary>
+            This method will get called during Execute() if a host object has been passed into the Csc
+            task.  Returns one of the following values to indicate what the next action should be:
+                UseHostObjectToExecute          Host compiler exists and was initialized.
+                UseAlternateToolToExecute       Host compiler doesn't exist or was not appropriate.
+                NoActionReturnSuccess           Host compiler was already up-to-date, and we're done.
+                NoActionReturnFailure           Bad parameters were passed into the task.
+            </summary>
+            <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Csc.CallHostObjectToExecute">
+            <summary>
+            This method will get called during Execute() if a host object has been passed into the Csc
+            task.  Returns true if the compilation succeeded, otherwise false.  
+            </summary>
+            <owner>RGoel</owner>
         </member>
         <member name="T:Microsoft.CodeAnalysis.BuildTasks.ErrorString">
             <summary>
@@ -406,15 +592,77 @@
               Looks up a localized string similar to MSB3402: There was an error creating the pdb file &quot;{0}&quot;. {1}.
             </summary>
         </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.IVbcHostObject6">
+            <summary>
+            Defines an interface that proffers a free threaded host object that
+            allows for background threads to call directly (avoids marshalling
+            to the UI thread.
+            </summary>
+        </member>
         <member name="T:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler">
             <summary>
             This class defines all of the common stuff that is shared between the Vbc and Csc tasks.
             This class is not instantiatable as a Task just by itself.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.UseSharedCompilation">
+            <summary>
+            If this property is true then the task will take every C# or VB
+            compilation which is queued by MSBuild and send it to the 
+            VBCSCompiler server instance, starting a new instance if necessary.
+            If false, we will use the values from ToolPath/Exe.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.StandardOutputEncoding">
             <summary>
             Overridable property specifying the encoding of the captured task standard output stream
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.TryGetClientDir">
+            <summary>
+            Try to get the directory this assembly is in. Returns null if assembly
+            was in the GAC.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.Cancel">
+            <summary>
+            Cancel the in-process build task.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.CurrentDirectoryToUse">
+            <summary>
+            Get the current directory that the compiler should run in.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.LibDirectoryToUse">
+            <summary>
+            Get the "LIB" environment variable, or NULL if none.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.ExitCode">
+            <summary>
+            The return code of the compilation. Strangely, this isn't overridable from ToolTask, so we need 
+            to create our own.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.HandleResponse(Microsoft.CodeAnalysis.CompilerServer.BuildResponse)">
+            <summary>
+            Handle a response from the server, reporting messages and returning
+            the appropriate exit code.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.LogMessages(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Log each of the messages in the given output with the given importance.
+            We assume each line is a message to log.
+            </summary>
+            <remarks>
+            Should be "private protected" visibility once it is introduced into C#.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.GetArguments(System.String,System.String)">
+            <summary>
+            Get the command line arguments to pass to the compiler.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.BuildTasks.ManagedCompiler.GenerateResponseFileCommands">
@@ -540,9 +788,62 @@
              This method will only be called during the initialization of the host object,
              which is only used during IDE builds.
              </summary>
-             <param name="noDefaultWin32Manifest"></param>
-             <param name="win32Manifest"></param>
              <returns>the path to the win32 manifest to provide to the host object</returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.NativeMethods">
+            <summary>
+            Interop methods.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1">
+            <summary>
+            Create an RCW for the current context/apartment. 
+            This improves performance of cross apartment calls as the CLR will only
+            cache marshalled pointers for an RCW created in the current context.
+            </summary>
+            <typeparam name="T">Type of the RCW object</typeparam>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1._rcwForCurrentCtx">
+            <summary>
+            The last RCW that was created for the current context.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1._shouldReleaseRCW">
+            <summary>
+            Indicates if we created the RCW and therefore need to release it's com reference.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1.#ctor(`0)">
+            <summary>
+            Constructor creates the new RCW in the current context.
+            </summary>
+            <param name="rcw">The RCW created in the original context.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1.RCW">
+            <summary>
+            Call this helper if your managed object is really an RCW to a COM object
+            and that COM object was created in a different apartment from where it is being accessed
+            </summary>
+            <returns>A new RCW created in the current apartment context</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1.Dispose">
+            <summary>
+            Override for IDisposable::Dispose
+            </summary>
+            <remarks>
+            We created an RCW for the current apartment. When this object goes out of scope
+            we need to release the COM object before the apartment is released (via COUninitialize)
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.RCWForCurrentContext`1.CleanupComObject">
+            <summary>
+            Cleanup our RCW com object references if required.
+            </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.BuildTasks.Utilities">
             <summary>
@@ -648,8 +949,6 @@
             Looks at all the parameters that have been set, and builds up the string
             containing all the command-line switches.
             </summary>
-            <param name="commandLine"></param>
-            <owner>RGoel, JomoF</owner>
         </member>
         <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.ValidateParameters">
             <summary>
@@ -691,6 +990,50 @@
             switch.  It does that by quoting the entire string, and escaping the embedded
             quotes.
             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.InitializeHostCompiler(Microsoft.Build.Tasks.Hosting.IVbcHostObject)">
+             <summary>
+             This method will initialize the host compiler object with all the switches,
+             parameters, resources, references, sources, etc.
+            
+             It returns true if everything went according to plan.  It returns false if the
+             host compiler had a problem with one of the parameters that was passed in.
+             
+             This method also sets the "this.HostCompilerSupportsAllParameters" property
+             accordingly.
+            
+             Example:
+                 If we attempted to pass in Platform="foobar", then this method would
+                 set HostCompilerSupportsAllParameters=true, but it would throw an 
+                 exception because the host compiler fully supports
+                 the Platform parameter, but "foobar" is an illegal value.
+            
+             Example:
+                 If we attempted to pass in NoConfig=false, then this method would set
+                 HostCompilerSupportsAllParameters=false, because while this is a legal
+                 thing for csc.exe, the IDE compiler cannot support it.  In this situation
+                 the return value will also be false.
+             </summary>
+             <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.InitializeHostObject">
+            <summary>
+            This method will get called during Execute() if a host object has been passed into the Vbc
+            task.  Returns one of the following values to indicate what the next action should be:
+                UseHostObjectToExecute          Host compiler exists and was initialized.
+                UseAlternateToolToExecute       Host compiler doesn't exist or was not appropriate.
+                NoActionReturnSuccess           Host compiler was already up-to-date, and we're done.
+                NoActionReturnFailure           Bad parameters were passed into the task.
+            </summary>
+            <owner>RGoel</owner>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.Vbc.CallHostObjectToExecute">
+            <summary>
+            This method will get called during Execute() if a host object has been passed into the Vbc
+            task.  Returns true if an appropriate host object was found, it was called to do the compile,
+            and the compile succeeded.  Otherwise, we return false.
+            </summary>
+            <owner>RGoel</owner>
         </member>
         <member name="T:Microsoft.CodeAnalysis.BuildTasks.Vbc.VBError">
             <summary>

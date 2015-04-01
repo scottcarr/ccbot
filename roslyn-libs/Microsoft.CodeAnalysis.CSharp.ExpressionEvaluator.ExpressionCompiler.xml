@@ -4,7 +4,7 @@
         <name>Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.ExpressionCompiler</name>
     </assembly>
     <members>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.#ctor(Microsoft.CodeAnalysis.CSharp.CSharpCompilation,Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder,Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableSortedSet{System.Int32},Microsoft.CodeAnalysis.ExpressionEvaluator.MethodDebugInfo,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.#ctor(Microsoft.CodeAnalysis.CSharp.CSharpCompilation,Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.MetadataDecoder,Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},Microsoft.CodeAnalysis.ExpressionEvaluator.InScopeHoistedLocals,Microsoft.CodeAnalysis.ExpressionEvaluator.MethodDebugInfo,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
             <summary>
             Create a context to compile expressions within a method scope.
             </summary>
@@ -20,7 +20,7 @@
             Generate the set of locals to use for binding. 
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetDisplayClassVariables(Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableSortedSet{System.Int32},System.Collections.Immutable.ImmutableArray{System.String}@,System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.DisplayClassVariable}@,System.Collections.Immutable.ImmutableHashSet{System.String}@)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.CompilationContext.GetDisplayClassVariables(Microsoft.CodeAnalysis.CSharp.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.LocalSymbol},Microsoft.CodeAnalysis.ExpressionEvaluator.InScopeHoistedLocals,System.Collections.Immutable.ImmutableArray{System.String}@,System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.CSharp.ExpressionEvaluator.DisplayClassVariable}@,System.Collections.Immutable.ImmutableHashSet{System.String}@)">
             <summary>
             Return a mapping of captured variables (parameters, locals, and
             "this") to locals. The mapping is needed to expose the original
@@ -90,7 +90,7 @@
             </summary>
             <param name="previous">Previous context, if any, for possible re-use.</param>
             <param name="metadataBlocks">Module metadata</param>
-            <param name="symReader"><see cref="T:Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader"/> for PDB associated with <paramref name="moduleVersionId"/></param>
+            <param name="symReader"><see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/> for PDB associated with <paramref name="moduleVersionId"/></param>
             <param name="moduleVersionId">Module containing method</param>
             <param name="methodToken">Method metadata token</param>
             <param name="methodVersion">Method version.</param>

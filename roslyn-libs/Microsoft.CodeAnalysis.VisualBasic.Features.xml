@@ -6,9 +6,66 @@ Microsoft.CodeAnalysis.VisualBasic.Features
 </name>
 </assembly>
 <members>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.SyntaxUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified node represents a lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.GetLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Given a node that represents a lambda body returns a node that represents the lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
  <summary>
  SyntaxNode.GetCorrespondingLambdaBody(SyntaxNode)
+ </summary>
+ <remarks>
+ We need to handle case when an old node that represents a lambda body with multiple nodes 
+ of the same kind is mapped to a new node that belongs to the lambda body but is 
+ different from the one that represents the new body.
+ 
+ In that case <paramref name="newLambdaOrPeer"/> isn't lambda representing node (the first range variable of a clause)
+ but its equivalent peer (another range variable of the same clause).
+ </remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambdaBody(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified <paramref name="node"/> represents a body of a lambda.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsLambdaBodyStatementOrExpression(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ Returns true if the specified <paramref name="node"/> is part of a lambda body. 
+ Returns the node (<paramref name="lambdaBody"/>) that represents the containing lambda body.
+ </summary>
+ <remarks>
+ VB lambda bodies may be non-contiguous sequences of nodes whose ancestor (parent or grandparent) is a lambda node.
+ Whenever we need to check whether a node is a lambda body node we should use this method.
+ </remarks>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.TryGetLambdaBodies(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ If the specified node represents a lambda returns a node (or nodes) that represent its body (bodies).
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.TryGetSimpleLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ If the specified node represents a "simple" lambda returns a node (or nodes) that represent its body (bodies).
+ Lambda is "simple" if all its body nodes are also its child nodes and vice versa.
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsNonUserCodeQueryLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Non-user code lambdas are synthesized lambdas that create an instance of an anonymous type representing a pair of values,
+ or otherwise transform sequences/anonymous types from one form to another without calling user code.
+ TODO: Could we avoid generating proper lambdas for these?
+ </summary>
+</member>
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.LambdaUtilities.IsClosureScope(Microsoft.CodeAnalysis.SyntaxNode)">
+ <summary>
+ Returns true if the specified node can represent a closure scope -- that is a scope of a captured variable.
+ Doesn't validate whether or not the node actually declares any captured variable.
  </summary>
 </member>
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeFixes.AddImport.VisualBasicAddImportCodeFixProvider.BC30002">
@@ -54,6 +111,11 @@ Microsoft.CodeAnalysis.VisualBasic.Features
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeFixes.AddImport.VisualBasicAddImportCodeFixProvider.BC36610">
  <summary>
  Name 'A' is either not declared or not in the current scope.
+ </summary>
+</member>
+<member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeFixes.AddImport.VisualBasicAddImportCodeFixProvider.BC36719">
+ <summary>
+ Cannot initialize the type 'A' with a collection initializer because it does not have an accessible 'Add' method
  </summary>
 </member>
 <member name="F:Microsoft.CodeAnalysis.VisualBasic.CodeFixes.AddImport.VisualBasicAddImportCodeFixProvider.BC30512">
@@ -793,17 +855,6 @@ Microsoft.CodeAnalysis.VisualBasic.Features
  If lowered, both 'i's are lowered to small 'i' with dot
  </summary>
 </member>
-<member name="T:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.StatementSyntaxComparer.MultiBody">
- <summary>
- Compares a body of nodes that have multiple bodies.
- The comparer points to the body to compare.
- </summary>
-</member>
-<member name="T:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.StatementSyntaxComparer.SingleBody">
- <summary>
- Compares nodes that have a single body.
- </summary>
-</member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.SyntaxComparer.TryComputeWeightedDistance(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode,System.Double@)">
  <summary>
  Calculates distance of two nodes based on their significant parts.
@@ -886,12 +937,6 @@ Microsoft.CodeAnalysis.VisualBasic.Features
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.SyntaxComparer.GetSequenceEdits(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.SyntaxToken},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.SyntaxToken})">
  <summary>
  Calculates the edits that transform one sequence of syntax tokens to another, disregarding trivia.
- </summary>
-</member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.SyntaxUtilities.IsLambdaBodyStatementOrExpression(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
- <summary>
- Returns true if the specified <paramref name="node"/> is a statement whose parent is a <see cref="T:Microsoft.CodeAnalysis.VisualBasic.Syntax.LambdaExpressionSyntax"/>,
- or and expression of a query lambda. Returns the node that represents the body of the lambda in <paramref name="body"/>.
  </summary>
 </member>
 <member name="M:Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.TopSyntaxComparer.TiedToAncestor(Microsoft.CodeAnalysis.VisualBasic.EditAndContinue.TopSyntaxComparer.Label)">
@@ -1245,24 +1290,6 @@ Dim {&lt;var&gt; [As [New] dataType [(boundList)]][= initializer]}[, var2].
   Looks up a localized string similar to Disables reporting of specified warnings in the portion of the source file below the current line..
 </summary>
 </member>
-<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.DisposePattern">
-<summary>
-  Looks up a localized string similar to #Region &quot;IDisposable Support&quot;
-    Private disposedValue As Boolean &apos; To detect redundant calls
-
-    &apos; IDisposable
-    Protected {0}Sub Dispose(disposing As Boolean)
-        If Not Me.disposedValue Then
-            If disposing Then
-                &apos; TODO: dispose managed state (managed objects).
-            End If
-
-            &apos; TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
-            &apos; TODO: set large fields to null.
-        End If
-        Me.disposedValue  [rest of string was truncated]&quot;;.
-</summary>
-</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.DistinctQueryKeywordToolTip">
 <summary>
   Looks up a localized string similar to Restricts the values of a query result to eliminate duplicate values..
@@ -1277,6 +1304,11 @@ Dim {&lt;var&gt; [As [New] dataType [(boundList)]][= initializer]}[, var2].
 <summary>
   Looks up a localized string similar to Repeats a block of statements while a Boolean condition is true, or until the condition becomes true.
 Do...Loop {While | Until} &lt;condition&gt;.
+</summary>
+</member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.DoNotChangeThisCodeUseDispose">
+<summary>
+  Looks up a localized string similar to Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above..
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.DoUntilKeywordToolTip">
@@ -1476,6 +1508,11 @@ Option Explicit {On | Off}.
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.ForKeywordToolTip">
 <summary>
   Looks up a localized string similar to Introduces a loop that is iterated a specified number of times..
+</summary>
+</member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.FreeUnmanagedResourcesTodo">
+<summary>
+  Looks up a localized string similar to TODO: free unmanaged resources (unmanaged objects) and override Finalize() below..
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.FriendKeywordToolTip">
@@ -2073,6 +2110,11 @@ CType(Object As Expression, Object As Type) As Type.
   Looks up a localized string similar to Specifies that a property or procedure can be overridden by an identically named property or procedure in a derived class..
 </summary>
 </member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.OverrideFinalizerTodo">
+<summary>
+  Looks up a localized string similar to TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources..
+</summary>
+</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.OverridesKeywordToolTip">
 <summary>
   Looks up a localized string similar to Specifies that a property or procedure overrides an identically named property or procedure inherited from a base class..
@@ -2173,6 +2215,11 @@ RaiseEvent &lt;eventName&gt; [(&lt;argumentList&gt;)].
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.RemoveUnnecessaryImports">
 <summary>
   Looks up a localized string similar to Remove Unnecessary Imports.
+</summary>
+</member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.RemoveUnnecessaryImportsDiagnosticTitle">
+<summary>
+  Looks up a localized string similar to Imports statement is unnecessary..
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.RemoveUnnecessaryImportsWithAccelerator">
@@ -2349,6 +2396,11 @@ SyncLock &lt;object&gt;...End Synclock.
   Looks up a localized string similar to the selection contains syntactic errors.
 </summary>
 </member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.ThisCodeAddedToCorrectlyImplementDisposable">
+<summary>
+  Looks up a localized string similar to This code added by Visual Basic to correctly implement the disposable pattern..
+</summary>
+</member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.ThrowKeywordToolTip">
 <summary>
   Looks up a localized string similar to Throws an exception within a procedure so that you can handle it with structured or unstructured exception-handling code..
@@ -2399,6 +2451,11 @@ Try...[Catch]...{Catch | Finally}...End Try.
 <summary>
   Looks up a localized string similar to Determines the run-time type of an object reference variable and compares it to a data type. Returns True or False depending, on whether the two types are compatible.
 &lt;result&gt; = TypeOf &lt;objectExpression&gt; Is &lt;typeName&gt;.
+</summary>
+</member>
+<member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.UncommentTheFollowingLineIfFinalizeIsOverridden">
+<summary>
+  Looks up a localized string similar to TODO: uncomment the following line if Finalize() is overridden above..
 </summary>
 </member>
 <member name="P:Microsoft.CodeAnalysis.VisualBasic.VBFeaturesResources.VBFeaturesResources.UnicodeKeywordToolTip">

@@ -13,6 +13,10 @@ using System.Xml;
 using Microsoft.Research.ReviewBot;
 using Microsoft.Research.ReviewBot.Utils;
 using System.Reflection;
+using System.Collections.Immutable;
+using System.Reflection.Metadata;
+using System.Runtime;
+//using Microsoft.DiaSymReader;
 
 namespace Microsoft.Research.ReviewBot.Github
 {
@@ -27,7 +31,7 @@ namespace Microsoft.Research.ReviewBot.Github
     static readonly string msbuildPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MSBuild", "14.0", "Bin", "msbuild.exe");
     static readonly string autoConfResults = "repoInfo.json";
     //static readonly string msbuildPath = "msbuild.exe";
-    static string startDir = Environment.CurrentDirectory;
+    static string startDir = @"C:\Users\carr27\Documents\Github";
     static readonly string[] badSolutions = {
             @"corefx\src\Microsoft.CSharp\Microsoft.CSharp.sln",
             @"corefx\src\Microsoft.Win32.Registry\Microsoft.Win32.Registry.sln",
@@ -58,9 +62,9 @@ namespace Microsoft.Research.ReviewBot.Github
             @"OpenRA\OpenRA.sln",
             @"EntityFramework\EntityFramework.sln",
             @"ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.WindowsPhone.sln",
-            @"roslyn\src\Roslyn.sln",
-            @"roslyn\src\RoslynLight.sln",
-            @"roslyn\src\Toolset.sln",
+            //@"roslyn\src\Roslyn.sln",
+            //@"roslyn\src\RoslynLight.sln",
+            //@"roslyn\src\Toolset.sln",
             @"roslyn\src\InteractiveWindow\InteractiveWindow.sln",
             @"ravendb\Imports\Newtonsoft.Json\Src\Newtonsoft.Json.Silverlight.sln",
             @"monodevelop\main\Main.sln"
@@ -75,12 +79,34 @@ namespace Microsoft.Research.ReviewBot.Github
 
     static void Main(string[] args)
     {
+      /*
+      var msbw = MSBuildWorkspace.Create();
+      var sln = msbw.OpenSolutionAsync(@"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln").Result;
+      var proj = sln.Projects.First(x => x.Name == "CodeAnalysis.Desktop");
+      Console.WriteLine(proj.FilePath);
+      var facadesDir = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\Facades\";
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromAssembly(typeof(object).Assembly));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.dll"));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.Extensions.dll"));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.IO.dll"));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Threading.Tasks.dll"));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Text.Encoding.dll"));
+      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Reflection.dll"));
+      var cu = proj.GetCompilationAsync().Result;
+      foreach (var e in cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error))
+      {
+        Console.WriteLine("{0}: {1}", e.Location, e.GetMessage());
+      }
+      Console.WriteLine("done.");
+      Console.ReadKey();
+      */
+      //var githubResp = GetGitHubList(30);
 
-      var githubResp = GetGitHubList(30);
+      //CloneAll(githubResp);
 
-      CloneAll(githubResp);
+      //CreateSolutionAndProjectLists(githubResp);
 
-      CreateSolutionAndProjectLists(githubResp);
+      WriteRepoInfoFile("roslyn");
 
 
       //trOpeningAllWithRoslyn(githubResp);
@@ -97,6 +123,7 @@ namespace Microsoft.Research.ReviewBot.Github
       Console.ReadKey();
     }
 
+#if false
     static void CreateSolutionAndProjectLists(SearchResponse githubResp)
     {
       /*
@@ -181,6 +208,90 @@ namespace Microsoft.Research.ReviewBot.Github
 
       //var text2 = JsonConvert.SerializeObject(repoInfos, Newtonsoft.Json.Formatting.Indented);
       //File.WriteAllText(autoConfResults, text2);
+    }
+#endif
+
+    static void WriteRepoInfoFile(string repo_name)
+    {
+      var entry = new RepoInfo();
+      entry.RepoName = repo_name;
+      var repoDir = Path.Combine(startDir, repo_name);
+      foreach (var slnPath in Directory.GetFiles(repoDir, "*.sln", SearchOption.AllDirectories))
+      {
+        Console.WriteLine("Opening solution: " + slnPath);
+        var msbw = MSBuildWorkspace.Create();
+        Solution sln;
+        var slnInfo = new SolutionInfo();
+        slnInfo.FilePath = stripBaseDir(slnPath);
+        if (badSolutions.Any(x => slnPath.EndsWith(x)))
+        //if (false)
+        {
+          slnInfo.canRoslynOpen = false;
+          slnInfo.skipped = true;
+          entry.SolutionInfos.Add(slnInfo);
+        }
+        else
+        {
+          try
+          {
+
+            sln = msbw.OpenSolutionAsync(slnPath).Result;
+            slnInfo.canRoslynOpen = true;
+            //slnInfo = new SolutionInfo();
+            foreach (var proj in sln.Projects)
+            {
+              var pInfo = new ProjectInfo();
+              pInfo.FilePath = stripBaseDir(proj.FilePath);
+              try
+              {
+                var facadesDir = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\Facades\";
+
+                var newproj = proj.AddMetadataReference(MetadataReference.CreateFromAssembly(typeof(object).Assembly));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.Extensions.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.IO.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Threading.Tasks.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Text.Encoding.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Reflection.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Linq.dll"));
+                newproj = newproj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Collections.dll"));
+                var cu = newproj.GetCompilationAsync().Result;
+                var errors = cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+                if (errors.Any())
+                {
+                  pInfo.Diagnostics = errors.Select(x => x.GetMessage()).Distinct().ToList();
+                }
+              }
+              catch (Exception e)
+              {
+                  pInfo.Exception = e.ToString();
+              }
+              slnInfo.Projects.Add(pInfo);
+            }
+            entry.SolutionInfos.Add(slnInfo);
+          }
+
+          catch (AggregateException e)
+          {
+            slnInfo.Exceptions.Add(e.Message);
+            foreach (var ie in e.InnerExceptions)
+            {
+              slnInfo.Exceptions.Add(ie.Message);
+            }
+            slnInfo.canRoslynOpen = false;
+            entry.SolutionInfos.Add(slnInfo);
+          }
+          catch (Exception e)
+          {
+            slnInfo.Exceptions.Add(e.Message);
+            slnInfo.canRoslynOpen = false;
+            entry.SolutionInfos.Add(slnInfo);
+          }
+        }
+      }
+      //repoInfos.Add(entry);
+      var text2 = JsonConvert.SerializeObject(entry, Newtonsoft.Json.Formatting.Indented);
+      File.WriteAllText(entry.RepoName + "_reviewbot.json", text2);
     }
 
     /*

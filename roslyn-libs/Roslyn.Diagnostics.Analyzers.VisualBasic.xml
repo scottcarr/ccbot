@@ -24,7 +24,7 @@ Roslyn.Diagnostics.Analyzers.VisualBasic
 <member name="T:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer">
  <summary>Provides a C# analyzer that finds empty array allocations that can be replaced with a call to Array.Empty.</summary>
 </member>
-<member name="F:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer.expressionKinds">
+<member name="F:Microsoft.CodeAnalysis.Performance.BasicEmptyArrayDiagnosticAnalyzer.s_expressionKinds">
  <summary>
  The kinds of array creation syntax kinds to be analyzed.  We care about ArrayCreationExpression (e.g. "New Byte(1) { }" or "New Byte() { 1, 2 }")
  and CollectionInitializer (e.g. "Dim arr as Byte() = { }")

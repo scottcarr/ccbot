@@ -18,13 +18,14 @@ namespace Microsoft.Research.ReviewBot.Github
     public readonly List<ProjectInfo> Projects = new List<ProjectInfo>();
     public bool canRoslynOpen;
     public bool skipped = false;
-    public string error;
+    //public string error;
+    public List<string> Exceptions = new List<String>();
   }
   class ProjectInfo
   {
     public string FilePath;
     public bool canMsBuild;
-    public bool hasErrors;
-    public string error;
+    public List<string> Diagnostics = new List<string>();
+    public string Exception;
   }
 }

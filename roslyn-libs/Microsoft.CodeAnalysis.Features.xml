@@ -492,6 +492,20 @@
             For example, these include diagnostics generated for exceptions from third party analyzers.
             </summary>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzerService.SynchronizeWithBuildAsync(Microsoft.CodeAnalysis.Project,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticData})">
+            <summary>
+            Synchronize build errors with live error.
+            
+            no cancellationToken since this can't be cancelled
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzerService.SynchronizeWithBuildAsync(Microsoft.CodeAnalysis.Document,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticData})">
+            <summary>
+            Synchronize build errors with live error
+            
+            no cancellationToken since this can't be cancelled
+            </summary>
+        </member>
         <member name="T:Microsoft.CodeAnalysis.Diagnostics.EngineV1.DiagnosticIncrementalAnalyzer.ProjectAnalyzerReferenceChangedEventArgs">
             <summary>
             EventArgs for <see cref="E:Microsoft.CodeAnalysis.Diagnostics.EngineV1.DiagnosticIncrementalAnalyzer.StateManager.ProjectAnalyzerReferenceChanged"/>
@@ -626,6 +640,16 @@
             Host diagnostic update source for analyzer host specific diagnostics.
             </summary>
         </member>
+        <member name="F:Microsoft.CodeAnalysis.Diagnostics.HostAnalyzerManager._compilerDiagnosticAnalyzerMap">
+            <summary>
+            map to compiler diagnostic analyzer.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.Diagnostics.HostAnalyzerManager._compilerDiagnosticAnalyzerDescriptorMap">
+            <summary>
+            map to compiler diagnostic analyzer descriptor.
+            </summary>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.HostAnalyzerManager.GetAnalyzerReferenceIdentity(Microsoft.CodeAnalysis.Diagnostics.AnalyzerReference)">
             <summary>
             It returns a string that can be used as a way to de-duplicate <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerReference"/>s.
@@ -666,6 +690,11 @@
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.HostAnalyzerManager.CreateDiagnosticAnalyzers(Microsoft.CodeAnalysis.Project)">
             <summary>
             Create <see cref="T:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer"/>s collection for given <paramref name="project"/>
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.HostAnalyzerManager.IsCompilerDiagnostic(System.String,Microsoft.CodeAnalysis.Diagnostics.DiagnosticData)">
+            <summary>
+            Check whether given <see cref="T:Microsoft.CodeAnalysis.Diagnostics.DiagnosticData"/> belong to compiler diagnostic analyzer
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.BaseDiagnosticIncrementalAnalyzer.AnalyzeDocumentAsync(Microsoft.CodeAnalysis.Document,Microsoft.CodeAnalysis.SyntaxNode,System.Threading.CancellationToken)">
@@ -821,6 +850,30 @@
             <param name="cancellationToken"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.BaseDiagnosticIncrementalAnalyzer.SynchronizeWithBuildAsync(Microsoft.CodeAnalysis.Project,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticData})">
+            <summary>
+            Callback from build listener.
+            
+            Given diagnostics are errors host got from explicit build.
+            It is up to each incremental analyzer how they will merge this information with live diagnostic info.
+            
+            this API doesn't have cancellationToken since it can't be cancelled.
+            
+            given diagnostics are project wide diagnsotics that doesn't contain a source location.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.BaseDiagnosticIncrementalAnalyzer.SynchronizeWithBuildAsync(Microsoft.CodeAnalysis.Document,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticData})">
+            <summary>
+            Callback from build listener.
+            
+            Given diagnostics are errors host got from explicit build.
+            It is up to each incremental analyzer how they will merge this information with live diagnostic info
+            
+            this API doesn't have cancellationToken since it can't be cancelled.
+            
+            given diagnostics are ones that has a source location.
+            </summary>
+        </member>
         <member name="F:Microsoft.CodeAnalysis.Diagnostics.DiagnosticCustomTags.s_microsoftCustomTags">
             <summary>
             it is string[] because DiagnosticDescriptor expects string[]. 
@@ -885,7 +938,7 @@
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService.GetDiagnosticsForIdsAsync(Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.ProjectId,Microsoft.CodeAnalysis.DocumentId,System.Collections.Immutable.ImmutableHashSet{System.String},System.Threading.CancellationToken)">
             <summary>
             get diagnostics of the given diagnostic ids from the given solution. all diagnostics returned should be up-to-date with respect to the given solution.
-            Note that for project case, this metHod returns diagnostics from all project documents as well. Use <see cref="M:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService.GetProjectDiagnosticsForIdsAsync(Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.ProjectId,System.Collections.Immutable.ImmutableHashSet{System.String},System.Threading.CancellationToken)"/>
+            Note that for project case, this method returns diagnostics from all project documents as well. Use <see cref="M:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService.GetProjectDiagnosticsForIdsAsync(Microsoft.CodeAnalysis.Solution,Microsoft.CodeAnalysis.ProjectId,System.Collections.Immutable.ImmutableHashSet{System.String},System.Threading.CancellationToken)"/>
             if you want to fetch only project diagnostics without source locations.
             </summary>
         </member>
@@ -917,6 +970,17 @@
             Otherwise, returns the global set of diagnostics enabled for the workspace.
             </summary>
             <returns>A mapping from analyzer name to the diagnostics produced by that analyzer</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService.GetDiagnosticDescriptors(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer)">
+            <summary>
+            Gets a list of the diagnostics provided by the given <see cref="T:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer"/>.
+            </summary>
+            <returns>A list of the diagnostics produced by the given analyzer</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticAnalyzerService.IsCompilerDiagnostic(System.String,Microsoft.CodeAnalysis.Diagnostics.DiagnosticData)">
+            <summary>
+            Check whether given diagnostic is compiler diagnostic or not
+            </summary>
         </member>
         <member name="E:Microsoft.CodeAnalysis.Diagnostics.IDiagnosticService.DiagnosticsUpdated">
             <summary>
@@ -963,6 +1027,11 @@
             Additionally, if the secondary buffer location is outside visible user code, then the original location is also adjusted to be within visible user code.
             </summary>
         </member>
+        <member name="T:Microsoft.CodeAnalysis.Diagnostics.UpdateArgsId">
+            <summary>
+            Base type of a type that is used as <see cref="P:Microsoft.CodeAnalysis.Diagnostics.DiagnosticsUpdatedArgs.Id"/> for live diagnostic
+            </summary>
+        </member>
         <member name="T:Microsoft.CodeAnalysis.Diagnostics.WorkspaceAnalyzerOptions">
             <summary>
             Analyzer options with workspace.
@@ -984,9 +1053,9 @@
             Contains the core execution logic for callbacks into analyzers.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.Create(Microsoft.CodeAnalysis.Compilation,Microsoft.CodeAnalysis.Diagnostics.AnalyzerOptions,System.Action{Microsoft.CodeAnalysis.Diagnostic},System.Action{System.Exception,Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostic},System.Threading.CancellationToken)">
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.Create(Microsoft.CodeAnalysis.Compilation,Microsoft.CodeAnalysis.Diagnostics.AnalyzerOptions,System.Action{Microsoft.CodeAnalysis.Diagnostic},System.Action{System.Exception,Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostic},System.Func{Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,System.Boolean},Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager,System.Threading.CancellationToken)">
             <summary>
-            Creates AnalyzerActionsExecutor to execute analyzer actions with given arguments
+            Creates <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor"/> to execute analyzer actions with given arguments
             </summary>
             <param name="compilation">Compilation to be used in the analysis.</param>
             <param name="analyzerOptions">Analyzer options.</param>
@@ -995,16 +1064,20 @@
             Optional delegate which is invoked when an analyzer throws an exception.
             Delegate can do custom tasks such as report the given analyzer exception diagnostic, report a non-fatal watson for the exception, etc.
             </param>
+            <param name="isCompilerAnalyzer">Delegate to determine if the given analyzer is compiler analyzer. 
+            We need to special case the compiler analyzer at few places for performance reasons.</param>
+            <param name="analyzerManager">Analyzer manager to fetch supported diagnostics.</param>
             <param name="cancellationToken">Cancellation token.</param>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.CreateForSupportedDiagnostics(System.Action{System.Exception,Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostic},System.Threading.CancellationToken)">
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.CreateForSupportedDiagnostics(System.Action{System.Exception,Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostic},Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager,System.Threading.CancellationToken)">
             <summary>
-            Creates AnalyzerActionsExecutor to fetch <see cref="P:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer.SupportedDiagnostics"/>.
+            Creates <see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor"/> to fetch <see cref="P:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer.SupportedDiagnostics"/>.
             </summary>
             <param name="onAnalyzerException">
             Optional delegate which is invoked when an analyzer throws an exception.
             Delegate can do custom tasks such as report the given analyzer exception diagnostic, report a non-fatal watson for the exception, etc.
             </param>
+            <param name="analyzerManager">Analyzer manager to fetch supported diagnostics.</param>
             <param name="cancellationToken">Cancellation token.</param>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteInitializeMethod(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostics.HostSessionStartAnalysisScope)">
@@ -1026,17 +1099,11 @@
             <param name="actions"><see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerActions"/> whose compilation start actions are to be executed.</param>
             <param name="compilationScope">Compilation scope to store the analyzer actions.</param>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteCompilationEndActions(Microsoft.CodeAnalysis.Diagnostics.AnalyzerActions)">
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteCompilationActions(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.CompilationAnalyzerAction})">
             <summary>
-            Executes the compilation end actions.
+            Executes compilation actions or compilation end actions.
             </summary>
-            <param name="actions"><see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerActions"/> whose compilation end actions are to be executed.</param>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteCompilationEndActions(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.CompilationEndAnalyzerAction})">
-            <summary>
-            Executes the compilation end actions.
-            </summary>
-            <param name="compilationEndActions">Compilation end actions to be executed.</param>
+            <param name="compilationActions">Compilation actions to be executed.</param>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor.ExecuteSymbolActions(Microsoft.CodeAnalysis.Diagnostics.AnalyzerActions,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.ISymbol})">
             <summary>
@@ -1114,7 +1181,7 @@
             It ensures the following for the lifetime of analyzer host:
             1) <see cref="M:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer.Initialize(Microsoft.CodeAnalysis.Diagnostics.AnalysisContext)"/> is invoked only once per-analyzer.
             2) <see cref="P:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer.SupportedDiagnostics"/> is invoked only once per-analyzer.
-            3) <see cref="T:Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalyzerAction"/> registered during Initialize are invoked only once per-analyzer per-compilation.
+            3) <see cref="T:Microsoft.CodeAnalysis.Diagnostics.CompilationStartAnalyzerAction"/> registered during Initialize are invoked only once per-compilation per-<see cref="T:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager.AnalyzerAndOptions"/>
             </summary>
             <remarks>
             TODO: Consider moving <see cref="F:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager._compilationScopeMap"/> and relevant APIs <see cref="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager.GetCompilationAnalysisScopeAsync(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostics.HostSessionStartAnalysisScope,Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor)"/> and
@@ -1149,6 +1216,12 @@
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager.GetSupportedDiagnosticDescriptors(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor)">
             <summary>
             Return <see cref="P:Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer.SupportedDiagnostics"/> of given <paramref name="analyzer"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager.ClearAnalyzerState(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer})">
+            <summary>
+            This method should be invoked when the analyzer host is disposing off the analyzers.
+            It unregisters the exception handler hooked up to the descriptors' LocalizableString fields and subsequently removes the cached descriptors for the analyzers.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.Diagnostics.AnalyzerManager.IsDiagnosticAnalyzerSuppressed(Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,Microsoft.CodeAnalysis.CompilationOptions,System.Func{Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer,System.Boolean},Microsoft.CodeAnalysis.Diagnostics.AnalyzerExecutor)">
@@ -1295,6 +1368,15 @@
             i.e. be no two distinct nodes may represent the same lambda.
             </summary>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.GetLambdaBodyExpressionsAndStatements(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Given a node that represents a lambda body returns all nodes of the body in a syntax list.
+            </summary>
+            <remarks>
+            Note that VB lambda bodies are represented by a lambda header and that some lambda bodies share 
+            their parent nodes with other bodies (e.g. join clause expressions).
+            </remarks>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.TryMatchActiveStatement(Microsoft.CodeAnalysis.SyntaxNode,System.Int32,Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
             <summary>
             Matches old active statement to new active statement without constructing full method body match.
@@ -1328,9 +1410,26 @@
             A rude edit is reported if an active statement is changed and this method returns true.
             </remarks>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.GetCapturedVariables(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Analyzes data flow in the member body represented by the specified node and returns all captured variables and parameters (including "this").
+            If the body is a field/property initializer analyzes the initializer expression only.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.GetVariableUseSites(System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.SyntaxNode},Microsoft.CodeAnalysis.ISymbol,Microsoft.CodeAnalysis.SemanticModel,System.Threading.CancellationToken)">
+            <summary>
+            Enumerates all use sites of a specified variable within the specified syntax subtrees.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.HasParameterClosureScope(Microsoft.CodeAnalysis.ISymbol)">
+            <summary>
+            Returns true if the parameters of the symbol are lifted into a scope that is different from the symbol's body.
+            </summary>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.TryGetLambdaBodies(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
             <summary>
-            Returns all lambda bodies of a node representing a lambda.
+            Returns all lambda bodies of a node representing a lambda, 
+            or false if the node doens't repesent a lambda.
             </summary>
             <remarks>
             C# anonymous function expression and VB lambda expression both have a single body
@@ -1345,13 +1444,13 @@
             Shall return false for enum members.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.ComputeReverseMap(Microsoft.CodeAnalysis.Differencing.Match{Microsoft.CodeAnalysis.SyntaxNode},Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.ActiveNode[],System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.LambdaInfo}@,System.Collections.Generic.List{Microsoft.CodeAnalysis.EditAndContinue.RudeEditDiagnostic},System.Boolean@)">
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.ComputeMap(Microsoft.CodeAnalysis.Differencing.Match{Microsoft.CodeAnalysis.SyntaxNode},Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.ActiveNode[],System.Collections.Generic.Dictionary{Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.LambdaInfo}@,System.Collections.Generic.List{Microsoft.CodeAnalysis.EditAndContinue.RudeEditDiagnostic})">
             <summary>
             Calculates a syntax map of the entire method body including all lambda bodies it contains (recursively).
             Internal for testing.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.TryGetMatchingAncestor(Microsoft.CodeAnalysis.Differencing.Match{Microsoft.CodeAnalysis.SyntaxNode},Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
+        <member name="M:Microsoft.CodeAnalysis.EditAndContinue.AbstractEditAndContinueAnalyzer.TryGetMatchingAncestor(System.Collections.Generic.IReadOnlyDictionary{Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode},Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@)">
             <summary>
             Finds the inner-most ancestor of the specified node that has a matching node in the new tree.
             </summary>
@@ -1527,6 +1626,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AccessingCapturedVariableInLambda">
+            <summary>
+              Looks up a localized string similar to Accessing captured variable &apos;{0}&apos; that hasn&apos;t been accessed before in {1} will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ActionsCanNotBeEmpty">
             <summary>
               Looks up a localized string similar to Actions can not be empty..
@@ -1560,26 +1664,6 @@
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAnImportedMethod">
             <summary>
               Looks up a localized string similar to Adding an imported method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAStatementWhichContainsALambda">
-            <summary>
-              Looks up a localized string similar to Adding a statement which contains a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAStatementWhichContainsAnAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Adding a statement which contains an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAStatementWhichContainsAnAnonymousType">
-            <summary>
-              Looks up a localized string similar to Adding a statement which contains an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAStatementWhichContainsAQuery">
-            <summary>
-              Looks up a localized string similar to Adding a statement which contains a query expression will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AddingAWillPreventTheDebugSession">
@@ -1642,16 +1726,6 @@
               Looks up a localized string similar to An active statement has been removed from its original method. You must revert your changes to continue or restart the debugging session..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AnActiveStatementMarkerHasBeenDeleted">
-            <summary>
-              Looks up a localized string similar to An active statement marker has been deleted. You must revert your changes to continue or restart the debugging session..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AnActiveStatementMarkerHasBeenDeletedAnd">
-            <summary>
-              Looks up a localized string similar to An active statement marker has been deleted and cannot be remapped in the current source file. You must revert your changes to continue or restart the debugging session..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.AnonymousTypes">
             <summary>
               Looks up a localized string similar to Anonymous Types:.
@@ -1702,6 +1776,11 @@
               Looks up a localized string similar to can&apos;t not construct final tree.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.CapturingVariable">
+            <summary>
+              Looks up a localized string similar to Capturing variable &apos;{0}&apos; that hasn&apos;t been captured before will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.CategoryCompiler">
             <summary>
               Looks up a localized string similar to Compiler.
@@ -1727,6 +1806,31 @@
               Looks up a localized string similar to Change &apos;{0}&apos; to &apos;{1}.{2}&apos;..
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingCapturedVariableScope">
+            <summary>
+              Looks up a localized string similar to Changing the declaration scope of a captured variable &apos;{0}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingCapturedVariableType">
+            <summary>
+              Looks up a localized string similar to Changing the type of a captured variable &apos;{0}&apos; previously of type &apos;{1}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingLambdaParameters">
+            <summary>
+              Looks up a localized string similar to Changing the parameters of &apos;{0}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingLambdaReturnType">
+            <summary>
+              Looks up a localized string similar to Changing the return type of &apos;{0}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingQueryLambdaType">
+            <summary>
+              Looks up a localized string similar to Changing the type of &apos;{0}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ChangingTheConstraintFromTo">
             <summary>
               Looks up a localized string similar to Changing the constraint from &apos;{0}&apos; to &apos;{1}&apos; will prevent the debug session from continuing..
@@ -1740,26 +1844,6 @@
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.Constant">
             <summary>
               Looks up a localized string similar to constant.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ConstructorCannotBeModifiedAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Constructor cannot be modified while debugging because field &apos;{0}&apos; has an initializer using an anonymous method..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ConstructorCannotBeModifiedAnonymousType">
-            <summary>
-              Looks up a localized string similar to Constructor cannot be modified while debugging because field &apos;{0}&apos; has an initializer with an anonymous type..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ConstructorCannotBeModifiedLambda">
-            <summary>
-              Looks up a localized string similar to Constructor cannot be modified while debugging because field &apos;{0}&apos; has an initializer using a lambda expression..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ConstructorCannotBeModifiedQuery">
-            <summary>
-              Looks up a localized string similar to Constructor cannot be modified while debugging because field &apos;{0}&apos; has an initializer using a query expression..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ContainsAnonymousType">
@@ -1777,6 +1861,11 @@
               Looks up a localized string similar to Could not extract interface: The type does not contain any member that can be extracted to an interface..
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeleteLambdaWithMultiScopeCapture">
+            <summary>
+              Looks up a localized string similar to Removing &apos;{0}&apos; that accessed captured variables &apos;{1}&apos; and &apos;{2}&apos; declared in different scopes will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAAroundAnActiveStatement">
             <summary>
               Looks up a localized string similar to Deleting &apos;{0}&apos; around an active statement will prevent the debug session from continuing..
@@ -1787,64 +1876,24 @@
               Looks up a localized string similar to Deleting a method body will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAStatementWhichContainsAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Deleting a statement which contains an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAStatementWhichContainsAnonymousType">
-            <summary>
-              Looks up a localized string similar to Deleting a statement which contains an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAStatementWhichContainsLambda">
-            <summary>
-              Looks up a localized string similar to Deleting a statement which contains a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAStatementWhichContainsQuery">
-            <summary>
-              Looks up a localized string similar to Deleting a statement which contains a query expression will prevent the debug session from continuing..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingAWillPrevent">
             <summary>
               Looks up a localized string similar to Deleting &apos;{0}&apos; will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DiagnosticDescriptorThrows">
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DeletingCapturedVariable">
             <summary>
-              Looks up a localized string similar to The DiagnosticDescriptor with ID &apos;{0}&apos; threw an exception with message &apos;{1}&apos;..
+              Looks up a localized string similar to Deleting captured variable &apos;{0}&apos; will prevent the debug session from continuing..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.DisposeManagedStateTodo">
+            <summary>
+              Looks up a localized string similar to TODO: dispose managed state (managed objects)..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditAndContinue">
             <summary>
               Looks up a localized string similar to Edit and Continue.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditingOrCommentingOut">
-            <summary>
-              Looks up a localized string similar to Editing or commenting out an active statement inside a readonly section will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditingOrDeletingBeingExecuted">
-            <summary>
-              Looks up a localized string similar to Editing or deleting an active statement which is being executed will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditingOrDeletingConstructorDeclaration">
-            <summary>
-              Looks up a localized string similar to Editing or deleting an active statement on a constructor declaration will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditingOrDeletingFieldInitializer">
-            <summary>
-              Looks up a localized string similar to Editing or deleting an active statement in a field initializer will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EditingOrDeletingNotAtTheTop">
-            <summary>
-              Looks up a localized string similar to Editing or deleting an active statement which is not at the top of the callstack will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EncapsulateField">
@@ -1865,11 +1914,6 @@
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.EncapsulateFieldUsages">
             <summary>
               Looks up a localized string similar to Encapsulate field: &apos;{0}&apos; (usages reference field).
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ErrorLocatingAnActiveStatement">
-            <summary>
-              Looks up a localized string similar to Error locating an active statement in source file. You must restart the debugging session..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ErrorOrUnknownType">
@@ -2107,6 +2151,11 @@
               Looks up a localized string similar to in.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.InsertLambdaWithMultiScopeCapture">
+            <summary>
+              Looks up a localized string similar to Adding &apos;{0}&apos; that accesses captured variables &apos;{1}&apos; and &apos;{2}&apos; declared in different scopes will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.InteractiveHostNotInitialized">
             <summary>
               Looks up a localized string similar to Interactive Host not initialized..
@@ -2207,11 +2256,6 @@
               Looks up a localized string similar to Modifying a catch handler around an active statement will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAContainingAnActiveStatement">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; containing an active statement in compiler generated code will prevent the debug session from continuing..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAFileWithExperimentalFeaturesEnabled">
             <summary>
               Looks up a localized string similar to Modifying source with experimental language features enabled will prevent the debug session from continuing..
@@ -2222,54 +2266,9 @@
               Looks up a localized string similar to Modifying a generic method will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAInitializerWithAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; initializer with an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAInitializerWithAnonymousType">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; initializer with an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAInitializerWithLambda">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; initializer with a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAInitializerWithQuery">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; initializer with a query expression will prevent the debug session from continuing..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAMethodInsideTheContext">
             <summary>
               Looks up a localized string similar to Modifying a method inside the context of a generic type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAnAsynchronous">
-            <summary>
-              Looks up a localized string similar to Modifying an asynchronous &apos;{0}&apos; will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAStatementWhichContainsAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Modifying a statement which contains an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAStatementWhichContainsAnonymousType">
-            <summary>
-              Looks up a localized string similar to Modifying a statement which contains an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAStatementWhichContainsLambda">
-            <summary>
-              Looks up a localized string similar to Modifying a statement which contains a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAStatementWhichContainsQuery">
-            <summary>
-              Looks up a localized string similar to Modifying a statement which contains a query expression will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingATryCatchFinally">
@@ -2282,19 +2281,9 @@
               Looks up a localized string similar to Modifying &apos;{0}&apos; which contains an anonymous method will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsAnonymousType">
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsComplexQuery">
             <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsDynamic">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains a dynamic invocation will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsEmbeddedInterop">
-            <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains a usage of an embedded interop type/member will prevent the debug session from continuing.\r\nTo enable Edit and Continue, try setting \&quot;Embed Interop Types\&quot; property to \&quot;False\&quot; for COM references when debugging..
+              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains an Aggregate, Group By, or Join query clauses will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsLambda">
@@ -2317,24 +2306,9 @@
               Looks up a localized string similar to Modifying &apos;{0}&apos; which contains the &apos;stackalloc&apos; operator will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsYield">
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingAWhichContainsStaticLocal">
             <summary>
-              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains &apos;yield return&apos; or &apos;yield break&apos; statement will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingLocalReferencedInAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Modifying local &apos;{0}&apos; which is referenced in an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingLocalReferencedInLambda">
-            <summary>
-              Looks up a localized string similar to Modifying local &apos;{0}&apos; which is referenced in a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingLocalReferencedInQuery">
-            <summary>
-              Looks up a localized string similar to Modifying local &apos;{0}&apos; which is referenced in a query expression will prevent the debug session from continuing..
+              Looks up a localized string similar to Modifying &apos;{0}&apos; which contains a static variable will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingTheInitializerInGenericType">
@@ -2357,31 +2331,6 @@
               Looks up a localized string similar to Modifying whitespace or comments in &apos;{0}&apos; inside the context of a generic type will prevent the debug session from continuing..
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ModifyingTriviaOfAnAsynchronous">
-            <summary>
-              Looks up a localized string similar to Modifying whitespace or comments in an asynchronous &apos;{0}&apos; will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.MovingAStatementWhichContainsAnonymousMethod">
-            <summary>
-              Looks up a localized string similar to Moving a statement which contains an anonymous method will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.MovingAStatementWhichContainsAnonymousType">
-            <summary>
-              Looks up a localized string similar to Moving a statement which contains an anonymous type will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.MovingAStatementWhichContainsLambda">
-            <summary>
-              Looks up a localized string similar to Moving a statement which contains a lambda expression will prevent the debug session from continuing..
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.MovingAStatementWhichContainsQuery">
-            <summary>
-              Looks up a localized string similar to Moving a statement which contains a query expression will prevent the debug session from continuing..
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.MovingAWillPreventTheDebug">
             <summary>
               Looks up a localized string similar to Moving &apos;{0}&apos; will prevent the debug session from continuing..
@@ -2392,9 +2341,19 @@
               Looks up a localized string similar to The selection contains no active statement..
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.NotAccessingCapturedVariableInLambda">
+            <summary>
+              Looks up a localized string similar to Ceasing to access captured variable &apos;{0}&apos; in {1} will prevent the debug session from continuing..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.NotAvailable">
             <summary>
               Looks up a localized string similar to Not Available.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.NotCapturingVariable">
+            <summary>
+              Looks up a localized string similar to Ceasing to capture variable &apos;{0}&apos; will prevent the debug session from continuing..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.NoteTabTwiceToInsertTheSnippet">
@@ -2487,6 +2446,11 @@
               Looks up a localized string similar to Searched in directory:.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.SetLargeFieldsToNullTodo">
+            <summary>
+              Looks up a localized string similar to TODO: set large fields to null..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.SimplifyMemberAccess">
             <summary>
               Looks up a localized string similar to Simplify Member Access.
@@ -2569,6 +2533,11 @@
             Do you want to continue?.
              </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.ToDetectRedundantCalls">
+            <summary>
+              Looks up a localized string similar to To detect redundant calls.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.TypeHelpForMoreInformation">
             <summary>
               Looks up a localized string similar to Type &quot;#help&quot; for more information..
@@ -2602,6 +2571,11 @@
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.UnknownSymbolKind">
             <summary>
               Looks up a localized string similar to Unknown symbol kind.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.FeaturesResources.UnsupportedDiagnosticReported">
+            <summary>
+              Looks up a localized string similar to Reported diagnostic with ID &apos;{0}&apos; is not supported by the analyzer..
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.FeaturesResources.UpdatingAnActiveStatement">
@@ -3242,7 +3216,7 @@
             Get <see cref="T:Microsoft.CodeAnalysis.SolutionCrawler.ISolutionCrawlerProgressReporter"/> for the given <see cref="T:Microsoft.CodeAnalysis.Workspace"/>
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.SolutionCrawler.IWorkCoordinatorPriorityService.IsLowPriority(Microsoft.CodeAnalysis.Document)">
+        <member name="M:Microsoft.CodeAnalysis.SolutionCrawler.IWorkCoordinatorPriorityService.IsLowPriorityAsync(Microsoft.CodeAnalysis.Document,System.Threading.CancellationToken)">
             <summary>
             True if this document is less important than other documents in the project it is 
             contained in, and should have work scheduled for it happen after all other documents

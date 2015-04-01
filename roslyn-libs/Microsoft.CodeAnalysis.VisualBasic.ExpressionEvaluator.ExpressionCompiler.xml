@@ -20,7 +20,7 @@ Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.ExpressionCompiler
  to be suppressed.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.CompilationContext.#ctor(Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation,Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableHashSet{System.String},Microsoft.CodeAnalysis.ExpressionEvaluator.MethodDebugInfo,Microsoft.CodeAnalysis.VisualBasic.Syntax.ExecutableStatementSyntax)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.CompilationContext.#ctor(Microsoft.CodeAnalysis.VisualBasic.VisualBasicCompilation,Microsoft.CodeAnalysis.VisualBasic.Symbols.Metadata.PE.MetadataDecoder,Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.LocalSymbol},Microsoft.CodeAnalysis.ExpressionEvaluator.InScopeHoistedLocals,Microsoft.CodeAnalysis.ExpressionEvaluator.MethodDebugInfo,Microsoft.CodeAnalysis.VisualBasic.Syntax.ExecutableStatementSyntax)">
  <summary>
  Create a context to compile expressions within a method scope.
  </summary>
@@ -37,7 +37,7 @@ Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.ExpressionCompiler
  Since the inputs are so simple, we'll just do the scanning ourselves.
  </summary>
 </member>
-<member name="M:Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.CompilationContext.GetDisplayClassVariables(Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.LocalSymbol},System.Collections.Immutable.ImmutableHashSet{System.String},System.Collections.Immutable.ImmutableArray{System.String}@,System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.DisplayClassVariable}@,System.Collections.Immutable.ImmutableHashSet{System.String}@)">
+<member name="M:Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.CompilationContext.GetDisplayClassVariables(Microsoft.CodeAnalysis.VisualBasic.Symbols.MethodSymbol,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.VisualBasic.Symbols.LocalSymbol},Microsoft.CodeAnalysis.ExpressionEvaluator.InScopeHoistedLocals,System.Collections.Immutable.ImmutableArray{System.String}@,System.Collections.Immutable.ImmutableDictionary{System.String,Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.DisplayClassVariable}@,System.Collections.Immutable.ImmutableHashSet{System.String}@)">
  <summary>
  Return a mapping of captured variables (parameters, locals, and "Me") to locals.
  The mapping is needed to expose the original local identifiers (those from source)
@@ -112,7 +112,7 @@ Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator.ExpressionCompiler
  </summary>
  <param name="previous">Previous context, if any, for possible re-use.</param>
  <param name="metadataBlocks">Module metadata.</param>
- <param name="symReader"><see cref="T:Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader"/> for PDB associated with <paramref name="moduleVersionId"/>.</param>
+ <param name="symReader"><see cref="T:Microsoft.DiaSymReader.ISymUnmanagedReader"/> for PDB associated with <paramref name="moduleVersionId"/>.</param>
  <param name="moduleVersionId">Module containing method.</param>
  <param name="methodToken">Method metadata token.</param>
  <param name="methodVersion">Method version.</param>

@@ -4,13 +4,12 @@
         <name>Microsoft.CodeAnalysis.ExpressionEvaluator.ExpressionCompiler</name>
     </assembly>
     <members>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.SymUnmanagedReaderExtensions.GetCustomDebugInfoBytes(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader,System.Int32,System.Int32)">
+        <member name="M:Microsoft.DiaSymReader.SymUnmanagedReaderExtensions.GetCustomDebugInfoBytes(Microsoft.DiaSymReader.ISymUnmanagedReader,System.Int32,System.Int32)">
             <summary>
             Get the blob of binary custom debug info for a given method.
-            TODO: consume <paramref name="methodVersion"/> (DevDiv #1068138).
             </summary>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.SymUnmanagedReaderExtensions.GetImportStrings(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedMethod)">
+        <member name="M:Microsoft.DiaSymReader.SymUnmanagedReaderExtensions.GetImportStrings(Microsoft.DiaSymReader.ISymUnmanagedMethod)">
             <summary>
             Get the (unprocessed) import strings for a given method.
             </summary>
@@ -23,7 +22,7 @@
             just based on the way they were extracting locals and constants based on a specific scope.
             </remarks>
         </member>
-        <member name="T:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader">
+        <member name="T:Microsoft.CodeAnalysis.CustomDebugInfoReader">
             <summary>
             A collection of utility method for consuming custom debug info from a PDB.
             </summary>
@@ -31,27 +30,27 @@
             This is not a public API, so we're just going to let bad offsets fail on their own.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.ReadGlobalHeader(System.Byte[],System.Int32@,System.Byte@,System.Byte@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.ReadGlobalHeader(System.Byte[],System.Int32@,System.Byte@,System.Byte@)">
             <summary>
             This is the first header in the custom debug info blob.
             </summary>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.ReadRecordHeader(System.Byte[],System.Int32@,System.Byte@,Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoKind@,System.Int32@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.ReadRecordHeader(System.Byte[],System.Int32@,System.Byte@,Microsoft.CodeAnalysis.CustomDebugInfoKind@,System.Int32@)">
             <summary>
-            After the global header (see <see cref="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.ReadGlobalHeader(System.Byte[],System.Int32@,System.Byte@,System.Byte@)"/> comes list of custom debug info record.
+            After the global header (see <see cref="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.ReadGlobalHeader(System.Byte[],System.Int32@,System.Byte@,System.Byte@)"/> comes list of custom debug info record.
             Each record begins with a standard header.
             </summary>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.TryGetCustomDebugInfoRecord(System.Byte[],Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoKind)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.TryGetCustomDebugInfoRecord(System.Byte[],Microsoft.CodeAnalysis.CustomDebugInfoKind)">
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.GetCustomDebugInfoRecords(System.Byte[])">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.GetCustomDebugInfoRecords(System.Byte[])">
             <remarks>
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeUsingRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeUsingRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             For each namespace declaration enclosing a method (innermost-to-outermost), there is a count
             of the number of imports in that declaration.
@@ -61,17 +60,17 @@
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeForwardRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeForwardRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             This indicates that further information can be obtained by looking at the custom debug
             info of another method (specified by token).
             </summary>
             <remarks>
-            Appears when multiple method would otherwise have identical using records (see <see cref="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeUsingRecord(System.Collections.Immutable.ImmutableArray{System.Byte})"/>).
+            Appears when multiple method would otherwise have identical using records (see <see cref="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeUsingRecord(System.Collections.Immutable.ImmutableArray{System.Byte})"/>).
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeForwardToModuleRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeForwardToModuleRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             This indicates that further information can be obtained by looking at the custom debug
             info of another method (specified by token).
@@ -81,7 +80,7 @@
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeStateMachineHoistedLocalScopesRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeStateMachineHoistedLocalScopesRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             Scopes of state machine hoisted local variables.
             </summary>
@@ -89,7 +88,7 @@
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeForwardIteratorRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeForwardIteratorRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             Indicates that this method is the iterator state machine for the method named in the record.
             </summary>
@@ -98,7 +97,7 @@
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.DecodeDynamicLocalsRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.DecodeDynamicLocalsRecord(System.Collections.Immutable.ImmutableArray{System.Byte})">
             <summary>
             Does for locals what <see cref="T:System.Runtime.CompilerServices.DynamicAttribute"/> does for parameters, return types, and fields.
             In particular, indicates which occurrences of <see cref="T:System.Object"/> in the signature are really dynamic.
@@ -109,17 +108,17 @@
             </remarks>
             <exception cref="T:System.InvalidOperationException">Bad data.</exception>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.ReadRawRecordBody(System.Byte[],System.Int32@,System.Int32,System.Collections.Immutable.ImmutableArray{System.Byte}@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.ReadRawRecordBody(System.Byte[],System.Int32@,System.Int32,System.Collections.Immutable.ImmutableArray{System.Byte}@)">
             <summary>
             Returns the raw bytes of a record.
             </summary>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.SkipRecord(System.Byte[],System.Int32@,System.Int32)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.SkipRecord(System.Byte[],System.Int32@,System.Int32)">
             <summary>
             Skips past a record.
             </summary>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.GetCSharpGroupedImportStrings(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader,System.Int32,System.Int32,System.Collections.Immutable.ImmutableArray{System.String}@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.GetCSharpGroupedImportStrings(Microsoft.DiaSymReader.ISymUnmanagedReader,System.Int32,System.Int32,System.Collections.Immutable.ImmutableArray{System.String}@)">
             <summary>
             Get the import strings for a given method, following forward pointers as necessary.
             </summary>
@@ -128,7 +127,7 @@
             There should always be at least one entry, for the global namespace.
             </returns>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.GetVisualBasicImportStrings(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader,System.Int32,System.Int32)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.GetVisualBasicImportStrings(Microsoft.DiaSymReader.ISymUnmanagedReader,System.Int32,System.Int32)">
             <summary>
             Get the import strings for a given method, following forward pointers as necessary.
             </summary>
@@ -136,10 +135,10 @@
             A list of import strings.  There should always be at least one entry, for the global namespace.
             </returns>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.GetCSharpDynamicLocalInfo(System.Byte[],System.Int32,System.Int32,System.String,System.Collections.Immutable.ImmutableDictionary{System.Int32,System.Collections.Immutable.ImmutableArray{System.Boolean}}@,System.Collections.Immutable.ImmutableDictionary{System.String,System.Collections.Immutable.ImmutableArray{System.Boolean}}@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.GetCSharpDynamicLocalInfo(System.Byte[],System.Int32,System.Int32,System.String,System.Collections.Immutable.ImmutableDictionary{System.Int32,System.Collections.Immutable.ImmutableArray{System.Boolean}}@,System.Collections.Immutable.ImmutableDictionary{System.String,System.Collections.Immutable.ImmutableArray{System.Boolean}}@)">
             <exception cref="T:System.InvalidOperationException">Bad data.</exception>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.TryParseCSharpImportString(System.String,System.String@,System.String@,System.String@,Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.TryParseCSharpImportString(System.String,System.String@,System.String@,System.String@,Microsoft.CodeAnalysis.ImportTargetKind@)">
             <summary>
             Parse a string representing a C# using (or extern alias) directive.
             </summary>
@@ -157,95 +156,68 @@
             ]]>
             </remarks>
         </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoReader.TryParseVisualBasicImportString(System.String,System.String@,System.String@,Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind@,Microsoft.VisualStudio.SymReaderInterop.ImportScope@)">
+        <member name="M:Microsoft.CodeAnalysis.CustomDebugInfoReader.TryParseVisualBasicImportString(System.String,System.String@,System.String@,Microsoft.CodeAnalysis.ImportTargetKind@,Microsoft.CodeAnalysis.ImportScope@)">
             <summary>
             Parse a string representing a VB import statement.
             </summary>
             <exception cref="T:System.ArgumentNullException"><paramref name="import"/> is null.</exception>
             <exception cref="T:System.ArgumentException">Format of <paramref name="import"/> is not valid.</exception>
         </member>
-        <member name="T:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoRecord">
+        <member name="T:Microsoft.CodeAnalysis.CustomDebugInfoRecord">
             <remarks>
             Exposed for <see cref="T:Roslyn.Test.PdbUtilities.PdbToXmlConverter"/>.
             </remarks>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.Namespace">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.Namespace">
             <summary>
             C# or VB namespace import.
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.Type">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.Type">
             <summary>
             C# or VB type import.
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.NamespaceOrType">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.NamespaceOrType">
             <summary>
             VB namespace or type alias target (not specified).
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.Assembly">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.Assembly">
             <summary>
             C# extern alias.
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.XmlNamespace">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.XmlNamespace">
             <summary>
             VB XML import.
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.MethodToken">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.MethodToken">
             <summary>
             VB forwarding information (i.e. another method has the imports for this one).
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.CurrentNamespace">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.CurrentNamespace">
             <summary>
             VB containing namespace (not an import).
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.DefaultNamespace">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.DefaultNamespace">
             <summary>
             VB root namespace (not an import).
             </summary>
         </member>
-        <member name="F:Microsoft.VisualStudio.SymReaderInterop.ImportTargetKind.Defunct">
+        <member name="F:Microsoft.CodeAnalysis.ImportTargetKind.Defunct">
             <summary>
             A kind that is no longer used.
             </summary>
         </member>
-        <member name="T:Microsoft.VisualStudio.SymReaderInterop.CustomDebugInfoKind">
+        <member name="T:Microsoft.CodeAnalysis.CustomDebugInfoKind">
             <summary>
             The kinds of custom debug info that we know how to interpret.
             The values correspond to possible values of the "kind" byte
             in the record header.
-            </summary>
-        </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.ISymENCUnmanagedMethod.__GetFileNameFromOffset(System.Int32,System.Int32,System.Int32@,System.Text.StringBuilder)">
-            <summary>
-            Get the file name for the line associated with offset dwOffset.
-            </summary>
-        </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.ISymENCUnmanagedMethod.__GetLineFromOffset(System.Int32,System.Int32@,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
-            <summary>
-            Get the Line information associated with dwOffset.
-            If dwOffset is not a sequence point it is associated with the previous one.
-            pdwStartOffset provides the associated sequence point.
-            </summary>
-        </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.ISymENCUnmanagedMethod.GetDocumentsForMethodCount(System.Int32@)">
-            <summary>
-            Get the number of Documents that this method has lines in.
-            </summary>
-        </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.ISymENCUnmanagedMethod.GetDocumentsForMethod(System.Int32,System.Int32@,Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedDocument[])">
-            <summary>
-            Get the documents this method has lines in.
-            </summary>
-        </member>
-        <member name="M:Microsoft.VisualStudio.SymReaderInterop.ISymENCUnmanagedMethod.GetSourceExtentInDocument(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedDocument,System.Int32@,System.Int32@)">
-            <summary>
-            Get the smallest start line and largest end line, for the method, in a specific document.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.FrameDecoder`5">
@@ -272,6 +244,11 @@
             <remarks>
             <paramref name="assemblyIdentityComparer"/> is only here to make the call
             pattern uniform - it's actually only used by one subtype.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.PdbHelpers.GetAllScopes(Microsoft.DiaSymReader.ISymUnmanagedMethod,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.DiaSymReader.ISymUnmanagedScope})">
+            <remarks>
+            Test helper.
             </remarks>
         </member>
         <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.ResultProperties.#ctor(Microsoft.VisualStudio.Debugger.Evaluation.ClrCompilation.DkmClrCompilationResultFlags)">
@@ -323,17 +300,34 @@
             Size of memory block.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.MakeAssemblyReferences(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataBlock})">
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.MakeAssemblyReferences(System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataBlock},System.Guid,Microsoft.CodeAnalysis.AssemblyIdentityComparer)">
             <summary>
             Group module metadata into assemblies.
+            If <paramref name="moduleVersionId"/> is set, the
+            assemblies are limited to those referenced by that module.
             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.RemoveUnreferencedModules(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.MetadataReference},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.AssemblyIdentity},Microsoft.CodeAnalysis.AssemblyIdentityComparer,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.AssemblyIdentity})">
+            <summary>
+            Remove any modules that are not in the set of referenced modules.
+            If there are duplicates of referenced modules, potentially differing by
+            version, one instance of the highest version is kept and others dropped.
+            </summary>
+            <remarks>
+            Binding against this reduced set of modules will not handle certain valid cases
+            where binding to full set would succeed (e.g.: binding to types outside the
+            referenced modules). And since duplicates are dropped, this will prevent resolving
+            ambiguities between two versions of the same assembly by using aliases. Also,
+            there is no attempt here to follow binding redirects or to use the CLR to determine
+            which version of an assembly to prefer when there are duplicate assemblies.
+            </remarks>
         </member>
         <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.GetLocalInfo``5(Microsoft.CodeAnalysis.MetadataDecoder{``0,``1,``2,``3,``4},System.Int32)">
             <summary>
             Returns the local info for all locals indexed by slot.
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.GetScopes(Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedReader,System.Int32,System.Int32,System.Int32,System.Boolean,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.VisualStudio.SymReaderInterop.ISymUnmanagedScope})">
+        <member name="M:Microsoft.CodeAnalysis.ExpressionEvaluator.MetadataUtilities.GetScopes(Microsoft.DiaSymReader.ISymUnmanagedReader,System.Int32,System.Int32,System.Int32,System.Boolean,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.DiaSymReader.ISymUnmanagedScope},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.DiaSymReader.ISymUnmanagedScope})">
             <summary>
             Get the set of nested scopes containing the
             IL offset from outermost scope to innermost.
@@ -343,27 +337,6 @@
             <summary>
             Shared <see cref="T:Microsoft.CodeAnalysis.SymbolVisitor"/> that looks for instances of <see cref="T:Microsoft.CodeAnalysis.ITypeParameterSymbol"/>
             that are not in a provided allow list.
-            </summary>
-        </member>
-        <member name="T:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.ExpressionEvaluator.Resources.WindowsProxy_winmd">
-            <summary>
-              Looks up a localized resource of type System.Byte[].
             </summary>
         </member>
     </members>

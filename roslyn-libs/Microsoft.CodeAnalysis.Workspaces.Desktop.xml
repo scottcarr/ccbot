@@ -72,7 +72,7 @@
             from <see cref="M:Microsoft.CodeAnalysis.Text.SourceText.From(System.IO.Stream,System.Text.Encoding,Microsoft.CodeAnalysis.Text.SourceHashAlgorithm,System.Boolean)"/> in two ways:
             1. It attempts to minimize allocations by trying to read the stream into a byte array.
             2. If <paramref name="defaultEncoding"/> is null, it will first try UTF8 and, if that fails, it will
-               try <see cref="P:System.Text.Encoding.Default"/>.
+               try extended ASCII (code page 1252).
             </summary>
             <param name="stream">The stream containing encoded text.</param>
             <param name="defaultEncoding">
@@ -246,6 +246,13 @@
             <summary>
             CultureInfo used when resolving assembly references.
             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.AssemblyIdentityExtensions.ToAssemblyName(Microsoft.CodeAnalysis.AssemblyIdentity)">
+            <summary>
+            Converts this identity to <see cref="T:System.Reflection.AssemblyName"/>.
+            </summary>
+            <returns>A new instance of <see cref="T:System.Reflection.AssemblyName"/>.</returns>
+            <exception cref="T:System.Globalization.CultureNotFoundException">The culture specified in <see cref="P:Microsoft.CodeAnalysis.AssemblyIdentity.CultureName"/> is not available on the current platform.</exception>
         </member>
         <member name="T:Microsoft.CodeAnalysis.Internal.Log.EtwLogger">
             <summary>

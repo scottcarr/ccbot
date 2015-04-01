@@ -4,9 +4,48 @@
         <name>Microsoft.CodeAnalysis.CSharp.Features</name>
     </assembly>
     <members>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified node represents a lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.GetLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Given a node that represents a lambda body returns a node that represents the lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
             <summary>
             See SyntaxNode.GetCorrespondingLambdaBody.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambdaBody(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified <paramref name="node"/> represents a body of a lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambdaBodyStatementOrExpression(Microsoft.CodeAnalysis.SyntaxNode)">
+            <remarks>
+            In C# lambda bodies are expressions or block statements. In both cases it's a single node.
+            In VB a lambda body might be a sequence of nodes (statements). 
+            We define this function to minimize differences between C# and VB implementation.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.TryGetLambdaBodies(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+            <summary>
+            If the specified node represents a lambda returns a node (or nodes) that represent its body (bodies).
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsQueryPairLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            "Pair lambda" is a synthesized lambda that creates an instance of an anonymous type representing a pair of values. 
+            TODO: Avoid generating these lambdas. Instead generate a method on the anonymous type, or use KeyValuePair instead.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsClosureScope(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified node can represent a closure scope -- that is a scope of a captured variable.
+            Doesn't validate whether or not the node actually declares any captured variable.
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.CodeRefactorings.InlineTemporary.InlineTemporaryCodeRefactoringProvider.InitializerRewriter">
@@ -182,6 +221,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.AnonymousMethod">
+            <summary>
+              Looks up a localized string similar to anonymous method.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.AutoselectDisabledDueToPossibleExplicitlyNamesAnonTypeMemCreation">
             <summary>
               Looks up a localized string similar to Autoselect disabled due to possible explicitly named anonymous type member creation..
@@ -217,6 +261,11 @@
               Looks up a localized string similar to awaitable, extension.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.AwaitExpression">
+            <summary>
+              Looks up a localized string similar to await expression.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.CantDetermineValidRangeOfStatements">
             <summary>
               Looks up a localized string similar to can&apos;t determine valid range of statements to extract out.
@@ -227,6 +276,11 @@
               Looks up a localized string similar to Cast is redundant.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.CatchClause">
+            <summary>
+              Looks up a localized string similar to catch clause.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ChangeReturnType">
             <summary>
               Looks up a localized string similar to Change return type from {0} to {1}.
@@ -235,6 +289,11 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ChangeToYieldReturn">
             <summary>
               Looks up a localized string similar to Replace return with yield return.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.CheckedStatement">
+            <summary>
+              Looks up a localized string similar to checked statement.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ConflictsDetected">
@@ -252,26 +311,10 @@
               Looks up a localized string similar to deprecated.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.DisposePattern">
-             <summary>
-               Looks up a localized string similar to     #region IDisposable Support
-                private bool disposedValue = false; // To detect redundant calls
-            
-                {0}void Dispose(bool disposing)
-                {{
-                    if (!disposedValue)
-                    {{
-                        if (disposing)
-                        {{
-                            // TODO: dispose managed state (managed objects).
-                        }}
-            
-                        // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                        // TODO: set large fields to null.
-            
-                        disposedValue = true;
-                     [rest of string was truncated]&quot;;.
-             </summary>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.DoNotChangeThisCodeUseDispose">
+            <summary>
+              Looks up a localized string similar to Do not change this code. Put cleanup code in Dispose(bool disposing) above..
+            </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ExplicitConversionDisplayText">
             <summary>
@@ -281,6 +324,41 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.Extension">
             <summary>
               Looks up a localized string similar to extension.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.FilterClause">
+            <summary>
+              Looks up a localized string similar to filter clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.FinallyClause">
+            <summary>
+              Looks up a localized string similar to finally clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.FixedStatement">
+            <summary>
+              Looks up a localized string similar to fixed statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ForEachStatement">
+            <summary>
+              Looks up a localized string similar to foreach statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.FreeUnmanagedResourcesTodo">
+            <summary>
+              Looks up a localized string similar to TODO: free unmanaged resources (unmanaged objects) and override a finalizer below..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.FromClause">
+            <summary>
+              Looks up a localized string similar to from clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.GroupByClause">
+            <summary>
+              Looks up a localized string similar to groupby clause.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ImplementAbstractClass">
@@ -308,6 +386,11 @@
               Looks up a localized string similar to Insert &apos;await&apos;..
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.IntoClause">
+            <summary>
+              Looks up a localized string similar to into clause.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.InvalidSelection">
             <summary>
               Looks up a localized string similar to Invalid selection..
@@ -318,9 +401,29 @@
               Looks up a localized string similar to Invert if statement.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.JoinClause">
+            <summary>
+              Looks up a localized string similar to join clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.Lambda">
+            <summary>
+              Looks up a localized string similar to lambda.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.LambdaExpression">
             <summary>
               Looks up a localized string similar to &lt;lambda expression&gt;.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.LetClause">
+            <summary>
+              Looks up a localized string similar to let clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.LockStatement">
+            <summary>
+              Looks up a localized string similar to lock statement.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.MakeAsync">
@@ -363,6 +466,11 @@
               Looks up a localized string similar to no valid statement range to extract out.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.OrderByClause">
+            <summary>
+              Looks up a localized string similar to orderby clause.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.OrganizeUsings">
             <summary>
               Looks up a localized string similar to Organize Usings.
@@ -371,6 +479,16 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.OrganizeUsingsWithAccelerator">
             <summary>
               Looks up a localized string similar to &amp;Organize Usings.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.OverrideAFinalizerTodo">
+            <summary>
+              Looks up a localized string similar to TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.QueryBody">
+            <summary>
+              Looks up a localized string similar to query body.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.RangeVariable">
@@ -393,6 +511,11 @@
               Looks up a localized string similar to Remove Unnecessary Usings.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.RemoveUnnecessaryUsingsDiagnosticTitle">
+            <summary>
+              Looks up a localized string similar to Using directive is unnecessary..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.RemoveUnnecessaryUsingsWithAccelerator">
             <summary>
               Looks up a localized string similar to &amp;Remove Unnecessary Usings.
@@ -401,6 +524,11 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ReturnTaskInsteadOfVoid">
             <summary>
               Looks up a localized string similar to Make {0} return Task instead of void..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.SelectClause">
+            <summary>
+              Looks up a localized string similar to select clause.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.SelectionCanNotBePartOfConstInitializerExpr">
@@ -478,9 +606,44 @@
               Looks up a localized string similar to the selection contains syntactic errors.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.ThisCodeAddedToCorrectlyImplementDisposable">
+            <summary>
+              Looks up a localized string similar to This code added to correctly implement the disposable pattern..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.TryBlock">
+            <summary>
+              Looks up a localized string similar to try block.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.UncheckedStatement">
+            <summary>
+              Looks up a localized string similar to unchecked statement.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.UncommentTheFollowingIfFinalizerOverriddenTodo">
+            <summary>
+              Looks up a localized string similar to TODO: uncomment the following line if the finalizer is overridden above..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.UsingStatement">
+            <summary>
+              Looks up a localized string similar to using statement.
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.WarningDeclarationChangesScope">
             <summary>
               Looks up a localized string similar to Warning: Declaration changes scope and may change meaning..
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.WhereClause">
+            <summary>
+              Looks up a localized string similar to where clause.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpFeaturesResources.YieldStatement">
+            <summary>
+              Looks up a localized string similar to yield statement.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.EditAndContinue.CSharpEditAndContinueAnalyzer.FindMemberDeclaration(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
@@ -524,6 +687,11 @@
             An active statement (leaf or not) inside a "catch" makes the catch block read-only.
             An active statement (leaf or not) inside a "finally" makes the whole try/catch/finally block read-only.
             An active statement (non leaf)    inside a "try" makes the catch/finally block read-only.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.EditAndContinue.StatementSyntaxComparer.Classify(Microsoft.CodeAnalysis.CSharp.SyntaxKind,Microsoft.CodeAnalysis.SyntaxNode,System.Boolean@)">
+            <summary>
+            <paramref name="nodeOpt"/> is null only when comparing value equality of a tree node.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.EditAndContinue.SyntaxComparer.TryComputeWeightedDistance(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode,System.Double@)">

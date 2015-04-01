@@ -4,5 +4,238 @@
         <name>csc</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.BuildClient">
+            <summary>
+            Client class that handles communication to the server.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.RunWithConsoleOutput(System.String[],System.String,System.String,Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.RequestLanguage,System.Func{System.String,System.String[],System.Int32})">
+            <summary>
+            Run a compilation through the compiler server and print the output
+            to the console. If the compiler server fails, run the fallback
+            compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryRunServerCompilation(Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.RequestLanguage,System.String,System.String,System.Collections.Generic.IList{System.String},System.Threading.CancellationToken,System.String,System.String)">
+            <summary>
+            Returns a Task with a null BuildResponse if no server
+            response was received.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryCompile(System.IO.Pipes.NamedPipeClientStream,Microsoft.CodeAnalysis.CompilerServer.BuildRequest,System.Threading.CancellationToken)">
+            <summary>
+            Try to compile using the server. Returns null if a response from the
+            server cannot be retrieved.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.CreateMonitorDisconnectTask(System.IO.Pipes.NamedPipeClientStream,System.Threading.CancellationToken)">
+             <summary>
+             The IsConnected property on named pipes does not detect when the client has disconnected
+             if we don't attempt any new I/O after the client disconnects. We start an async I/O here
+             which serves to check the pipe for disconnection. 
+            
+             This will return true if the pipe was disconnected.
+             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.QueryFullProcessImageName(System.IntPtr,System.Int32,System.Text.StringBuilder,System.Int32@)">
+            <summary>
+            Get the file path of the executable that started this process.
+            </summary>
+            <param name="processHandle"></param>
+            <param name="flags">Should always be 0: Win32 path format.</param>
+            <param name="exeNameBuffer">Buffer for the name</param>
+            <param name="bufferSize">
+            Size of the buffer coming in, chars written coming out.
+            </param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryConnectToProcess(System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Connect to the pipe for a given directory and return it.
+            Throws on cancellation.
+            </summary>
+            <param name="pipeName">Name of the named pipe to connect to.</param>
+            <param name="timeoutMs">Timeout to allow in connecting to process.</param>
+            <param name="cancellationToken">Cancellation token to cancel connection to server.</param>
+            <returns>
+            An open <see cref="T:System.IO.Pipes.NamedPipeClientStream"/> to the server process or null on failure.
+            </returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.BuildTasks.BuildClient.TryCreateServerProcess(System.String)">
+            <summary>
+            Create a new instance of the server process, returning true on success
+            and false otherwise.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.BuildTasks.NativeMethods">
+            <summary>
+            Interop methods.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest">
+            <summary>
+            Represents a request from the client. A request is as follows.
+            
+             Field Name         Type                Size (bytes)
+            ----------------------------------------------------
+             Length             Integer             4
+             Language           RequestLanguage     4
+             Argument Count     UInteger            4
+             Arguments          Argument[]          Variable
+            
+            See <see cref="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument"/> for the format of an
+            Argument.
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Read a Request from the given stream.
+            
+            The total request size must be less than 1MB.
+            </summary>
+            <returns>null if the Request was too large, the Request otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.WriteAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Write a Request to the stream.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildRequest.Argument">
+            <summary>
+            A command line argument to the compilation. 
+            An argument is formatted as follows:
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             ID                 UInteger        4
+             Index              UInteger        4
+             Value              String          Variable
+            
+            Strings are encoded via a length prefix as a signed
+            32-bit integer, followed by an array of characters.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildResponse">
+             <summary>
+             Base class for all possible responses to a request.
+             The ResponseType enum should list all possible response types
+             and ReadResponse creates the appropriate response subclass based
+             on the response type sent by the client.
+             The format of a response is:
+            
+             Field Name       Field Type          Size (bytes)
+             -------------------------------------------------
+             responseLength   int (positive)      4  
+             responseType     enum ResponseType   4
+             responseBody     Response subclass   variable
+             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildResponse.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            May throw exceptions if there are pipe problems.
+            </summary>
+            <param name="stream"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompletedBuildResponse">
+            <summary>
+            Represents a Response from the server. A response is as follows.
+            
+             Field Name         Type            Size (bytes)
+            --------------------------------------------------
+             Length             UInteger        4
+             ReturnCode         Integer         4
+             Output             String          Variable
+             ErrorOutput        String          Variable
+            
+            Strings are encoded via a character count prefix as a 
+            32-bit integer, followed by an array of characters.
+            
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.MismatchedVersionBuildResponse.AddResponseBody(System.IO.BinaryWriter)">
+            <summary>
+            MismatchedVersion has no body.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants">
+            <summary>
+            Constants about the protocol.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ProtocolVersion">
+            <summary>
+            The version number for this protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.GetPipeName(System.String)">
+            <summary>
+            Given the full path to the directory containing the compiler exes,
+            retrieves the name of the pipe for client/server communication on
+            that instance of the compiler.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadLengthPrefixedString(System.IO.BinaryReader)">
+            <summary>
+            Read a string from the Reader where the string is encoded
+            as a length prefix (signed 32-bit integer) followed by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.WriteLengthPrefixedString(System.IO.BinaryWriter,System.String)">
+            <summary>
+            Write a string to the Writer where the string is encoded
+            as a length prefix (signed 32-bit integer) follows by
+            a sequence of characters.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants.ReadAllAsync(System.IO.Stream,System.Byte[],System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            This task does not complete until we are completely done reading.
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger">
+            <summary>
+            Class for logging information about what happens in the server and client parts of the 
+            Roslyn command line compiler and build tasks. Useful for debugging what is going on.
+            </summary>
+            <remarks>
+            To use the logging, set the environment variable RoslynCommandLineLogFile to the name
+            of a file to log to. This file is logged to by both client and server components.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.#cctor">
+            <summary>
+            Static class initializer that initializes logging.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Initialize(System.String)">
+            <summary>
+            Set the logging prefix that describes our role.
+            Typically a 3-letter abbreviation. If logging happens before this, it's logged with "---".
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.LogException(System.Exception,System.String)">
+            <summary>
+            Log an exception. Also logs information about inner exceptions.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String,System.Object[])">
+            <summary>
+            Log a line of text to the logging file, with string.Format arguments.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.Log(System.String)">
+            <summary>
+            Log a line of text to the logging file.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger.GetLoggingPrefix">
+            <summary>
+            Get the string that prefixes all log entries. Shows the process, thread, and time.
+            </summary>
+        </member>
     </members>
 </doc>

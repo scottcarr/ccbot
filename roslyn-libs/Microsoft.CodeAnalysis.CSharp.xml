@@ -2799,13 +2799,13 @@
         <member name="M:Microsoft.CodeAnalysis.CSharp.Symbol.GetLexicalSortKey">
             <summary>
             <para>
-            Get a source location key for sorting. For performance, it's important that this be 
+            Get a source location key for sorting. For performance, it's important that this
             be able to be returned from a symbol without doing any additional allocations (even
             if nothing is cached yet.)
             </para>
             <para>
-            Only members of source namespaces, original source types, and namespaces that can be merged
-            need implement this function.
+            Only (original) source symbols and namespaces that can be merged
+            need implement this function if they want to do so for efficiency.
             </para>
             </summary>
         </member>
@@ -3392,19 +3392,13 @@
             Set if the group has a receiver but none was not specified in syntax.
             </summary>
         </member>
-        <member name="F:Microsoft.CodeAnalysis.CSharp.BoundNode.BoundNodeAttributes.WasCompilerGeneratedIsChecked">
-            <summary>
-            Captures the fact that consumers of the node already checked the state of the WasCompilerGenerated bit.
-            Allows to assert on attempts to set WasCompilerGenerated bit after that.
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.BoundNode.HasAnyErrors">
             <summary>
-            Determines if a bound node, or associated syntax or type has an error (not a waring) 
+            Determines if a bound node, or associated syntax or type has an error (not a warning) 
             diagnostic associated with it.
             
             Typically used in the binder as a way to prevent cascading errors. 
-            In most other cases a more lightweigth HasErrors should be used.
+            In most other cases a more lightweight HasErrors should be used.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.BoundNode.HasErrors">
@@ -5749,15 +5743,24 @@
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.QueryClauseInfo.CastInfo">
             <summary>
-            The .Cast&lt;T&gt;() operation generated from the query range variable's type restriction.
-            If you want the type restriction, when this is non-null use Cast.TypeArguments[0].
+            The .Cast&lt;T&gt;() operation generated from the query range variable's type restriction,
+            or null if the type restriction isn't specified. 
             </summary>
+            <remarks>
+            The operation, when present is implemented via <see cref="T:Microsoft.CodeAnalysis.IMethodSymbol"/>.
+            To access the type, when this is non-null use <see cref="P:Microsoft.CodeAnalysis.IMethodSymbol.TypeArguments"/>[0].
+            If it is an extension method, it is returned in reduced form.
+            </remarks>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.QueryClauseInfo.OperationInfo">
             <summary>
             The operation (e.g. Select(), Where(), etc) that implements the given clause.
-            If it is an extension method, it is returned in reduced form.
             </summary>
+            <remarks>
+            The clause can be implemented via <see cref="T:Microsoft.CodeAnalysis.IMethodSymbol"/>, or 
+            <see cref="T:Microsoft.CodeAnalysis.IFieldSymbol"/> or <see cref="T:Microsoft.CodeAnalysis.IPropertySymbol"/> that return a delegate.
+            If it is an extension method, it is returned in reduced form.
+            </remarks>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.SpeculativeSyntaxTreeSemanticModel">
             <summary>
@@ -6087,11 +6090,6 @@
             The arity is appended via `N suffix since in MetadataName calculation since the delegate is generic.
             </summary>
         </member>
-        <member name="F:Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager._sourceLocationsSeen">
-            <summary>
-            Holds a collection of all the locations of anonymous types and delegates from source
-            </summary>
-        </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.ConstructAnonymousTypeImplementationSymbol(Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.AnonymousTypePublicSymbol)">
             <summary>
             Given anonymous type provided constructs an implementation type symbol to be used in emit phase; 
@@ -6104,6 +6102,18 @@
             <summary>
             Resets numbering in anonymous type names and compiles the
             anonymous type methods. Also seals the collection of templates.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.GetCreatedAnonymousTypeTemplates(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.AnonymousTypeTemplateSymbol})">
+            <summary>
+            The set of anonymous type templates created by
+            this AnonymousTypeManager, in fixed order.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.GetCreatedSynthesizedDelegates(Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.SynthesizedDelegateSymbol})">
+            <summary>
+            The set of synthesized delegates created by
+            this AnonymousTypeManager.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.AnonymousTypeManager.GetAllCreatedTemplates">
@@ -8849,6 +8859,21 @@
             The class to represent all methods imported from a PE/module.
             </summary>
         </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol.UncommonFields">
+            <summary>
+            Holds infrequently accessed fields. See <seealso cref="F:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> for an explanation.
+            </summary>
+        </member>
+        <member name="F:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields">
+            <summary>
+            A single field to hold optional auxiliary data.
+            In many scenarios it is possible to avoid allocating this, thus saving total space in <see cref="T:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEModuleSymbol"/>.
+            Even for lazily-computed values, it may be possible to avoid allocating <see cref="F:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> if
+            the computed value is a well-known "empty" value. In this case, bits in <see cref="F:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol._packedFlags"/> are used
+            to indicate that the lazy values have been computed and, if <see cref="F:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol._uncommonFields"/> is null, then
+            the "empty" value should be inferred.
+            </summary>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEMethodSymbol.SetAssociatedProperty(Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEPropertySymbol,Microsoft.CodeAnalysis.MethodKind)">
             <summary>
             Associate the method with a particular property. Returns
@@ -9703,7 +9728,7 @@
             on generic types within the type (such as B&lt;T&gt; in A&lt;B&lt;T&gt;[]&gt;).
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.ConstraintsHelper.CheckConstraints(Microsoft.CodeAnalysis.CSharp.Symbol,Microsoft.CodeAnalysis.CSharp.ConversionsBase,Microsoft.CodeAnalysis.CSharp.Symbols.TypeMap,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.TypeSymbol},Microsoft.CodeAnalysis.Compilation,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterDiagnosticInfo},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterDiagnosticInfo}@,Microsoft.CodeAnalysis.BitArray)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.ConstraintsHelper.CheckConstraints(Microsoft.CodeAnalysis.CSharp.Symbol,Microsoft.CodeAnalysis.CSharp.ConversionsBase,Microsoft.CodeAnalysis.CSharp.Symbols.TypeMap,System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterSymbol},System.Collections.Immutable.ImmutableArray{Microsoft.CodeAnalysis.CSharp.Symbols.TypeSymbol},Microsoft.CodeAnalysis.Compilation,Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterDiagnosticInfo},Microsoft.CodeAnalysis.ArrayBuilder{Microsoft.CodeAnalysis.CSharp.Symbols.TypeParameterDiagnosticInfo}@,Microsoft.CodeAnalysis.BitVector)">
             <summary>
             Check type parameter constraints for the containing type or method symbol.
             </summary>
@@ -9983,8 +10008,8 @@
         </member>
         <member name="F:Microsoft.CodeAnalysis.CSharp.Symbols.FieldOrPropertyInitializer.PrecedingInitializersLength">
             <summary>
-            A sum of widths of full spans of all preceding initializers 
-            (instance and static initializers are summed separately).
+            A sum of widths of spans of all preceding initializers 
+            (instance and static initializers are summed separately, and trivias are not counted).
             </summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Symbols.LabelSymbol">
@@ -11240,6 +11265,12 @@
         <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.ObsoleteAttributeHelpers.InitializeObsoleteDataFromMetadata(Microsoft.CodeAnalysis.ObsoleteAttributeData@,System.Reflection.Metadata.Handle,Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEModuleSymbol)">
             <summary>
             Initialize the ObsoleteAttributeData by fetching attributes and decoding ObsoleteAttributeData. This can be 
+            done for Metadata symbol easily whereas trying to do this for source symbols could result in cycles.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.Symbols.ObsoleteAttributeHelpers.GetObsoleteDataFromMetadata(System.Reflection.Metadata.Handle,Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE.PEModuleSymbol)">
+            <summary>
+            Get the ObsoleteAttributeData by fetching attributes and decoding ObsoleteAttributeData. This can be 
             done for Metadata symbol easily whereas trying to do this for source symbols could result in cycles.
             </summary>
         </member>
@@ -16695,6 +16726,11 @@
               Looks up a localized string similar to Cannot define a new extension method because the compiler required type &apos;{0}&apos; cannot be found. Are you missing a reference to System.Core.dll?.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_ExtensionCollectionElementInitializerInExpressionTree">
+            <summary>
+              Looks up a localized string similar to An extension Add method is not supported for a collection initializer in an expression lambda..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_ExtensionMethodsDecl">
             <summary>
               Looks up a localized string similar to Extension methods must be defined in a top level static class; {0} is a nested class.
@@ -17730,6 +17766,11 @@
               Looks up a localized string similar to In order for &apos;{0}&apos; to be applicable as a short circuit operator, its declaring type &apos;{1}&apos; must define operator true and operator false.
             </summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_MutuallyExclusiveOptions">
+            <summary>
+              Looks up a localized string similar to Compilation options &apos;{0}&apos; and &apos;{1}&apos; can&apos;t both be specified at the same time..
+            </summary>
+        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_NamedArgumentExpected">
             <summary>
               Looks up a localized string similar to Named attribute argument expected.
@@ -18233,11 +18274,6 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_ParameterIsStaticClass">
             <summary>
               Looks up a localized string similar to &apos;{0}&apos;: static types cannot be used as parameters.
-            </summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_ParameterlessStructCtorsMustBePublic">
-            <summary>
-              Looks up a localized string similar to Parameterless instance constructors in structs must be public.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.ERR_ParameterNotValidForType">
@@ -19570,11 +19606,6 @@
               Looks up a localized string similar to static classes.
             </summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_FeatureStructParameterlessConstructors">
-            <summary>
-              Looks up a localized string similar to struct instance parameterless constructors.
-            </summary>
-        </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_FeatureSwitchOnBool">
             <summary>
               Looks up a localized string similar to switch on boolean type.
@@ -19627,7 +19658,7 @@
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_LogoLine1">
             <summary>
-              Looks up a localized string similar to Microsoft (R) Visual C# Compiler version {0}.
+              Looks up a localized string similar to {0} version {1}.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_LogoLine2">
@@ -19738,6 +19769,11 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_Text">
             <summary>
               Looks up a localized string similar to &lt;text&gt;.
+            </summary>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_ToolName">
+            <summary>
+              Looks up a localized string similar to Microsoft (R) Visual C# Compiler.
             </summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.CSharpResources.IDS_USINGLOCAL">
@@ -22346,6 +22382,19 @@
             Analyze the body, reporting all necessary diagnostics.
             </summary>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.DataFlowPass.CheckCaptured(Microsoft.CodeAnalysis.CSharp.Symbol,Microsoft.CodeAnalysis.CSharp.Symbols.ParameterSymbol)">
+            <summary>
+            Check if the variable is captured and, if so, add it to this._capturedVariables.
+            </summary>
+            <param name="variable">The variable to be checked</param>
+            <param name="rangeVariableUnderlyingParameter">If variable.Kind is RangeVariable, its underlying lambda parameter. Else null.</param>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.DataFlowPass.NoteCaptured(Microsoft.CodeAnalysis.CSharp.Symbol)">
+            <summary>
+            Add the variable to the captured set. For range variables we only add it if inside the region.
+            </summary>
+            <param name="variable"></param>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.DataFlowPass.WriteConsideredUse(Microsoft.CodeAnalysis.CSharp.Symbols.TypeSymbol,Microsoft.CodeAnalysis.CSharp.BoundExpression)">
             <summary>
             This reflects the Dev10 compiler's rules for when a variable initialization is considered a "use"
@@ -22773,6 +22822,13 @@
             A region analysis walker that records reads and writes of all variables, both inside and outside the region.
             </summary>
         </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ReadWriteWalker.NoteRead(Microsoft.CodeAnalysis.CSharp.Symbol,Microsoft.CodeAnalysis.CSharp.Symbols.ParameterSymbol)">
+            <summary>
+            Note that a variable is read.
+            </summary>
+            <param name="variable">The variable</param>
+            <param name="rangeVariableUnderlyingParameter">If variable.Kind is RangeVariable, its underlying lambda parameter. Else null.</param>
+        </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.ReadWriteWalker.NoteReceiverReadOrWritten(Microsoft.CodeAnalysis.CSharp.BoundFieldAccess,System.Collections.Generic.HashSet{Microsoft.CodeAnalysis.CSharp.Symbol})">
             <summary>
             When we read a field from a struct, the receiver isn't seen as being read until we get to the
@@ -22781,6 +22837,12 @@
             For example, if an rvalue expression is x.y.z and the region is x.y, we want x to be included
             in the ReadInside set.  That is implemented here.
             </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ReadWriteWalker.GetRangeVariableUnderlyingParameter(Microsoft.CodeAnalysis.CSharp.BoundNode)">
+            <summary>
+            Compute the underlying lambda parameter symbol for a range variable, if any.
+            </summary>
+            <param name="underlying">The bound node for the expansion of the range variable</param>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.RegionAnalysisContext">
             <summary>
@@ -24240,7 +24302,7 @@
             </summary>
             <param name="sections"></param>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntheticBoundNodeFactory.StoreToTemp(Microsoft.CodeAnalysis.CSharp.BoundExpression,Microsoft.CodeAnalysis.CSharp.BoundAssignmentOperator@,Microsoft.CodeAnalysis.RefKind,Microsoft.CodeAnalysis.SynthesizedLocalKind,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode,System.Int32,System.String)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntheticBoundNodeFactory.StoreToTemp(Microsoft.CodeAnalysis.CSharp.BoundExpression,Microsoft.CodeAnalysis.CSharp.BoundAssignmentOperator@,Microsoft.CodeAnalysis.RefKind,Microsoft.CodeAnalysis.SynthesizedLocalKind,Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
             <summary>
             Takes an expression and returns the bound local expression "temp" 
             and the bound assignment expression "temp = expr".
@@ -26430,6 +26492,9 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.GenericNameSyntax.TypeArgumentList">
             <summary>TypeArgumentListSyntax node representing the list of type arguments of the generic name.</summary>
         </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax.Identifier">
+            <summary>Gets the identifier.</summary>
+        </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Syntax.AnonymousMethodExpressionSyntax">
             <summary>Class which represents the syntax node for anonymous method expression.</summary>
         </member>
@@ -26507,6 +26572,9 @@
             Used to determine whether it would be appropriate to use the binder for the statement (if any).
             Not used to determine whether the position is syntactically within the statement.
             </remarks>
+        </member>
+        <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.IndexerDeclarationSyntax.ParameterList">
+            <summary>Gets the parameter list.</summary>
         </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax">
             <summary>Method declaration syntax.</summary>
@@ -27637,17 +27705,11 @@
         <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.BasePropertyDeclarationSyntax.ExplicitInterfaceSpecifier">
             <summary>Gets the optional explicit interface specifier.</summary>
         </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax.Identifier">
-            <summary>Gets the identifier.</summary>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.Syntax.ArrowExpressionClauseSyntax">
             <summary>The syntax for the expression body of an expression-bodied member.</summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.EventDeclarationSyntax.Identifier">
             <summary>Gets the identifier.</summary>
-        </member>
-        <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.IndexerDeclarationSyntax.ParameterList">
-            <summary>Gets the parameter list.</summary>
         </member>
         <member name="P:Microsoft.CodeAnalysis.CSharp.Syntax.AccessorDeclarationSyntax.AttributeLists">
             <summary>Gets the attribute declaration list.</summary>
@@ -27934,18 +27996,6 @@
             Is the expression the initializer in a fixed statement?
             </summary>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsLambdaBody(Microsoft.CodeAnalysis.SyntaxNode)">
-            <summary>
-            Returns true if the specified <paramref name="node"/> is a body of an anonymous method, lambda, 
-            or a part of a query clause that is syntactically translated to a lambda body.
-            </summary>
-        </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxFacts.IsQueryPairLambda(Microsoft.CodeAnalysis.SyntaxNode)">
-            <summary>
-            "Pair lambda" is a synthesized lambda that creates an instance of an anonymous type representing a pair of values. 
-            TODO: Avoid generating lambdas. Instead generate a method on the anonymous type, or use KeyValuePair instead.
-            </summary>
-        </member>
         <member name="T:Microsoft.CodeAnalysis.CSharp.ObjectDisplay">
             <summary>
             Displays a value in the C# style.
@@ -27969,6 +28019,13 @@
             <see cref="T:System.Int64"/>, <see cref="T:System.UInt64"/>, <see cref="T:System.Double"/>, <see cref="T:System.Single"/>, <see cref="T:System.Decimal"/>,
             and <c>null</c>.
             </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.ObjectDisplay.ReplaceChar(System.Char,System.Char,System.String@)">
+            <summary>
+            Returns true if the character should be replaced and sets
+            <paramref name="replaceWith"/> to the replacement text if the
+            character is replaced with text other than the Unicode escape sequence.
+            </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.ObjectDisplay.FormatLiteral(System.String,Microsoft.CodeAnalysis.ObjectDisplayOptions)">
             <summary>
@@ -32147,9 +32204,48 @@
             <param name="identifier"></param>
             <returns>The given simple name updated with the given identifier.</returns>
         </member>
-        <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified node represents a lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.GetLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Given a node that represents a lambda body returns a node that represents the lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.GetCorrespondingLambdaBody(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode)">
             <summary>
             See SyntaxNode.GetCorrespondingLambdaBody.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambdaBody(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified <paramref name="node"/> represents a body of a lambda.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsLambdaBodyStatementOrExpression(Microsoft.CodeAnalysis.SyntaxNode)">
+            <remarks>
+            In C# lambda bodies are expressions or block statements. In both cases it's a single node.
+            In VB a lambda body might be a sequence of nodes (statements). 
+            We define this function to minimize differences between C# and VB implementation.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.TryGetLambdaBodies(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+            <summary>
+            If the specified node represents a lambda returns a node (or nodes) that represent its body (bodies).
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsQueryPairLambda(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            "Pair lambda" is a synthesized lambda that creates an instance of an anonymous type representing a pair of values. 
+            TODO: Avoid generating these lambdas. Instead generate a method on the anonymous type, or use KeyValuePair instead.
+            </summary>
+        </member>
+        <member name="M:Microsoft.CodeAnalysis.CSharp.LambdaUtilities.IsClosureScope(Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Returns true if the specified node can represent a closure scope -- that is a scope of a captured variable.
+            Doesn't validate whether or not the node actually declares any captured variable.
             </summary>
         </member>
         <member name="M:Microsoft.CodeAnalysis.CSharp.SyntaxNodeExtensions.CanHaveAssociatedLocalBinder(Microsoft.CodeAnalysis.CSharp.CSharpSyntaxNode)">
