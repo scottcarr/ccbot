@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.Research.CodeAnalysis;
+using Microsoft.Research.ReviewBot;
 
 namespace Microsoft.Research.ReviewBot
 {

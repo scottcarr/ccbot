@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Research.ReviewBot.Utils
+namespace Microsoft.Research.ReviewBot
 {
   public static class HelpersForClousotXML
   {

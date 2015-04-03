@@ -18,7 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Research.ReviewBot.Utils
+namespace Microsoft.Research.ReviewBot
 {
   public static class Helpers
   {
@@ -68,7 +68,7 @@ namespace Microsoft.Research.ReviewBot.Utils
         return new T[0];
       }
     }
-    public static void EnableCodeContractsInProject(string csprojPath)
+    public static string EnableCodeContractsInProject(string csprojPath)
     {
       var cc_props_text = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
@@ -160,6 +160,7 @@ namespace Microsoft.Research.ReviewBot.Utils
         }
       }
       oldDoc.Save(csprojPath);
+      return ccFile;
     }
   }
 }

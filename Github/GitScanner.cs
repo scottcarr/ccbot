@@ -22,6 +22,9 @@ namespace Microsoft.Research.ReviewBot.Github
 {
   class Program
   {
+    enum ReferenceStatus { OK, MissingMSCorLib, MissingFacades45, MissingFacades46, Broken };
+    enum DotNetFrameworkVersions { v4_5, v4_6};
+
     //static readonly string gitCmd = @"C:\Program Files (x86)\Git\bin\git.exe";
     static readonly string gitCmd = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "git", "bin", "git.exe");
     static readonly string selectedReposPath = @"..\..\selectedRepos.txt";
@@ -70,10 +73,19 @@ namespace Microsoft.Research.ReviewBot.Github
             @"monodevelop\main\Main.sln"
 
     };
-    static IEnumerable<MetadataReference> GetFacadeReferences(string version)
+    static IEnumerable<MetadataReference> GetFacadeReferences(DotNetFrameworkVersions version)
     {
       var refs = new List<MetadataReference>();
-      var facadesDir = String.Format(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\{0}\Facades\", version);
+      string facadesDir = "";
+      switch (version)
+      {
+        case DotNetFrameworkVersions.v4_5:
+          facadesDir = String.Format(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\Facades\");
+          break;
+        case DotNetFrameworkVersions.v4_6:
+          facadesDir = String.Format(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\Facades\");
+          break;
+      }
       string[] dlls =
       {
        "System.Collections.dll",
@@ -113,12 +125,12 @@ namespace Microsoft.Research.ReviewBot.Github
       {
         return ReferenceStatus.MissingMSCorLib;
       }
-      var projWithFacades45 = proj.AddMetadataReferences(GetFacadeReferences("v4.5"));
+      var projWithFacades45 = proj.AddMetadataReferences(GetFacadeReferences(DotNetFrameworkVersions.v4_5));
       if (!HasErrors(projWithFacades45, out facade45_msg))
       {
         return ReferenceStatus.MissingFacades45;
       }
-      var projWithFacades46 = proj.AddMetadataReferences(GetFacadeReferences("v4.6"));
+      var projWithFacades46 = proj.AddMetadataReferences(GetFacadeReferences(DotNetFrameworkVersions.v4_6));
       if (!HasErrors(projWithFacades46, out facade46_msg))
       {
         return ReferenceStatus.MissingFacades46;
@@ -128,18 +140,7 @@ namespace Microsoft.Research.ReviewBot.Github
       var lens = msgs.Select(x => x.Count());
       var shortest_len = lens.Min();
       var shortest = msgs.First(x => x.Count() == shortest_len);
-      /*
-      if (shortest == orig_msg) { Console.WriteLine("orig: "); }
-      if (shortest == mscl_msg) { Console.WriteLine("mscl: "); }
-      if (shortest == facade45_msg) { Console.WriteLine("facade 4.5: "); }
-      if (shortest == facade46_msg) { Console.WriteLine("facade 4.6: "); }
-      foreach (var m in shortest)
-      {
-        Console.WriteLine(m);
-      }
-      */
       why = shortest;
-      //Debug.Assert(false, "Couldn't fix project: " + proj.FilePath);
       return ReferenceStatus.Broken;
     }
     static bool HasErrors(Project proj, out List<string> why)
@@ -178,34 +179,28 @@ namespace Microsoft.Research.ReviewBot.Github
 
     static void Main(string[] args)
     {
-      /*
+      var messages = new List<string>();
       var msbw = MSBuildWorkspace.Create();
       var sln = msbw.OpenSolutionAsync(@"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln").Result;
-      var proj = sln.Projects.First(x => x.Name == "CodeAnalysis.Desktop");
-      Console.WriteLine(proj.FilePath);
-      var facadesDir = @"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\Facades\";
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromAssembly(typeof(object).Assembly));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.dll"));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Runtime.Extensions.dll"));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.IO.dll"));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Threading.Tasks.dll"));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Text.Encoding.dll"));
-      proj = proj.AddMetadataReference(MetadataReference.CreateFromFile(facadesDir + "System.Reflection.dll"));
-      var cu = proj.GetCompilationAsync().Result;
-      foreach (var e in cu.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error))
+      foreach (var proj in sln.Projects.Where(p => p.Language == LanguageNames.CSharp))
       {
-        Console.WriteLine("{0}: {1}", e.Location, e.GetMessage());
+        List<string> why;
+        if (FindIfMissingReferences(proj, out why) == ReferenceStatus.Broken)
+        {
+          messages.Add(proj.FilePath);
+          messages.AddRange(why);
+        }
       }
-      Console.WriteLine("done.");
-      Console.ReadKey();
-      */
+
+      File.WriteAllLines("log.txt", messages);
+
       //var githubResp = GetGitHubList(30);
 
       //CloneAll(githubResp);
 
       //CreateSolutionAndProjectLists(githubResp);
 
-      WriteRepoInfoFile("roslyn");
+      //WriteRepoInfoFile("roslyn");
 
 
       //trOpeningAllWithRoslyn(githubResp);

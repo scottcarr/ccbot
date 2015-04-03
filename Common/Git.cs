@@ -18,17 +18,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Research.ReviewBot.Utils
+namespace Microsoft.Research.ReviewBot
 {
+  public class GitRepo
+  {
+    readonly string gitExe;
+    readonly string gitRoot;
+    public GitRepo(Configuration conf)
+    {
+      gitExe = conf.Git;
+      gitRoot = conf.GitRoot;
+    }
+    public void Commit(string message)
+    {
+      Git.Commit(gitRoot, gitExe, message);
+    }
+    public void Add(string file)
+    {
+      Git.Add(gitRoot, gitExe, file);
+    }
+    public void CreateBranch(string branch)
+    {
+      Git.CreateBranch(gitRoot, gitExe, branch);
+    }
+    public void HardReset(string branch)
+    {
+      Git.RevertToBranch(gitRoot, gitExe, branch);
+    }
+  }
+
+
   public static class Git
   {
-    public static void GitAdd(string gitroot, string gitExePath)
+    public static void Commit(string gitroot, string gitExePath, string message)
+    {
+      RunGit(gitroot, String.Format("commit -m \"{0}\" ", message), gitExePath);
+    }
+    public static void CreateBranch(string gitroot, string gitExePath, string branchName)
+    {
+      RunGit(gitroot, "checkout -b " + branchName, gitExePath);
+    }
+    public static void AddAll(string gitroot, string gitExePath)
     {
       Contract.Requires(!string.IsNullOrEmpty(gitroot));
       Contract.Requires(gitExePath != null);
       Contract.Requires(gitroot.Length < 260);
 
       RunGit(gitroot, "add -u .", gitExePath);
+    }
+    public static void Add(string gitroot, string gitExePath, string file)
+    {
+      Contract.Requires(!string.IsNullOrEmpty(gitroot));
+      Contract.Requires(gitExePath != null);
+      Contract.Requires(gitroot.Length < 260);
+
+      RunGit(gitroot, "add -f " + file, gitExePath);
     }
     public static void RevertToOriginal(string gitroot, string GitBaseBranch, string gitExePath)
     {

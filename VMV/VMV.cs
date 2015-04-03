@@ -13,6 +13,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using Microsoft.Research.ReviewBot;
 
 namespace Microsoft.Research.ReviewBot.Utils
 {

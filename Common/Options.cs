@@ -20,20 +20,20 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Research.ReviewBot
 {
-  enum OutputOption { unintialized, git, inplace };
-  class Options
+  public enum OutputOption { unintialized, git, inplace };
+  public class Options
   {
-    public string ClousotXML { private set; get; }
+    public string CccheckXml;
 
-    public string Project { private set; get;}
+    public string Project;
 
-    public string SourceFile { private set; get; }
+    public string SourceFile;
 
-    public string Solution { private set; get; }
+    public string Solution;
 
-    public OutputOption Output { private set; get; }
+    public OutputOption OutputType;
 
-    public string GitRoot { private set; get; }
+    public string GitRoot;
 
     /// <summary>
     /// Parse the args into an Option object
@@ -42,16 +42,16 @@ namespace Microsoft.Research.ReviewBot
     /// <param name="options">the parsed arguements, valid if return is ture</param>
     /// <param name="why">an error message if parsing fails and the return is false</param>
     /// <returns>true if parsing succeeded, false otherwise</returns>
-     [SuppressMessage("Microsoft.Contracts", "TestAlwaysEvaluatingToAConstant")]
-    internal static bool TryParseOptions(string[] args, out Options options, out string why)
+    [SuppressMessage("Microsoft.Contracts", "TestAlwaysEvaluatingToAConstant")]
+    public static bool TryParseOptions(string[] args, out Options options, out string why)
     {
       #region CodeContracts
       Contract.Requires(Contract.ForAll(args, arg => arg != null));
       Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options) != null);
       Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).Project != null);
       Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).Solution != null);
-      Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).ClousotXML != null);
-      Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).Output != OutputOption.unintialized);
+      Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).CccheckXml != null);
+      Contract.Ensures(!Contract.Result<bool>() || Contract.ValueAtReturn(out options).OutputType != OutputOption.unintialized);
       Contract.Ensures(Contract.Result<bool>() || Contract.ValueAtReturn(out why) != null);
       // there should be a contract for the output option, but it's complicated
       //Contract.Ensures(
@@ -111,7 +111,7 @@ namespace Microsoft.Research.ReviewBot
               OutputOption oo;
               if (Enum.TryParse(args[++i], true, out oo)) 
               {
-                options.Output = oo;
+                options.OutputType = oo;
               }
               else
               {
@@ -137,20 +137,20 @@ namespace Microsoft.Research.ReviewBot
             default:
               options = null;
               why = "Unrecognized option " + arg;
-              RBLogger.Error("Invalid option {0}", arg);
+              Output.WriteErrorAndQuit("Invalid option {0}", arg);
               return false;
           }
         }
         else
         {
-          if (options.ClousotXML != null)
+          if (options.CccheckXml != null)
           {
             why = "Cannot express two (or more) .xml files";
             return false;
           }
           else
           {
-            options.ClousotXML = args[0];
+            options.CccheckXml = args[0];
           }
         }
       }
@@ -161,10 +161,10 @@ namespace Microsoft.Research.ReviewBot
     private bool CheckRequiredArguments(ref string why)
     {
       #region CodeContracts
-      Contract.Ensures(!Contract.Result<bool>() || this.ClousotXML != null);
+      Contract.Ensures(!Contract.Result<bool>() || this.CccheckXml != null);
       Contract.Ensures(!Contract.Result<bool>() || this.Project != null);
       Contract.Ensures(!Contract.Result<bool>() || this.Solution != null);
-      Contract.Ensures(!Contract.Result<bool>() || this.Output != OutputOption.unintialized);
+      Contract.Ensures(!Contract.Result<bool>() || this.OutputType != OutputOption.unintialized);
       // I have to think about this:
       //Contract.Ensures(Contract.Result<bool>() ^ !((this.Output == OutputOption.git && this.GitRoot == null) ^ this.Output == OutputOption.inplace));
       #endregion CodeContracts
@@ -172,28 +172,28 @@ namespace Microsoft.Research.ReviewBot
       //Contract.Ensures(Contract.Result<bool>() == false || (this.Output != OutputOption.git && this.GitRoot != null) || this.Output != OutputOption.inplace);
 
       // right now, only support all options provided
-      var ok = this.ClousotXML != null && this.Project != null && this.Solution != null && this.Output != OutputOption.unintialized;
+      var ok = this.CccheckXml != null && this.Project != null && this.Solution != null && this.OutputType != OutputOption.unintialized;
       if(!ok)
       {
         why = "You need to specify all of: Clousot XML, Project, Solution, output";
-        RBLogger.Error(why);
+        Output.WriteErrorAndQuit(why);
       }
-      var ok2 = (this.Output == OutputOption.git && this.GitRoot != null) ^ this.Output == OutputOption.inplace;
+      var ok2 = (this.OutputType == OutputOption.git && this.GitRoot != null) ^ this.OutputType == OutputOption.inplace;
       if(!ok2)
       {
         why = "You need to either: (1) give -output git -gitroot <some_path> (2) give -output inplace but not both";
-        RBLogger.Error(why);
+        Output.WriteErrorAndQuit(why);
       }
       return ok & ok2;
     }
 
-    internal static void PrintUsage(string error =null)
+    public static void PrintUsage(string error =null)
     {
       if(error != null)
       {
-        RBLogger.Error("Error in parsing the command line: {0}", error);
+        Output.WriteErrorAndQuit("Error in parsing the command line: {0}", error);
       }
-      RBLogger.Error("USAGE: $ ReviewBot.exe <cccheckoutput.xml> -project <projectfile> -solution <solutionfile> -output [inplace|git -gitroot <gitdirectory>]");
+      Output.WriteErrorAndQuit("USAGE: $ ReviewBot.exe <cccheckoutput.xml> -project <projectfile> -solution <solutionfile> -output [inplace|git -gitroot <gitdirectory>]");
     }
 
     /// <summary>

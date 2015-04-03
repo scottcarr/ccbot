@@ -88,7 +88,6 @@ C:\Users\Scott\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTo
 C:\Users\Scott\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.exe
 C:\Users\Scott\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.pdb
 C:\Users\Scott\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\CodeContractAnalysisRun.log
-C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ConfigTool.csprojResolveAssemblyReference.cache
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\MainWindow.baml
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\MainWindow.g.cs
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\App.g.cs
@@ -101,5 +100,6 @@ C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\ReviewBotConfigT
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\ReviewBotConfigTool.pdb
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\Common.dll
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\bin\Debug\Common.pdb
+C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ConfigTool.csprojResolveAssemblyReference.cache
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.exe
 C:\Users\carr27\Documents\GitHub\reviewbot\ConfigTool\obj\Debug\ReviewBotConfigTool.pdb

@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Research.ReviewBot
+namespace Microsoft.Research.ReviewBot.Constants
 {
 
   /// <summary>
@@ -80,7 +80,7 @@ namespace Microsoft.Research.ReviewBot
         return string.Format(@"{0}\\{1}\\{2}", TempDir, buildName, when);
       }
 
-      public static string TempDir
+      private static string TempDir
       {
         get
         {

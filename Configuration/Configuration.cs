@@ -13,8 +13,9 @@ using System;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Xml.Serialization;
+using Microsoft.Research.ReviewBot.Logging;
 
-namespace Microsoft.Research.ReviewBot
+namespace Microsoft.Research.ReviewBot.Configuration
 {
   /// <summary>
   /// A blob-of-data class holding the configuration options for a ReviewBot run
@@ -29,7 +30,7 @@ namespace Microsoft.Research.ReviewBot
     //public string GitRoot;
     public string GitBaseBranch;
     public string Cccheck;
-    //public string CccheckXml;
+    public string CccheckXml;
     public string CccheckOptions;
     public string MSBuild;
     public string RSP;

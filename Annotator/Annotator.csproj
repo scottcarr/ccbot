@@ -112,8 +112,6 @@
     <Compile Include="RBLogger.cs" />
     <Compile Include="Replacer.cs" />
     <Compile Include="Searcher.cs" />
-    <Compile Include="Output.cs" />
-    <Compile Include="Options.cs" />
     <Compile Include="Annotator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types.cs" />

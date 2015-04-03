@@ -10,9 +10,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Research.ReviewBot.Constants;
 
-namespace Microsoft.Research.ReviewBot
+namespace Microsoft.Research.ReviewBot.Logging
 {
 
   /// <summary>

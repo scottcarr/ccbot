@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
+using Microsoft.Research.ReviewBot;
 
 namespace Microsoft.Research.ReviewBot.ReviewBotConfigTool
 {

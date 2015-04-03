@@ -44,9 +44,10 @@ namespace Microsoft.Research.ReviewBot
       return String.Format("[ERROR @ {1}:{2}:{0}] ", LineNumber, FilePath, Method);
     }
   }
-  class RBLogger
+  class RBLogger  
   {
-    static readonly string[] FilteredFiles = { "RBParser.cs", "CommentHelpers.cs", "RBSearcher.cs" };
+    //static readonly string[] FilteredFiles = { "RBParser.cs", "CommentHelpers.cs", "RBSearcher.cs" };
+    static readonly string[] FilteredFiles = { };
     private static bool isStarted = false;
     private static int frame_level = 2;
     public static void StartLogging()

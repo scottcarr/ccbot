@@ -12,7 +12,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Research.ReviewBot.Annotations;
-using Microsoft.Research.ReviewBot.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +33,58 @@ namespace Microsoft.Research.ReviewBot
 
   public static class Annotator
   {
+    public static int DoAnnotate(Options options)
+    {
+      // 2. Create a compilation using Roslyn
+      Task<Compilation> compilationAsync;
+      Compilation compilation;
+      MSBuildWorkspace workspace;
+      Project project;
+      if (!RoslynInterface.TryCreateCompilation(options, out compilationAsync, out workspace, out project))
+      {
+        Output.WriteError("Unable to create compilation");
+        return -1;
+      }
+
+      // 3. Read Clousot XML
+      CCCheckOutput xml;
+      if (!XmlDoc.TryReadXml(options.CccheckXml, out xml))
+      {
+        Output.WriteError("Unable to read XML");
+        return -1;
+      }
+
+      compilation = compilationAsync.Result;
+
+      // 4. Check for diagnostics in the solution
+      Output.WritePhase("Checking whether the original project has errors");
+      var existingDiagnostics = compilation.GetDiagnostics();
+      if (existingDiagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error).Any())
+      {
+        // SCOTT: this should be fatal IMHO
+        HelperForDiagnostics.PrintDiagnostics(existingDiagnostics);
+        Output.WriteErrorAndQuit("The original project has some errors");
+      }
+
+      // 5. Annotate
+      Output.WritePhase("Reading the Contracts from Clousot");
+      var annotations = Parser.GetAnnotationDictionary(xml);
+
+      Output.WritePhase("Applying the annotations to the source code");
+      var newcomp = ApplyAnnotations(annotations, compilation, project, true);
+
+      // 6. Pretty print result
+      Output.WritePhase("Cleaning up the code");
+      newcomp = UsingHelpers.CleanImports(project, newcomp);
+
+      // 7. Write result to disk
+      Output.WritePhase("Writing result back to disk");
+      newcomp = Writer.WriteChanges(compilation, newcomp, options.OutputType == OutputOption.inplace);
+
+      //CommentHelpers.WriteCommentsFile(xml, compilation, newcomp, options.GitRoot);
+      
+      return 0;
+    }
     public static int DoAnnotate(string[] args)
     {
       #region CodeContracts
@@ -51,54 +102,7 @@ namespace Microsoft.Research.ReviewBot
         return -1;
       }
 
-      // 2. Create a compilation using Roslyn
-      Task<Compilation> compilationAsync;
-      Compilation compilation;
-      MSBuildWorkspace workspace;
-      Project project;
-      if (!RoslynInterface.TryCreateCompilation(options, out compilationAsync, out workspace, out project))
-      {
-        Output.WriteError("Unable to create compilation");
-        return -1;
-      }
-
-      // 3. Read Clousot XML
-      CCCheckOutput xml;
-      if (!XmlDoc.TryReadXml(options.ClousotXML, out xml))
-      {
-        Output.WriteError("Unable to read XML");
-        return -1;
-      }
-
-      compilation = compilationAsync.Result;
-
-      // 4. Check for diagnostics in the solution
-      Output.WritePhase("Checking whether the original project has errors");
-      var existingDiagnostics = compilation.GetDiagnostics();
-      if (existingDiagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error).Any())
-      {
-        Output.WriteWarning("The original project has some errors");
-        HelperForDiagnostics.PrintDiagnostics(existingDiagnostics);
-      }
-
-      // 5. Annotate
-      Output.WritePhase("Reading the Contracts from Clousot");
-      var annotations = Parser.GetAnnotationDictionary(xml);
-
-      Output.WritePhase("Applying the annotations to the source code");
-      var newcomp = ApplyAnnotations(annotations, compilation, project, true);
-
-      // 6. Pretty print result
-      Output.WritePhase("Cleaning up the code");
-      newcomp = UsingHelpers.CleanImports(project, newcomp);
-
-      // 7. Write result to disk
-      Output.WritePhase("Writing result back to disk");
-      newcomp = Writer.WriteChanges(compilation, newcomp, options.Output == OutputOption.inplace);
-
-      //CommentHelpers.WriteCommentsFile(xml, compilation, newcomp, options.GitRoot);
-      
-      return 0;
+      return DoAnnotate(options);
     }
 
     /// <summary>
