@@ -20,11 +20,11 @@ namespace Microsoft.Research.ReviewBot
     static string[] cccheckHints = {
                           @"C:\Program Files (x86)\Microsoft\Contracts\Bin\cccheck.exe" 
                                    };
-    public static bool TryAutoConfig(string solutionPath, string projectPath, bool CreateBranch, out Configuration conf, UberLogger logger)
+    public static bool TryAutoConfig(string solutionPath, string projectPath, bool CreateBranch, out Configuration conf, UberLogger logger, string gitBaseBranch="master")
     {
       conf = new Configuration();
       conf.GitRoot = Path.GetDirectoryName(solutionPath); // I'm not sure if we really need the root
-      conf.GitBaseBranch = "master"; // a guess, TODO check if this is the default branch
+      conf.GitBaseBranch = gitBaseBranch; 
       conf.Project = projectPath;
       conf.Solution = solutionPath;
       if (!File.Exists(conf.Solution))

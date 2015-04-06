@@ -14,15 +14,15 @@ namespace Microsoft.Research.ReviewBot
 {
   class AutoBot
   {
-    static void AutoSetupOnce(string solutionPath, string projectPath)
+    static void AutoSetupOnce(string solutionPath, string projectPath, string gitBaseBranch="master")
     {
 
-      using (var logger = new UberLogger("scriptcs", LoggerVerbosity.Normal))
+      using (var logger = new UberLogger("scriptcs", LoggerVerbosity.Detailed))
       {
         logger.Message("Solution: " + solutionPath);
         logger.Message("Project: " + projectPath);
         Configuration conf;
-        if (!AutoConfig.TryAutoConfig(solutionPath, projectPath, true, out conf, logger))
+        if (!AutoConfig.TryAutoConfig(solutionPath, projectPath, true, out conf, logger, gitBaseBranch))
         {
           logger.Error("Could not autoconfig");
           return;
@@ -56,17 +56,17 @@ namespace Microsoft.Research.ReviewBot
       }
 
     }
-    static void AutoAnnotate(string solutionPath, string projectPath, bool fromScratch)
+    static void AutoAnnotate(string solutionPath, string projectPath, bool fromScratch, string gitBaseBranch="master")
     {
       // TODO how is autconfig setting clousotxml?
       using (var logger = new UberLogger("scriptcs", LoggerVerbosity.Normal))
       {
-        var projPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\src\ScriptCs.Core\ScriptCs.Core.csproj";
-        var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
-        logger.Message("Solution: " + slnPath);
-        logger.Message("Project: " + projPath);
+        //var projPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\src\ScriptCs.Core\ScriptCs.Core.csproj";
+        //var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
+        logger.Message("Solution: " + solutionPath);
+        logger.Message("Project: " + projectPath);
         Configuration conf;
-        if (!AutoConfig.TryAutoConfig(slnPath, projPath, false, out conf, logger))
+        if (!AutoConfig.TryAutoConfig(solutionPath, projectPath, false, out conf, logger, gitBaseBranch))
         {
           logger.Error("Could not autoconfig");
           return;
@@ -95,17 +95,31 @@ namespace Microsoft.Research.ReviewBot
 
         }
 
-        //Annotator.DoAnnotate(conf);
+        Annotator.DoAnnotate(conf);
 
       }
 
     }
     static void Main(string[] args)
     {
-      var projPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\src\ScriptCs.Core\ScriptCs.Core.csproj";
-      var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
-      //AutoSetupOnce();
-      AutoAnnotate(slnPath, projPath, true);
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\src\ScriptCs.Core\ScriptCs.Core.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
+      //AutoSetupOnce(slnPath, projPath, "dev");
+      //AutoAnnotate(slnPath, projPath, true, "dev");
+
+      // don't work:
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\Core\Desktop\CodeAnalysis.Desktop.csproj";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\Core\Portabjle\CodeAnalysis.csproj";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Scripting\Core\Scripting.csproj";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Workspaces\Core\Portable\Workspaces.csproj";
+
+      // this entire project is one function:
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\CSharp\csc2\csc2.csproj";
+
+      var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj";
+      var slnPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln";
+      //AutoSetupOnce(slnPath, projPath);
+      AutoAnnotate(slnPath, projPath, true, "reviewbot");
       Console.WriteLine("done.");
       Console.ReadKey();
     }
