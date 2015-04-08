@@ -112,12 +112,21 @@ namespace Microsoft.Research.ReviewBot
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\Core\Portabjle\CodeAnalysis.csproj";
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Scripting\Core\Scripting.csproj";
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Workspaces\Core\Portable\Workspaces.csproj";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\netmq\src\NetMQ\NetMQ.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\netmq\src\NetMQ.sln";
 
       // this entire project is one function:
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\CSharp\csc2\csc2.csproj";
 
-      var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj";
-      var slnPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln";
+      // they don't do param validation
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\choco\src\chocolatey\chocolatey.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\choco\src\chocolatey.sln";
+
+      var projPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\MongoDB.Driver.Core\MongoDB.Driver.Core.csproj";
+      var slnPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\CSharpDriver.sln";
+
       //AutoSetupOnce(slnPath, projPath);
       AutoAnnotate(slnPath, projPath, true, "reviewbot");
       Console.WriteLine("done.");
