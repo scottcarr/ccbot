@@ -84,6 +84,11 @@ namespace Microsoft.Research.ReviewBot
       if (oldmethod is BaseMethodDeclarationSyntax)
       {
         var casted = oldmethod as BaseMethodDeclarationSyntax;
+        if (casted.Body == null)
+        {
+          // TODO I don't know how to rewrite lambdas
+          return oldmethod;
+        }
         oldstmts = casted.Body.Statements;
       }
       else if (oldmethod is AccessorDeclarationSyntax)

@@ -115,7 +115,12 @@ namespace Microsoft.Research.ReviewBot
 
       var oldColor = Console.ForegroundColor;
       Console.ForegroundColor = color;
-      Output.WriteLine(true, INDENT_NO, "[{0}] {1}", what, string.Format(format, p));
+      try
+      {
+        // file names with brackets can break this, if so, skip it for now
+        Output.WriteLine(true, INDENT_NO, "[{0}] {1}", what, string.Format(format, p));
+      }
+      catch { }
       Console.ForegroundColor = oldColor;
     }
   }

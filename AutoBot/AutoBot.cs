@@ -104,6 +104,8 @@ namespace Microsoft.Research.ReviewBot
     {
       //var projPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\src\ScriptCs.Core\ScriptCs.Core.csproj";
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\Nancy\src\Nancy\Nancy.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\Nancy\src\Nancy.sln";
       //AutoSetupOnce(slnPath, projPath, "dev");
       //AutoAnnotate(slnPath, projPath, true, "dev");
 
@@ -116,6 +118,8 @@ namespace Microsoft.Research.ReviewBot
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\RoslynLight.sln";
       //var projPath = @"C:\Users\carr27\Documents\GitHub\netmq\src\NetMQ\NetMQ.csproj";
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\netmq\src\NetMQ.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\Newtonsoft.Json\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\Newtonsoft.Json\Newtonsoft.Json\Src\Newtonsoft.Json.sln";
 
       // this entire project is one function:
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\CSharp\csc2\csc2.csproj";
@@ -124,8 +128,26 @@ namespace Microsoft.Research.ReviewBot
       //var projPath = @"C:\Users\carr27\Documents\GitHub\choco\src\chocolatey\chocolatey.csproj";
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\choco\src\chocolatey.sln";
 
-      var projPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\MongoDB.Driver.Core\MongoDB.Driver.Core.csproj";
-      var slnPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\CSharpDriver.sln";
+      // this works if I prebuild the project
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\MongoDB.Driver.Core\MongoDB.Driver.Core.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\mongo-csharp-driver\src\CSharpDriver.sln";
+
+      // they don't seem to do param validation
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\ServiceStack.Redis\src\ServiceStack.Redis\ServiceStack.Redis.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\ServiceStack.Redis\src\ServiceStack.Redis.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\SignalR\src\Microsoft.AspNet.SignalR.Core\Microsoft.AspNet.SignalR.Core.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\SignalR\Microsoft.AspNet.SignalR.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\SignalR\src\Microsoft.AspNet.SignalR.Core\Microsoft.AspNet.SignalR.Core.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\SignalR\Microsoft.AspNet.SignalR.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\ravendb\Raven.Smuggler\Raven.Smuggler.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\ravendb\RavenDB.sln";
+
+      // build issues
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\EntityFramework\src\EntityFramework.Core\EntityFramework.Core.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\EntityFramework\EntityFramework.sln";
+
+      var projPath = @"C:\Users\carr27\Documents\GitHub\Ninject\src\Ninject\Ninject.csproj";
+      var slnPath = @"C:\Users\carr27\Documents\GitHub\Ninject\Ninject.sln";
 
       //AutoSetupOnce(slnPath, projPath);
       AutoAnnotate(slnPath, projPath, true, "reviewbot");
