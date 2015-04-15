@@ -17,3 +17,12 @@ Building
 ========
 
 Just open the solution in Visual Studio
+
+Usage
+=====
+
+Right now the easiest way to run ReviewBot is the AutoBot project.  All you have to change is projPath and slnPath in Main.
+
+The solution and project you put in those paths must be in a git repo.
+
+It will create a branch called "reviewbot" and insert the contracts into the source files in that branch.
