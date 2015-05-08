@@ -117,8 +117,8 @@ namespace Microsoft.Research.ReviewBot
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\scriptcs\ScriptCs.sln";
       //var projPath = @"C:\Users\carr27\Documents\GitHub\Nancy\src\Nancy\Nancy.csproj";
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\Nancy\src\Nancy.sln";
-      //AutoSetupOnce(slnPath, projPath, "dev");
-      //AutoAnnotate(slnPath, projPath, true, "dev");
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\Ninject\src\Ninject\Ninject.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\Ninject\Ninject.sln";
 
       // don't work:
       //var projPath = @"C:\Users\carr27\Documents\GitHub\roslyn\src\Compilers\Core\Desktop\CodeAnalysis.Desktop.csproj";
@@ -157,11 +157,25 @@ namespace Microsoft.Research.ReviewBot
       //var projPath = @"C:\Users\carr27\Documents\GitHub\EntityFramework\src\EntityFramework.Core\EntityFramework.Core.csproj";
       //var slnPath = @"C:\Users\carr27\Documents\GitHub\EntityFramework\EntityFramework.sln";
 
-      var projPath = @"C:\Users\carr27\Documents\GitHub\Ninject\src\Ninject\Ninject.csproj";
-      var slnPath = @"C:\Users\carr27\Documents\GitHub\Ninject\Ninject.sln";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\DotNetOpenAuth\src\DotNetOpenAuth.OAuth\DotNetOpenAuth.OAuth.csproj";
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\DotNetOpenAuth\src\DotNetOpenAuth.OAuth2\DotNetOpenAuth.OAuth2.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\DotNetOpenAuth\src\DotNetOpenAuth.sln";
 
-      //AutoSetupOnce(slnPath, projPath);
+      //var projPath = @"C:\Users\carr27\Documents\GitHub\msbuild\src\Utilities\Microsoft.Build.Utilities.csproj";
+      //var slnPath = @"C:\Users\carr27\Documents\GitHub\msbuild\src\MSBuild.sln";
+
+      /*
+      var projPath = @"C:\Users\carr27\Documents\GitHub\ravendb\Raven.Database\Raven.Database.csproj";
+      var slnPath = @"C:\Users\carr27\Documents\GitHub\ravendb\RavenDB.sln";
+
+      AutoSetupOnce(slnPath, projPath);
       AutoAnnotate(slnPath, projPath, true, "reviewbot");
+      */
+      //var commentsFile = @"C:\Users\carr27\AppData\Local\Temp\ReviewBot\ScriptCs_ScriptCs.Core_cccheck2015-4-6-12-18-53.xml";
+      //var commentsFile = @"C:\Users\carr27\AppData\Local\Temp\ReviewBot\Ninject_Ninject_cccheck2015-4-14-16-31-51.xml";
+      //var commentsFile = @"C:\Users\carr27\AppData\Local\Temp\ReviewBot\CSharpDriver_MongoDB.Driver.Core_cccheck2015-4-8-13-39-49.xml";
+      var commentsFile = @"C:\Users\carr27\AppData\Local\Temp\ReviewBot\Nancy_Nancy_cccheck2015-4-14-13-17-39.xml";
+      Console.WriteLine(HelpersForClousotXML.GetChecks(commentsFile).Count());
       Console.WriteLine("done.");
       Console.ReadKey();
     }

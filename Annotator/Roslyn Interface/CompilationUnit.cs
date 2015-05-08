@@ -29,7 +29,8 @@ namespace Microsoft.Research.ReviewBot
 
       Output.WriteLine("Opening the solution {0}", options.Solution);
 
-      workspace = MSBuildWorkspace.Create();
+      //workspace = MSBuildWorkspace.Create();
+      workspace = MSBuildWorkspace.Create(new Dictionary<string, string> { { "CheckForSystemRuntimeDependency", "true" } });
       cu = null;
       project = null;
       try
